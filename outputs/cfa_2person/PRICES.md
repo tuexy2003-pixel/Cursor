@@ -10,11 +10,14 @@ Food price source: DoorDash's indexed menu for that store lists Chick-fil-A® Sa
 | Chick-fil-A® Sandwich Meal (medium waffle fries, sweet tea) | $12.45 |
 | Subtotal | $24.90 |
 | Delivery Fee | $1.99 (estimate) |
+| mydashperks.com | −$25.00 |
 | Service Fee | $3.74 (15% of subtotal, estimate) |
 | Estimated Tax | $1.99 (6.5% of subtotal + delivery + service) |
 | Dasher Tip | $4.00 |
-| Total | $36.62 |
+| Total | $11.62 |
 
-No mydashperks.com row. Screen time is 7:02 PM. Order completed Saturday, Sep 26, 2026 at 6:48 PM, so it is not a Sunday order.
+The $25 comes off the bill. Service fee and tax stay on the pre-perk amounts, same as the Jalen receipt. $24.90 + $1.99 + $3.74 + $1.99 + $4.00 − $25.00 = $11.62.
+
+Screen time is 7:02 PM. Order completed Saturday, Sep 26, 2026 at 6:48 PM, so it is not a Sunday order. The green row is #00832D, under Delivery Fee.
 
 Flat file: `order_complete.png` at 850×1850.
