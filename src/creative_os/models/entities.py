@@ -170,6 +170,10 @@ class SkillArtifact(Base):
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     slug: Mapped[str] = mapped_column(String(160), unique=True)
     name: Mapped[str] = mapped_column(String(240))
+    current_version_id: Mapped[str | None] = mapped_column(
+        ForeignKey("skill_versions.id", use_alter=True, name="fk_skill_current_version"),
+        nullable=True,
+    )
 
 
 class SkillVersion(Base):
@@ -246,6 +250,7 @@ class Asset(Base):
     original_path: Mapped[str] = mapped_column(Text, unique=True)
     storage_uri: Mapped[str | None] = mapped_column(Text, nullable=True)
     content_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    size_bytes: Mapped[int | None] = mapped_column(Integer, nullable=True)
     mime_type: Mapped[str | None] = mapped_column(String(120), nullable=True)
     width: Mapped[int | None] = mapped_column(Integer, nullable=True)
     height: Mapped[int | None] = mapped_column(Integer, nullable=True)
@@ -272,6 +277,19 @@ class AssetRelation(Base):
     related_asset_id: Mapped[str] = mapped_column(ForeignKey("assets.id"))
     relation: Mapped[str] = mapped_column(String(40))
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+
+class ExampleLink(Base):
+    __tablename__ = "example_links"
+    __table_args__ = (UniqueConstraint("benchmark_id", "regression_test_id", "asset_id", "example_role"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    benchmark_id: Mapped[str | None] = mapped_column(ForeignKey("benchmark_creatives.id"), nullable=True)
+    regression_test_id: Mapped[str | None] = mapped_column(ForeignKey("regression_tests.id"), nullable=True)
+    asset_id: Mapped[str] = mapped_column(ForeignKey("assets.id"))
+    example_role: Mapped[str] = mapped_column(String(40))
+    reason: Mapped[str] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
 
 class StaleArtifactRecord(Base):

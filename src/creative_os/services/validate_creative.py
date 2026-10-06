@@ -1,15 +1,24 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from creative_os.models import ApprovalEvent, Asset, Creative, StaleArtifactRecord, StoryLockVersion
+from creative_os.models import (
+    ApprovalEvent,
+    Asset,
+    AssetRelation,
+    Creative,
+    StaleArtifactRecord,
+    StoryLockVersion,
+)
 from creative_os.schemas.story_lock import StoryLockDocument
 from creative_os.validation.checks import (
     approval_status,
     arithmetic_status,
     aspect_ratio_status,
     line_items_match_subtotal,
+    lock_precedence_status,
     product_match_status,
     provenance_status,
+    recursive_edit_status,
     rights_export_status,
     timeline_order_status,
     weekday_status,
@@ -80,11 +89,27 @@ def validate_creative(session: Session, creative: Creative) -> list[tuple[str, s
     status, message = approval_status(approved is not None, required=True)
     results.append(("required_approval", status, message))
     lock_models = [item.model for item in document.line_items if item.model]
-    assets = session.scalars(select(Asset).where(Asset.creative_id == creative.id)).all()
+    assets = list(session.scalars(select(Asset).where(Asset.creative_id == creative.id)).all())
+    if assets:
+        owned_ids = [asset.id for asset in assets]
+        related_ids = session.scalars(
+            select(AssetRelation.related_asset_id).where(AssetRelation.asset_id.in_(owned_ids))
+        ).all()
+        known = {asset.id for asset in assets}
+        for related_id in related_ids:
+            if related_id in known:
+                continue
+            related = session.get(Asset, related_id)
+            if related is not None:
+                assets.append(related)
+                known.add(related.id)
     if not assets:
         results.append(("assets", "NOT_APPLICABLE", "no assets linked to this creative"))
     for asset in assets:
-        status, message = product_match_status(lock_models, asset.product_model)
+        if asset.product_model:
+            status, message = lock_precedence_status(asset.product_model, lock_models, asset.stale, False)
+        else:
+            status, message = product_match_status(lock_models, None)
         results.append((f"product:{asset.name}", status, message))
         status, message = provenance_status(
             asset.role,
@@ -97,9 +122,21 @@ def validate_creative(session: Session, creative: Creative) -> list[tuple[str, s
         if asset.role == "BASE":
             status, message = rights_export_status(asset.role, asset.rights_status, True)
             results.append((f"rights_export:{asset.name}", status, message))
-        if asset.width and asset.height:
+        if asset.role != "EXAMPLE":
+            results.append(
+                (
+                    f"aspect:{asset.name}",
+                    "NOT_APPLICABLE",
+                    "the 9:19.6 ratio is a program preference for deliverable examples",
+                )
+            )
+        elif asset.width and asset.height:
             status, message = aspect_ratio_status(asset.width, asset.height)
             results.append((f"aspect:{asset.name}", status, message))
+        else:
+            results.append((f"aspect:{asset.name}", "WARNING", "deliverable example has no dimensions"))
+        status, message = _lineage_status(session, asset)
+        results.append((f"lineage:{asset.name}", status, message))
         if asset.bound_story_lock_version_id and asset.bound_story_lock_version_id != version.id:
             stale = session.scalar(
                 select(StaleArtifactRecord.id).where(StaleArtifactRecord.asset_id == asset.id)
@@ -115,6 +152,22 @@ def validate_creative(session: Session, creative: Creative) -> list[tuple[str, s
                     )
                 )
     return results
+
+
+def _lineage_status(session: Session, asset: Asset) -> tuple[str, str]:
+    if asset.role != "EXAMPLE":
+        return "NOT_APPLICABLE", "lineage check applies to edited deliverables"
+    relations = session.scalars(
+        select(AssetRelation).where(AssetRelation.asset_id == asset.id, AssetRelation.relation == "BASE")
+    ).all()
+    if not relations:
+        return recursive_edit_status(None)
+    parents = [session.get(Asset, relation.related_asset_id) for relation in relations]
+    if any(parent is None for parent in parents):
+        return "FAIL", "a base relation points at a missing asset"
+    if all(parent is not None and parent.role == "BASE" for parent in parents):
+        return recursive_edit_status(True)
+    return recursive_edit_status(False)
 
 
 def _lock_id(session: Session, creative: Creative) -> str | None:

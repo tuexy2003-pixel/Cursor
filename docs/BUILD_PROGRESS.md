@@ -2,7 +2,7 @@
 
 ## Current phase
 
-Phases 0–5 are in the repository and exercised locally. Phase 6 records providers and assembles a selective context preview. Provider execution returns `NOT_IMPLEMENTED`.
+Preservation baseline v0.1. Phases 0–5 are in the repository. Phase 6 still returns `NOT_IMPLEMENTED`. The seeded database is the imported snapshot plus supplemental visuals and the working production-spec-qa example correction. See `docs/PRESERVATION_BASELINE.md`.
 
 ## Completed
 
@@ -47,7 +47,7 @@ The running local database also contains the browser verification correction (st
 
 ## Known issues
 
-- Example binaries are not in the core snapshot. Asset rows have `present_in_snapshot=false` and no content hash
+- 18 supplemental files are hashed. 17 indexed rows still have no binary
 - Most asset rights are `UNKNOWN`. The operator’s Messages keyboard base is `USER_OWNED`
 - Asset relations for parent/base/ingredient chains are not populated, so recursive-edit validation stays `HUMAN_REVIEW_REQUIRED` unless a caller supplies the chain
 - No live performance, comment, or experiment history was in the handoff. The experiment and stub run in the local database came from operator verification

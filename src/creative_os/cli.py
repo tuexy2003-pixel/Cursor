@@ -1,12 +1,17 @@
 import argparse
 import logging
+from collections.abc import Callable
+from pathlib import Path
 
 from alembic import command
 from alembic.config import Config
+from sqlalchemy.orm import Session
 
 from creative_os.config import get_settings, repo_root
 from creative_os.db import make_engine, make_session_factory, resolve_database_url
+from creative_os.importers.examples import import_visual_supplements
 from creative_os.importers.handoff import import_handoff
+from creative_os.services.baseline import apply_preservation_baseline
 
 
 def _alembic_config() -> Config:
@@ -32,7 +37,7 @@ def reset_db(seed: bool) -> None:
         path.unlink()
     migrate()
     if seed:
-        import_snapshot()
+        seed_baseline()
 
 
 def import_snapshot() -> None:
@@ -53,6 +58,60 @@ def import_snapshot() -> None:
         print(f"note: {note}")
 
 
+def supplement_root() -> Path:
+    return repo_root() / "source_snapshots/supplements/2026-10-05"
+
+
+def import_examples() -> None:
+    _run_session("examples", lambda session: import_visual_supplements(session, supplement_root()))
+
+
+def apply_baseline() -> None:
+    _run_session("baseline", lambda session: apply_preservation_baseline(session))
+
+
+def seed_baseline() -> None:
+    settings = get_settings()
+    engine = make_engine()
+    factory = make_session_factory(engine)
+    session = factory()
+    try:
+        report = import_handoff(session, settings.resolved_snapshot_root())
+        visual = import_visual_supplements(session, supplement_root())
+        baseline = apply_preservation_baseline(session)
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
+    finally:
+        session.close()
+    print(f"inserted={report.inserted} skipped={report.skipped}")
+    for note in report.notes:
+        print(f"note: {note}")
+    print(
+        "examples "
+        f"a={visual['archive_a_files']} b={visual['archive_b_files']} "
+        f"matched={visual['index_matches']} children={visual['child_assets']} "
+        f"relations_added={visual['relations']} links_added={visual['example_links']}"
+    )
+    print(f"baseline policy={baseline['policy']} scope={baseline['scope']}")
+
+
+def _run_session(label: str, operation: Callable[[Session], object]) -> None:
+    engine = make_engine()
+    factory = make_session_factory(engine)
+    session = factory()
+    try:
+        result = operation(session)
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
+    finally:
+        session.close()
+    print(f"{label} {result}")
+
+
 def serve() -> None:
     import uvicorn
 
@@ -71,6 +130,8 @@ def main(argv: list[str] | None = None) -> None:
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("migrate", help="Apply database migrations")
     sub.add_parser("import-handoff", help="Idempotently import the snapshot")
+    sub.add_parser("import-examples", help="Attach supplemental visual archives")
+    sub.add_parser("apply-baseline", help="Apply the working policy and scope corrections")
     reset = sub.add_parser("reset-db", help="Delete the local SQLite database and migrate")
     reset.add_argument("--seed", action="store_true", help="Import the handoff after reset")
     sub.add_parser("serve", help="Run the API")
@@ -79,6 +140,10 @@ def main(argv: list[str] | None = None) -> None:
         migrate()
     elif args.command == "import-handoff":
         import_snapshot()
+    elif args.command == "import-examples":
+        import_examples()
+    elif args.command == "apply-baseline":
+        apply_baseline()
     elif args.command == "reset-db":
         reset_db(seed=args.seed)
     elif args.command == "serve":

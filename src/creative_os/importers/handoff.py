@@ -1,4 +1,5 @@
 import json
+import re
 from pathlib import Path
 
 from sqlalchemy import select
@@ -241,25 +242,29 @@ def _skills(session: Session, root: Path, manifest: dict, report: ImportReport) 
             )
         )
         if existing:
+            if artifact.current_version_id is None:
+                artifact.current_version_id = existing.id
             report.add(True)
             continue
-        session.add(
-            SkillVersion(
-                skill_id=artifact.id,
-                version_label="handoff-2026-10-05",
-                status=str(meta.get("status", "UNKNOWN")),
-                scope_level="GLOBAL",
-                rule_kind="HEURISTIC",
-                content=text,
-                content_hash=digest,
-                source_path=str(meta.get("path") or path.relative_to(root).as_posix()),
-                effective_from=now,
-                supersedes_version_id=None,
-                approval_state="IMPORTED",
-                dependencies=list(meta.get("calls_or_depends_on") or []),
-                created_at=now,
-            )
+        version = SkillVersion(
+            skill_id=artifact.id,
+            version_label="handoff-2026-10-05",
+            status=str(meta.get("status", "UNKNOWN")),
+            scope_level="GLOBAL",
+            rule_kind="HEURISTIC",
+            content=text,
+            content_hash=digest,
+            source_path=str(meta.get("path") or path.relative_to(root).as_posix()),
+            effective_from=now,
+            supersedes_version_id=None,
+            approval_state="IMPORTED",
+            dependencies=list(meta.get("calls_or_depends_on") or []),
+            created_at=now,
         )
+        session.add(version)
+        session.flush()
+        if artifact.current_version_id is None:
+            artifact.current_version_id = version.id
         report.add(False)
     playbook = root / "skills/live-heat-scout/QUERY_HYGIENE_PLAYBOOK.md"
     if playbook.exists():
@@ -323,16 +328,18 @@ def _policies(session: Session, root: Path, program: Program, report: ImportRepo
             section = "D"
             index = 0
             continue
-        if not line.startswith("- ") or not section:
-            continue
-        index += 1
-        body = line[2:].strip()
-        if section == "A":
+        numbered = re.match(r"^(\d+)\.\s+(.*)", line)
+        if section == "A" and numbered:
+            index = int(numbered.group(1))
+            body = numbered.group(2).strip()
             scope, scope_id, kind = "GLOBAL", None, "INVARIANT"
-        elif section == "B":
-            scope, scope_id, kind = "GLOBAL", None, "HEURISTIC"
-        elif section == "C":
-            scope, scope_id, kind = "PROGRAM", program.id, "PREFERENCE"
+        elif line.startswith("- ") and section in {"B", "C"}:
+            index += 1
+            body = line[2:].strip()
+            if section == "B":
+                scope, scope_id, kind = "GLOBAL", None, "HEURISTIC"
+            else:
+                scope, scope_id, kind = "PROGRAM", program.id, "PREFERENCE"
         else:
             continue
         code = f"principles-{section.lower()}-{index:02d}"

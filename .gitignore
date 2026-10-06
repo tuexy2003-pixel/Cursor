@@ -11,6 +11,7 @@ apps/web/node_modules/
 apps/web/.next/
 apps/web/out/
 apps/web/tsconfig.tsbuildinfo
+creative_os_v0.1_source_review.zip
 *.egg-info/
 dist/
 build/

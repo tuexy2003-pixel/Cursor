@@ -13,14 +13,12 @@ pip install -e ".[dev]"
 cp .env.example .env
 creative-os migrate
 creative-os import-handoff
+creative-os import-examples
+creative-os apply-baseline
 creative-os serve
 ```
 
-Reset the local SQLite database and import again:
-
-```bash
-creative-os reset-db --seed
-```
+`creative-os reset-db --seed` deletes the local SQLite file, migrates, imports the core snapshot, attaches the supplemental visuals, and applies the working policy. It does not keep operator verification edits.
 
 Operator UI:
 
@@ -43,10 +41,11 @@ pytest
 
 ## What the import preserves
 
-- 15 skills, including the production-spec-qa example that still says “tomorrow”
+- 15 skills. The imported production-spec-qa text still says “tomorrow”
+- A working production-spec-qa version whose GOOD example says “today”, without changing the snapshot
 - The current Target story lock, whose floating hook is “today” and whose total is $19.23
 - 19 regression cases
-- Asset-index metadata without inventing missing binaries or rights
+- Supplemental visual hashes, dimensions, and only the relationships the notes state
 
 Creative values come from the current approved story lock. A human correction appends a version, records approval, and marks assets bound to the previous version stale. It does not rewrite the old version.
 

@@ -6,6 +6,7 @@ from creative_os.models import (
     Creative,
     MechanicObservation,
     PolicyRule,
+    SkillArtifact,
     SkillVersion,
     StoryLockVersion,
 )
@@ -25,7 +26,17 @@ def assemble_context(session: Session, creative: Creative, limit: int = 8) -> di
         )
         .limit(limit)
     ).all()
-    skills = session.scalars(select(SkillVersion).where(SkillVersion.status.like("ACTIVE%")).limit(limit)).all()
+    current_ids = [
+        row.current_version_id for row in session.scalars(select(SkillArtifact)).all() if row.current_version_id
+    ]
+    if current_ids:
+        skills = session.scalars(
+            select(SkillVersion).where(SkillVersion.id.in_(current_ids), SkillVersion.status.like("ACTIVE%"))
+        ).all()
+    else:
+        skills = session.scalars(
+            select(SkillVersion).where(SkillVersion.status.like("ACTIVE%")).limit(limit)
+        ).all()
     lock = None
     if creative.current_approved_story_lock_version_id:
         lock = session.get(StoryLockVersion, creative.current_approved_story_lock_version_id)

@@ -480,6 +480,7 @@ def policies(session: Session = Depends(session_dep)) -> dict[str, object]:
             {
                 "slug": skill.slug,
                 "name": skill.name,
+                "current_version_id": skill.current_version_id,
                 "versions": [
                     {
                         "id": version.id,
@@ -488,6 +489,7 @@ def policies(session: Session = Depends(session_dep)) -> dict[str, object]:
                         "scope_level": version.scope_level,
                         "content_hash": version.content_hash,
                         "source_path": version.source_path,
+                        "is_current": version.id == skill.current_version_id,
                     }
                     for version in versions
                 ],
@@ -503,6 +505,7 @@ def policies(session: Session = Depends(session_dep)) -> dict[str, object]:
                 "rule_kind": rule.rule_kind,
                 "title": rule.title,
                 "status": rule.status,
+                "scope_id": rule.scope_id,
                 "source_path": rule.source_path,
             }
             for rule in rules
@@ -515,18 +518,22 @@ def skill_body(slug: str, session: Session = Depends(session_dep)) -> dict[str, 
     skill = session.scalar(select(SkillArtifact).where(SkillArtifact.slug == slug))
     if skill is None:
         raise HTTPException(status_code=404, detail="skill not found")
-    version = session.scalar(
-        select(SkillVersion)
-        .where(SkillVersion.skill_id == skill.id, SkillVersion.version_label == "handoff-2026-10-05")
-        .order_by(SkillVersion.created_at)
-    )
+    version = None
+    if skill.current_version_id:
+        version = session.get(SkillVersion, skill.current_version_id)
     if version is None:
-        version = session.scalar(select(SkillVersion).where(SkillVersion.skill_id == skill.id))
+        version = session.scalar(
+            select(SkillVersion)
+            .where(SkillVersion.skill_id == skill.id, SkillVersion.version_label == "handoff-2026-10-05")
+            .order_by(SkillVersion.created_at)
+        )
     if version is None:
         raise HTTPException(status_code=404, detail="skill version not found")
     return {
         "slug": slug,
         "status": version.status,
+        "version_label": version.version_label,
+        "approval_state": version.approval_state,
         "content": version.content,
         "content_hash": version.content_hash,
     }
