@@ -35,6 +35,10 @@ where = ["src"]
 line-length = 112
 target-version = "py312"
 src = ["src", "tests"]
+extend-exclude = [
+  "source_snapshots",
+  "alembic/versions",
+]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]

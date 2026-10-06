@@ -11,9 +11,9 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -e ".[dev]"
-      - run: ruff check src tests
-      - run: ruff format --check src tests
-      - run: mypy src
+      - run: ruff check
+      - run: ruff format --check
+      - run: mypy
       - run: pytest
       - uses: actions/setup-node@v4
         with:
