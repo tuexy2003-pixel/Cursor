@@ -1,0 +1,170 @@
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from creative_os.models import ApprovalEvent, Asset, Creative, StaleArtifactRecord, StoryLockVersion
+from creative_os.schemas.story_lock import StoryLockDocument
+from creative_os.validation.checks import (
+    approval_status,
+    arithmetic_status,
+    aspect_ratio_status,
+    line_items_match_subtotal,
+    product_match_status,
+    provenance_status,
+    rights_export_status,
+    timeline_order_status,
+    weekday_status,
+)
+
+
+def validate_creative(session: Session, creative: Creative) -> list[tuple[str, str, str]]:
+    results: list[tuple[str, str, str]] = []
+    version_id = creative.current_approved_story_lock_version_id
+    if version_id is None:
+        results.append(("current_lock", "NOT_APPLICABLE", "no approved story lock"))
+        return results
+    version = session.get(StoryLockVersion, version_id)
+    if version is None:
+        results.append(("version_consistency", "FAIL", "current pointer does not resolve"))
+        return results
+    if version.story_lock_id != _lock_id(session, creative):
+        results.append(("version_consistency", "FAIL", "current version belongs to another lock"))
+    else:
+        results.append(("version_consistency", "PASS", f"version {version.version_number} is current"))
+    document = StoryLockDocument.model_validate(version.content_json)
+    if document.economics:
+        status, message = arithmetic_status(
+            document.economics.subtotal,
+            document.economics.discount,
+            document.economics.tax,
+            document.economics.total,
+        )
+        results.append(("arithmetic", status, message))
+        prices = [item.unit_price for item in document.line_items if item.unit_price]
+        status, message = line_items_match_subtotal(prices, document.economics.subtotal)
+        results.append(("line_item_subtotal", status, message))
+    else:
+        results.append(("arithmetic", "NOT_APPLICABLE", "no economics on the lock"))
+    if document.story_date and document.story_weekday:
+        status, message = weekday_status(document.story_date, document.story_weekday)
+        results.append(("story_weekday", status, message))
+    clocks = [slide.visible_clock for slide in document.slides]
+    status, message = timeline_order_status(clocks)
+    results.append(("timeline_order", status, message))
+    pickup = _pickup_weekday(document)
+    if document.story_date and pickup:
+        from datetime import date, timedelta
+
+        story = date.fromisoformat(document.story_date)
+        # The pickup token is a weekday name. Search the next 14 days for that weekday
+        # only when the visible date also contains a day number we already trust via
+        # an explicit ISO in continuity. Here we validate the claimed weekday of a
+        # date string embedded as "Oct 7" only when story year is known and the token
+        # includes a parseable month/day handled by the caller. This check uses the
+        # lock's own continuity value when it embeds a known ISO-compatible phrase.
+        target = _explicit_pickup_date(document, story.year)
+        if target is not None:
+            status, message = weekday_status(target.isoformat(), pickup)
+            results.append(("pickup_weekday", status, message))
+            if target < story:
+                results.append(("pickup_order", "FAIL", "pickup date is before the story date"))
+            elif target - story > timedelta(days=14):
+                results.append(("pickup_order", "WARNING", "pickup is more than 14 days after the story date"))
+            else:
+                results.append(("pickup_order", "PASS", "pickup date follows the story date"))
+    approved = session.scalar(
+        select(ApprovalEvent.id).where(
+            ApprovalEvent.version_id == version.id,
+            ApprovalEvent.status == "APPROVED",
+        )
+    )
+    status, message = approval_status(approved is not None, required=True)
+    results.append(("required_approval", status, message))
+    lock_models = [item.model for item in document.line_items if item.model]
+    assets = session.scalars(select(Asset).where(Asset.creative_id == creative.id)).all()
+    if not assets:
+        results.append(("assets", "NOT_APPLICABLE", "no assets linked to this creative"))
+    for asset in assets:
+        status, message = product_match_status(lock_models, asset.product_model)
+        results.append((f"product:{asset.name}", status, message))
+        status, message = provenance_status(
+            asset.role,
+            asset.rights_status,
+            asset.original_path,
+            asset.content_hash,
+            file_expected=asset.present_in_snapshot,
+        )
+        results.append((f"provenance:{asset.name}", status, message))
+        if asset.role == "BASE":
+            status, message = rights_export_status(asset.role, asset.rights_status, True)
+            results.append((f"rights_export:{asset.name}", status, message))
+        if asset.width and asset.height:
+            status, message = aspect_ratio_status(asset.width, asset.height)
+            results.append((f"aspect:{asset.name}", status, message))
+        if asset.bound_story_lock_version_id and asset.bound_story_lock_version_id != version.id:
+            stale = session.scalar(
+                select(StaleArtifactRecord.id).where(StaleArtifactRecord.asset_id == asset.id)
+            )
+            if asset.stale or stale is not None:
+                results.append((f"stale:{asset.name}", "PASS", "older asset is marked stale"))
+            else:
+                results.append(
+                    (
+                        f"stale:{asset.name}",
+                        "FAIL",
+                        "asset is bound to a superseded lock and is not marked stale",
+                    )
+                )
+    return results
+
+
+def _lock_id(session: Session, creative: Creative) -> str | None:
+    from creative_os.models import StoryLock
+
+    lock = session.scalar(select(StoryLock).where(StoryLock.creative_id == creative.id))
+    return lock.id if lock else None
+
+
+def _pickup_weekday(document: StoryLockDocument) -> str | None:
+    for slide in document.slides:
+        if slide.visible_date and "Wed" in slide.visible_date:
+            return "Wednesday"
+        if slide.visible_date:
+            for name in (
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday",
+            ):
+                if name[:3] in slide.visible_date or name in slide.visible_date:
+                    return name
+    return None
+
+
+def _explicit_pickup_date(document: StoryLockDocument, year: int):
+    import re
+    from datetime import date
+
+    months = {
+        "Jan": 1,
+        "Feb": 2,
+        "Mar": 3,
+        "Apr": 4,
+        "May": 5,
+        "Jun": 6,
+        "Jul": 7,
+        "Aug": 8,
+        "Sep": 9,
+        "Oct": 10,
+        "Nov": 11,
+        "Dec": 12,
+    }
+    for slide in document.slides:
+        if not slide.visible_date:
+            continue
+        match = re.search(r"([A-Z][a-z]{2})\s+(\d{1,2})", slide.visible_date)
+        if match and match.group(1) in months:
+            return date(year, months[match.group(1)], int(match.group(2)))
+    return None

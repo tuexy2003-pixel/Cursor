@@ -1,0 +1,33 @@
+You are receiving TARGET_REFERENCE_BANK_GROK_V2.zip.
+
+FIRST: unpack it and read, in this order:
+1. 00_READ_FIRST_CURRENT_HANDOFF.md
+2. TARGET_REFERENCE_MANIFEST.txt
+3. PROMPT_TO_GROKBOT.txt
+4. review the contact sheet, then inspect the individual images relevant to the current story beat.
+
+IMPORTANT CORRECTION:
+Do not block Target creative production merely because we lack a fresh live signed-in screenshot showing the exact desired item list + summary in one viewport. This reference bank is the current structural production reference for staged Target surfaces. A fresh live capture is optional fidelity validation unless the story requires a Target field/behavior not supported by the bank.
+
+Do not overcorrect: unsupported Target semantics must still not be invented.
+
+CURRENT LOCKED TARGET CREATIVE:
+SHE SAID IT WAS CHORE STUFF
+
+S1: sibling iMessage — “doing a quick Drive Up” / “just chore stuff don’t look” / narrator “why would I look”
+S2: Target order/details surface reveals birthday candles + cake mix + streamers + one chore item (paper towels). The item list is story proof. Any discount/total is secondary and unmentioned.
+S3: casual camera-roll birthday payoff using the same supplies.
+
+The commerce screen must still matter if every price/discount/total is blurred.
+
+Before continuing, output only:
+- PACK INGESTED: YES/NO
+- FILE COUNT
+- CURRENT TARGET STORY BEAT
+- SELECTED REFERENCE FILE(S) for S2
+- WHAT THOSE REFERENCES STRUCTURALLY SUPPORT
+- WHAT THEY DO NOT PROVE
+- TRUE REFERENCE GAPS, if any
+- IS A NEW LIVE TARGET CAPTURE A BLOCKER? YES/NO + one sentence why
+
+Then proceed, unless there is a genuine unsupported UI behavior, to exact staged transaction math + pre-production transaction spec for the locked Target creative. Do not restart broad Target screenshot research.

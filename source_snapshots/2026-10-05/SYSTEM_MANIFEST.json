@@ -1,0 +1,334 @@
+{
+ "version": "handoff-2026-10-05-ext1",
+ "generated_at": "2026-10-05T21:50:00-04:00",
+ "system": {
+  "name": "MyDashPerks Creative OS (Grok Bot skills)",
+  "purpose": "Staged/fictional short-form TikTok carousel concept generation, story development, and base-first production with QA",
+  "commercial_ecosystems": [
+   "TARGET",
+   "DOORDASH"
+  ],
+  "money_path": "mydashperks.com discount line on native order surface only"
+ },
+ "workflow_order": [
+  "research/evidence: story-conflict-scout, object-culture-scout, live-heat-scout, commerce-world-mapper, source-card",
+  "creative origination: synthetic-story-generator (staged premises)",
+  "commercial-aware-synthesis (premise + mechanic + economic state boundary, $0-500 variable value)",
+  "adaptation-blitz-match gates (Gate 1, Gate 2A/2B, campaign salience, Desire/Utility)",
+  "human concept lock",
+  "story-development (Pass1 propulsion, Pass2 comment surface, Pass3 continuity) -> STORY_LOCK",
+  "human storyboard/STORY_LOCK approval",
+  "production-spec-qa router (A message / B commerce UI / C camera-roll / D new scene) + hook gate",
+  "reference/base acquisition: visual-surface-acquisition, find-purchase-screens-on-pinterest, real object photos as ingredients",
+  "production: ChatGPT localized edit of BASE + INGREDIENT images; ios-26-production-normalization",
+  "production QA incl. story-development + continuity mirrors",
+  "final assets 9:19.6"
+ ],
+ "skills": [
+  {
+   "name": "story-development",
+   "path": "/home/box/agent-data/workflows/story-development/SKILL.md",
+   "status": "ACTIVE",
+   "stage": "story development (post concept lock, pre production)",
+   "purpose": "Propulsion, viral texture/comment doors, cross-slide continuity ledger, current-lock precedence; outputs STORY_LOCK",
+   "calls_or_depends_on": [
+    "adaptation-blitz-match"
+   ]
+  },
+  {
+   "name": "production-spec-qa",
+   "path": "/home/box/agent-data/workflows/production-spec-qa/SKILL.md",
+   "status": "ACTIVE",
+   "stage": "production routing + QA",
+   "purpose": "Router base-first smallest edit, S1 hook gate, organic reference discovery, story-dev + continuity verify-only mirrors, 9:19.6 default",
+   "calls_or_depends_on": [
+    "story-development",
+    "visual-surface-acquisition",
+    "ios-26-production-normalization",
+    "find-purchase-screens-on-pinterest"
+   ]
+  },
+  {
+   "name": "ios-26-production-normalization",
+   "path": "/home/box/agent-data/workflows/ios-26-production-normalization/SKILL.md",
+   "status": "ACTIVE",
+   "stage": "production",
+   "purpose": "Device chrome normalized to iOS 26 9:19.6; commerce facts not changed; status-bar time follows STORY_LOCK",
+   "calls_or_depends_on": [
+    "production-spec-qa"
+   ]
+  },
+  {
+   "name": "visual-surface-acquisition",
+   "path": "/home/box/agent-data/workflows/visual-surface-acquisition/SKILL.md",
+   "status": "ACTIVE",
+   "stage": "reference acquisition",
+   "purpose": "Hunt real current pixels of a commerce surface or decide real capture is required",
+   "calls_or_depends_on": []
+  },
+  {
+   "name": "find-purchase-screens-on-pinterest",
+   "path": "/home/box/agent-data/workflows/find-purchase-screens-on-pinterest/SKILL.md",
+   "status": "ACTIVE",
+   "stage": "reference acquisition",
+   "purpose": "Pinterest visual search for slide images (scroll, similar pins)",
+   "calls_or_depends_on": []
+  },
+  {
+   "name": "commercial-aware-synthesis",
+   "path": "/home/box/agent-data/workflows/commercial-aware-synthesis/SKILL.md",
+   "status": "ACTIVE (frozen V1.2)",
+   "stage": "concept synthesis",
+   "purpose": "Compose premise from gravity + mechanic + economic state boundary; variable promo value <= $500",
+   "calls_or_depends_on": [
+    "story-conflict-scout",
+    "object-culture-scout",
+    "live-heat-scout",
+    "synthetic-story-generator"
+   ]
+  },
+  {
+   "name": "synthetic-story-generator",
+   "path": "/home/box/agent-data/workflows/synthetic-story-generator/SKILL.md",
+   "status": "ACTIVE",
+   "stage": "concept origination",
+   "purpose": "Fictional/staged premise cards from viral pattern bank; feeds CAS",
+   "calls_or_depends_on": [
+    "commercial-aware-synthesis"
+   ]
+  },
+  {
+   "name": "adaptation-blitz-match",
+   "path": "/home/box/agent-data/workflows/adaptation-blitz-match/SKILL.md",
+   "status": "ACTIVE (frozen gates)",
+   "stage": "concept gating",
+   "purpose": "Gate 1, Gate 2A/2B, campaign salience; rank finalists",
+   "calls_or_depends_on": [
+    "commercial-aware-synthesis"
+   ]
+  },
+  {
+   "name": "story-conflict-scout",
+   "path": "/home/box/agent-data/workflows/story-conflict-scout/SKILL.md",
+   "status": "ACTIVE",
+   "stage": "research",
+   "purpose": "Find real events/behaviors people react to",
+   "calls_or_depends_on": []
+  },
+  {
+   "name": "object-culture-scout",
+   "path": "/home/box/agent-data/workflows/object-culture-scout/SKILL.md",
+   "status": "ACTIVE",
+   "stage": "research",
+   "purpose": "Find objects across worlds",
+   "calls_or_depends_on": []
+  },
+  {
+   "name": "live-heat-scout",
+   "path": "/home/box/agent-data/workflows/live-heat-scout/SKILL.md",
+   "status": "ACTIVE",
+   "stage": "research",
+   "purpose": "Live consumer-culture heat cards (VALIDATION_CARD), query hygiene",
+   "calls_or_depends_on": []
+  },
+  {
+   "name": "commerce-world-mapper",
+   "path": "/home/box/agent-data/workflows/commerce-world-mapper/SKILL.md",
+   "status": "SUPPORTING",
+   "stage": "research",
+   "purpose": "Learn which journeys/surfaces/objects exist at a retailer",
+   "calls_or_depends_on": []
+  },
+  {
+   "name": "source-card",
+   "path": "/home/box/agent-data/workflows/source-card/SKILL.md",
+   "status": "SUPPORTING",
+   "stage": "research",
+   "purpose": "Turn a post/link/screenshot into a labeled source card",
+   "calls_or_depends_on": []
+  },
+  {
+   "name": "chat-story-slideshow",
+   "path": "/home/box/agent-data/workflows/chat-story-slideshow/SKILL.md",
+   "status": "SUPPORTING",
+   "stage": "story (optional specialist)",
+   "purpose": "Only when a dialogue-led story needs a text thread",
+   "calls_or_depends_on": []
+  },
+  {
+   "name": "getting-started",
+   "path": "/home/box/agent-data/workflows/getting-started/SKILL.md",
+   "status": "LEGACY",
+   "stage": "onboarding",
+   "purpose": "First-conversation onboarding; still mentions 1080x1920 (not a production rule)",
+   "calls_or_depends_on": []
+  }
+ ],
+ "authoritative_records": [
+  {
+   "path": "/workspace/creative-pipeline/outputs/chore_stuff_target_20261005_v4/STORY_LOCK.md",
+   "role": "CURRENT STORY_LOCK (Target benchmark); wins over old assets/memory/prior locks for story values"
+  },
+  {
+   "path": "/workspace/creative-pipeline/shared/research/ssg-orchestration-test/BENCHMARK_SURFACE_TRANSACTION_SPEC.md",
+   "role": "surface+transaction spec for Target and DoorDash onions benchmarks"
+  }
+ ],
+ "reference_banks": [
+  {
+   "path": "/workspace/creative-pipeline/shared/research/target-reference-bank-v2/",
+   "role": "BASE/REFERENCE",
+   "purpose": "Target dark/light app screens 01-27 + manifest + contact sheet",
+   "key_files": [
+    "16_ORDER_DETAILS_darkmode_ready_for_pickup.jpeg (BASE for order details)",
+    "04_CHECKOUT_darkmode_discounts_total.jpeg (summary styling REFERENCE)",
+    "12,17,18 (checked, not taller multi-item bases)",
+    "TARGET_REFERENCE_MANIFEST.txt"
+   ]
+  },
+  {
+   "path": "/workspace/creative-pipeline/outputs/dd_step_refs_20261002/",
+   "role": "REFERENCE",
+   "purpose": "DoorDash journey screens (checkout, map states, delivery complete, support chats)"
+  },
+  {
+   "path": "/workspace/creative-pipeline/outputs/dd_step_refs_round2_20261002/ .. round4",
+   "role": "REFERENCE",
+   "purpose": "more DoorDash step refs (UNCLEAR contents)"
+  },
+  {
+   "path": "/workspace/creative-pipeline/shared/templates/ios-messages-keyboard/keyboard_thread_base_ios26_dark.png",
+   "role": "BASE",
+   "purpose": "user's iOS 26 dark Messages keyboard-up base 1206x2622"
+  },
+  {
+   "path": "/workspace/creative-pipeline/shared/templates/ios-messages-peek/",
+   "role": "BASE",
+   "purpose": "Messages peek base (use only if conversation fills card)"
+  },
+  {
+   "path": "/workspace/creative-pipeline/shared/templates/ios26-phone-9x19.6/",
+   "role": "BASE",
+   "purpose": "iOS 26 device chrome master + spec.json"
+  },
+  {
+   "path": "/workspace/creative-pipeline/outputs/chore_stuff_target_20261005_v5/s2_ingredients/",
+   "role": "INGREDIENT",
+   "purpose": "real product images for S2 rows"
+  },
+  {
+   "path": "/workspace/creative-pipeline/shared/research/airpods5-packaging/",
+   "role": "INGREDIENT",
+   "purpose": "real AirPods 5 box photos (GIGAZINE)"
+  },
+  {
+   "path": "/workspace/creative-pipeline/shared/research/target-airpods-candles-20261005/",
+   "role": "EVIDENCE/INGREDIENT",
+   "purpose": "product research, cached prices"
+  },
+  {
+   "path": "/workspace/creative-pipeline/shared/research/viral-story-learning/",
+   "role": "EVIDENCE",
+   "purpose": "viral corpus, pattern banks, winner/loser contrast, Family D expansion"
+  },
+  {
+   "path": "/workspace/creative-pipeline/shared/context/",
+   "role": "REFERENCE",
+   "purpose": "golden examples, taste & trash, production remake docs"
+  }
+ ],
+ "benchmark_creatives": [
+  {
+   "name": "SHE SAID IT WAS CHORE STUFF",
+   "ecosystem": "TARGET",
+   "status": "produced v6",
+   "assets": "/workspace/creative-pipeline/outputs/chore_stuff_target_20261005_v5/{s1_v6b,s2_v6,s3_v6}.png"
+  },
+  {
+   "name": "THE ONIONS NOTE WAS BLANK",
+   "ecosystem": "DOORDASH",
+   "status": "locked structure + surface spec; not produced"
+  }
+ ],
+ "production_routes": {
+  "message_hook": "Type A: hook-presentation router (peek/full thread/lock screen/preview card/thread+floating hook); base = approved iOS Messages screenshot; ChatGPT localized text edit; floating TikTok hook adds new context only",
+  "commerce_ui": "Type B: closest approved real reference as BASE + real product INGREDIENT images; change only listed fields; if base can't fit, pick another real base, never squeeze/rebuild",
+  "camera_roll": "Type C: visual search first (Pinterest short queries); CLEARED BASE -> localized edit, else REFERENCE ONLY -> new original scene matching framing/light/density; real object photos for every added item",
+  "new_scene": "Type D: only when no base exists"
+ },
+ "core_rules": [
+  "Story before commerce; commerce discovered secondarily",
+  "Reference Is Law for native visual structure/UI behavior; story values come from STORY_LOCK",
+  "Asset roles BASE/INGREDIENT/REFERENCE/EVIDENCE",
+  "Base first, smallest edit; re-edit from original base",
+  "Hook is not propulsion; 'why would they do that?' test",
+  "0-3 story-native micro-details per slide; comment-door map",
+  "Cross-slide congruency ledger + state-transition test; temporal compression",
+  "Latest human-approved STORY_LOCK wins; superseded assets STALE",
+  "Research never invents evidence; creative may be staged (labeled FICTIONAL/STAGED)",
+  "Discount-headroom firewall; no shock discounts",
+  "Final output 9:19.6 portrait",
+  "Use current product generations; verify live",
+  "Attach real reference photo for any object added to an image",
+  "15-20 phone life-world for new batches",
+  "Never send messages/orders without approval"
+ ],
+ "known_deprecated_rules": [
+  "SHORT CHAT = PEEK FIRST",
+  "1080x1920 / 9:16 finals",
+  "keyboard-up as universal S1 rule",
+  "Refinery29 iOS13 and Gboard Messages bases",
+  "requiring invented stories to be observed online / SER co-location search",
+  "notification-then-receipt as forced opener",
+  "AirPods 4 / 'tomorrow' in Target lock"
+ ],
+ "known_technical_debt": [
+  "No database; state lives in markdown + agent memory",
+  "No versioned lock objects; STORY_LOCK edited in place (backup in /tmp)",
+  "No asset provenance tracking beyond folder names",
+  "Production depends on driving ChatGPT web UI via computer-use",
+  "No automated validation of text/math/dates in images",
+  "Output resolution often 851x1849 rather than 1206x2622",
+  "Scattered outputs folders (v1-v5) with stale files",
+  "Getting-started still mentions 1080x1920"
+ ],
+ "planned_systems": [
+  "Creative Genome",
+  "Account DNA profiles",
+  "experiment registry",
+  "performance ingestion",
+  "comment-door prediction vs actual comment clustering",
+  "novelty/mechanic fatigue tracking",
+  "asset provenance",
+  "versioned creative records",
+  "multi-account learning",
+  "global vs account-local models",
+  "holdout benchmark/eval",
+  "variant testing",
+  "deterministic validation",
+  "dashboards/orchestration"
+ ],
+ "engineering_docs": {
+  "engineering_inventory": "ENGINEERING_INVENTORY.md",
+  "engineering_source": "engineering_source/",
+  "manual_workflow": "CURRENT_MANUAL_WORKFLOW.md",
+  "skill_io_contracts": "SKILL_IO_CONTRACTS.json",
+  "principles_vs_heuristics": "PRINCIPLES_VS_HEURISTICS.md",
+  "authority_precedence": "AUTHORITY_AND_PRECEDENCE.md",
+  "tool_provider_map": "TOOL_AND_PROVIDER_MAP.md",
+  "config_environment": "CONFIG_AND_ENVIRONMENT.md",
+  "asset_index": "ASSET_INDEX.json",
+  "golden_regression_tests": [
+   "GOLDEN_REGRESSION_TESTS.md",
+   "GOLDEN_REGRESSION_TESTS.json"
+  ],
+  "golden_examples": "GOLDEN_EXAMPLES.md",
+  "human_approval_points": "HUMAN_APPROVAL_POINTS.md",
+  "costly_vs_deterministic": "COSTLY_VS_DETERMINISTIC.md",
+  "migration_risks": "MIGRATION_RISKS.md",
+  "data_inventory": "DATA_INVENTORY.md",
+  "account_state_today": "ACCOUNT_STATE_TODAY.md"
+ },
+ "structured_database": "NONE",
+ "executable_code_status": "minimal; pipeline is LLM-interpreted markdown skills + manual ChatGPT image edits; legacy scripts in engineering_source/"
+}

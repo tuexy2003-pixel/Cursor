@@ -1,0 +1,110 @@
+{
+  "spec_id": "spec_draft_20260923_cand01_dinner_handled",
+  "status": "DRAFT_ONLY_NOT_LOCKED",
+  "candidate_id": "cand_20260923_laneB_01_gift_order_chat",
+  "source_id": "src_20260923_fyp_ilovemygf_giftchat",
+  "source_url": "https://www.tiktok.com/@ieatkungpao/photo/7672590638856031501",
+  "approved_scope": "production_spec_draft_only",
+  "no_creatives_yet": true,
+  "fit_label": "strong_commercial",
+  "commercial_connection": "natural",
+  "mydashperks_placement": "slide_2_order_screenshot_line_item_only",
+  "mydashperks_rationale": "Owner correction 2026-09-23: conversion layer is inspectable money math on the receipt (named mydashperks.com discount). Not chat claims of cashback/money-comes-back. Perk is secondary; joke still works if unnoticed.",
+  "primary_story_one_sentence": "Someone texts that dinner is already handled as a care gesture; the reveal is an over-the-top late-night multi-spot delivery order with a named MyDashPerks discount line on the receipt; when payday saving is raised they own the bad decision in chat while the money math stays on the screenshot.",
+  "mechanic_preserved": "care-announce \u2192 inspectable purchase/reveal \u2192 money/payday objection \u2192 human (non-financial) resolution",
+  "mutation_vs_source": "Not a Coach\u2192DoorDash swap with the same romance dialogue. New relationship beat (caretaking dinner), new objection (we were waiting until payday), new resolution (owns the impulse; affection follows), original order contents and totals.",
+  "slide_count": 4,
+  "slides": [
+    {
+      "index": 1,
+      "role": "setup_care_announce",
+      "proposed_text": [
+        "BLUE: don't cook tonight",
+        "BLUE: i already got dinner handled"
+      ],
+      "visual": "Clean staged iMessage-style thread only. No brand logos as the joke."
+    },
+    {
+      "index": 2,
+      "role": "purchase_reveal",
+      "proposed_text": [
+        "ORDER HEADER: Tonight \u2014 Delivered",
+        "ITEMS (example; lock numbers later):",
+        "  10pc tenders + fries",
+        "  large mac & cheese",
+        "  cookie skillet",
+        "  2 fountain drinks",
+        "  + second stop: pint ice cream",
+        "SUBTOTAL: (TBD)",
+        "mydashperks.com \u2212$XX off applied  \u2190 conversion/inspectable line",
+        "FEES / TIP / TOTAL: clearly readable after perk (lock exact figures on approve)"
+      ],
+      "visual": "Original fictional delivery receipt. Named MyDashPerks discount as a secondary line item (green/inspectable), not the hero headline. Do not clone GE-005 layout or real DoorDash chrome 1:1."
+    },
+    {
+      "index": 3,
+      "role": "payday_objection",
+      "proposed_text": [
+        "GRAY: we said we were waiting until friday",
+        "GRAY: that total is crazy"
+      ],
+      "visual": "Same chat thread continuing under/over a faded receipt crop, or chat-only."
+    },
+    {
+      "index": 4,
+      "role": "human_resolution_payoff",
+      "proposed_text": [
+        "BLUE: i know",
+        "BLUE: you sounded wiped and i didn't want you making cereal again",
+        "GRAY: \u2026ok that was actually really nice",
+        "GRAY: i'm still yelling at you tomorrow"
+      ],
+      "visual": "Chat payoff only. Optional soft reaction face if a seeded asset fits; not required."
+    }
+  ],
+  "must_be_visible": [
+    "care announce that dinner is already handled",
+    "inspectable order with readable item mix + total",
+    "named mydashperks.com discount line on the receipt (secondary, inspectable)",
+    "explicit payday/waiting-until-Friday objection in chat",
+    "resolution that owns the spend without claiming the perk made money 'come back'"
+  ],
+  "nice_to_have": [
+    "second restaurant stop on the receipt",
+    "soft thank-you / still-mad closer line",
+    "subtle reaction face on slide 4 if library has a fit"
+  ],
+  "where_mydashperks_appears": "Only on slide 2 receipt as a named discount line (e.g. mydashperks.com \u2212$XX off applied). Not in chat copy. Not as the hook.",
+  "why_works_if_nobody_notices_mydashperks": "YES: caretaking announce \u2192 absurd order \u2192 payday objection \u2192 affectionate ownership still land. Perk is the inspectable conversion detail for people who zoom the receipt.",
+  "clone_risks": [
+    "Do not use Coach product or designer gift card",
+    "Do not reuse source lines: pretty girl / HOWD YOU KNOW / got paid on Monday / money comes back babygirl",
+    "Do not put cashback / money-comes-back / guaranteed reward language in the chat",
+    "Do not make MyDashPerks the first-frame hero (GE-005 ad-risk caution)",
+    "Do not clone GE-005 receipt/drop-off layout or source product-card-on-chat layout",
+    "Staged receipt stays fictional entertainment, not claimed real customer proof"
+  ],
+  "production_effort": "medium",
+  "assets_already_have": [
+    "Source reference screenshots only (rights: reference_only \u2014 not for final)",
+    "Golden-example teaching assets (inspiration only \u2014 never remap into this creative)",
+    "No seeded reaction pack yet (reactions/ empty)"
+  ],
+  "assets_must_generate": [
+    "Original staged chat frames (slides 1, 3, 4)",
+    "Original fictional delivery receipt (slide 2)",
+    "Optional reaction still if/when reaction library is seeded and a fit is chosen"
+  ],
+  "reaction_asset_recommendation": {
+    "id": null,
+    "recommendation": "Skip for draft lock. No reaction library seeded yet; the chat payoff already closes the joke. Revisit only if a soft smile / secondhand-embarrassment still exists and does not steal the last line."
+  },
+  "caption_draft_optional": "he said dinner was handled",
+  "drafted_at": "2026-09-23T07:05:39-04:00",
+  "commercial_bridge": {
+    "primary_story": "Partner handled dinner as care; order is over the top; payday tension; human resolution.",
+    "secondary_commercial_detail": "mydashperks.com \u2212$XX off on the order screenshot",
+    "viewer_discovery_path": "Viewers who inspect the receipt see the named discount and want the same deal."
+  },
+  "revised_at": "2026-09-23T07:09:33-04:00"
+}

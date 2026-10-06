@@ -1,0 +1,67 @@
+PROMPT TO GIVE GROKBOT WITH TARGET_REFERENCE_BANK_V1.ZIP
+
+You are receiving TARGET_REFERENCE_BANK_V1.zip.
+
+Treat the filenames and TARGET_REFERENCE_MANIFEST.txt inside the ZIP as
+canonical reference IDs. Read the manifest before using any image.
+
+This bank is not a pile of screenshots to imitate randomly. It is a map
+of Target commerce surfaces. When a storyboard reaches a
+commerce/evidence beat:
+
+1.  Identify exactly what new fact the viewer must learn.
+2.  Choose the smallest reference family that naturally carries that
+    fact.
+3.  Cite the exact filename(s) you selected in your production plan.
+4.  State what each selected reference proves structurally and what it
+    does NOT prove.
+5.  If the story uses a different product, independently
+    research/capture that product’s current Target information and use
+    the relevant bank image only as the structural base.
+6.  Keep the base Target layout/chrome/state intact unless the
+    replacement evidence shows Target currently renders it differently.
+7.  Change only story-specific fields required by the new
+    staged/original scenario.
+8.  Maintain cross-surface consistency: exact product/variant, price,
+    quantity, order date/time, fulfillment state, totals, payment
+    treatment, and later return/refund state where applicable.
+9.  Do not merge fields from unrelated Target screens into a fictional
+    ‘super screen.’
+10. If no bank reference can honestly support the storyboard’s required
+    information turn, flag REFERENCE GAP and search for a better
+    current/organic Target artifact before production.
+
+PRODUCT-SWAP WORKFLOW When using
+01_PRODUCT_PAGE_darkmode_iPad_Air_M4.jpeg: - use it as the structural
+Target product-page base; - search Target for the intended product; -
+capture/source the intended product image, exact displayed title,
+current displayed price and any directly visible product-specific
+facts; - replace only the iPad-specific content with those supported
+fields; - preserve the surrounding Target page grammar; - do not carry
+the iPad’s sale, ratings, availability, or popularity claims into
+another item unless independently observed.
+
+CHRONOLOGY WORKFLOW When a story needs WHAT + WHEN, inspect
+13_ORDER_DETAILS_lightmode_order_placed_item.jpeg and
+15_ORDER_DETAILS_lightmode_order_placed_item_nav.webp first. They
+demonstrate an order-placed timestamp and item identity in one artifact.
+Use the timestamp semantics exactly; do not substitute
+arrival/pickup/refund dates.
+
+PHYSICAL PAYOFF WORKFLOW Use
+21_PACKAGE_OPEN_target_box_product_primary.jpeg as the primary general
+opened-shipment photographic reference. Other package photos are
+alternate composition/packing-slip/environment references. Transfer
+camera behavior and packaging logic, not the Nintendo object or a
+stranger’s environment.
+
+RETURN/REFUND WORKFLOW Use 25_RETURN_COMPLETE_lightmode_items.jpeg or
+26_REFUND_APPROVED_email_darkmode.jpeg only if the story genuinely has a
+return/refund beat.
+
+Before generating/editing anything, output: SELECTED STORY BEAT REQUIRED
+NEW FACT SELECTED REFERENCE FILE(S) WHY EACH FILE FITS FIELDS THAT MAY
+CHANGE FIELDS/STRUCTURE THAT MUST STAY REFERENCE GAPS PRODUCTION METHOD
+
+Then wait for approval unless the parent workflow explicitly says
+production is already approved.

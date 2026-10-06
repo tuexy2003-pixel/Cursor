@@ -1,0 +1,21 @@
+# KNOWN FAILURES (failure | why | current fix)
+- "Peek first" as law | left dead space and invited padded fake dialogue | hook-presentation router picks the surface by message count, density and dead space; peek only if the conversation fills the card.
+- Short-message dead space on S1 | empty phone reads fake and weak | crop/lock screen/preview card, or a floating hook that adds context; never pad.
+- Freehand Target UI reconstruction | wrong typography/spacing, instantly fake (v1–v3 rejected) | base-first from the approved reference bank (16_ORDER_DETAILS); change only listed fields.
+- Camera-roll photos generated before visual search | stock/AI-perfect look | Pinterest/organic search first; a pin is REFERENCE ONLY unless cleared.
+- Commerce-first dialogue ("doing a quick Drive Up") | nobody texts like that; reads like an ad | dialogue test: would a real person text this?
+- Hook without propulsion | no reason for the protagonist to open the proof | "why would they do that?" test; smallest causal beat ("bc you're nosy 😭" → "ok now i'm looking").
+- Proof screen without motivated action | proof feels inserted | propulsion pass requires trigger → action → expected consequence → reveal.
+- Too few comment surfaces | single joke, low comments | 0–3 story-native micro-details per slide + comment-door map.
+- Random micro-details | clutter, not reactions | four-question test: native, new reaction, story-consistent, not discount filler.
+- Stale dates inherited from references ("Pick up by Wed, Oct 23") | broke the story timeline | continuity ledger; visible UI dates and times are story facts.
+- Cross-slide temporal incongruity ("tomorrow" hook then lit cake same day) | impossible timeline | state-transition test; hook changed to "today".
+- Old lock values overriding newer approvals (AirPods 4) | stale memory/assets reused | current-lock precedence + STALE_ASSETS list; check live product generation.
+- UI compression to fit rows | squeezed, fake UI | if the base can't fit, find another real base; never squeeze.
+- Recursive editing of degraded outputs | drift accumulates | always re-edit from the original base.
+- Generating from scratch when a base exists | loses native fidelity | production router: base first, smallest edit.
+- Overlay restating a bubble | redundant hook | overlay must add new context/stakes/POV.
+- 1080×1920 / 9:16 stretch | wrong for the current phone format | 9:19.6 finals; aspect changes through ChatGPT.
+- Image editor inventing real objects from text | wrong packaging/product | attach a real photo of the exact object.
+- Hunting real events matching fictional premises (SER co-location) | wasted runs, 0 survivors in Runs 1–6 | creative mode may stage; research only validates components.
+- Retired bases (Refinery29 iOS13, Gboard) | outdated chrome | user's iOS 26 keyboard base.

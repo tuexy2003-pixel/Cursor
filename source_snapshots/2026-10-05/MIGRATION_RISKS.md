@@ -1,0 +1,14 @@
+# MIGRATION RISKS (do not destroy)
+- Absolute paths are hardcoded in skills, locks and docs (/workspace/creative-pipeline/..., /home/box/agent-data/workflows/...). Moving folders silently breaks references.
+- Skills rely on natural-language interpretation (judgment tests, "smallest edit", "why would they do that?"). Converting them to rigid schemas loses nuance.
+- Many rules exist only as prose or in memory (see MEMORY_ONLY_KNOWLEDGE.md). Don't drop them when codifying.
+- Overlapping authority: SYSTEM_PLAYBOOK, CATCHUP and the HANDOFF_* docs are older and conflict on format (1080×1920) and peek-first. The skills plus the current lock win.
+- Stale historical docs and v1–v4 outputs can resurface stale values (AirPods 4, "tomorrow", Oct 23).
+- Provider-specific behavior: ChatGPT edits need actual BASE pixels uploaded. Text-only generation of retailer UI fails fidelity. Re-edits must start from the original base.
+- Rights distinctions (REFERENCE ONLY vs CLEARED BASE) must survive in data.
+- Human override precedence must stay above every automated rule.
+- Don't turn heuristics into hard constraints (peek, 0–3 details, 3 slides, floating hook, keyboard-up). See PRINCIPLES_VS_HEURISTICS.md.
+- Keep global rules separate from account-local rules (15–20 world, lanes, ecosystems) and from creative-specific locks (AirPods 5, $19.23).
+- Frozen gates/architecture must not be "simplified".
+- Staged vs researched labeling must be preserved end to end.
+- Safety: never automate sends, orders or checkouts.
