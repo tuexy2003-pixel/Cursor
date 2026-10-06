@@ -608,6 +608,7 @@ class RunAuthorization(Base):
     max_input_tokens: Mapped[int | None] = mapped_column(Integer, nullable=True)
     max_providers: Mapped[int] = mapped_column(Integer, default=1)
     allowed_providers: Mapped[list[Any]] = mapped_column(JSON)
+    provider_models: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
     max_cost: Mapped[float | None] = mapped_column(Numeric(12, 4), nullable=True)
     currency: Mapped[str | None] = mapped_column(String(12), nullable=True)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)

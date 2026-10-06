@@ -37,3 +37,7 @@ creative-os prepare-smoke-tests
 The command prints the local task and context-bundle ids. It creates no `RunAuthorization` and no `ModelRun`.
 
 The first live call is one provider only. Provider comparison stays capped at 2 and is not this smoke test.
+
+For that first real provider call, set `COS_TEXT_REASONING_DAILY_RUN_LIMIT=1` in the local environment. The application default stays 10. After the single run is reviewed, raise the limit by editing the environment. Do not change it from model output.
+
+Provider values in `.env` are read through application settings. `COS_XAI_API_KEY` and `COS_XAI_MODEL`, or the OpenAI pair, may be process environment variables or entries in `.env`. A process variable overrides the file. `XAI_API_KEY` and `OPENAI_API_KEY` apply only when the matching `COS_*` key is absent. The model always comes from `COS_XAI_MODEL` or `COS_OPENAI_MODEL`.

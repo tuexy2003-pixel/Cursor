@@ -2,7 +2,7 @@
 
 ## Current phase
 
-Safe execution v0.3.2. Tags through `v0.3.1-creative-selection` are unchanged. Text reasoning can be configured and still stay disabled. A live call needs `COS_LIVE_TEXT_REASONING_ENABLED=true` and a human `RunAuthorization` for the exact context bundle. See `docs/V0_3_2_SAFE_EXECUTION.md`.
+Safe execution v0.3.2.1. Provider keys and models load from settings, including `.env`, and a human can freeze a two-provider authorization without calling a provider. The first smoke test is still one Maria / DoorDash concept run. See `docs/V0_3_2_SAFE_EXECUTION.md`.
 
 ## Completed
 
@@ -14,6 +14,7 @@ Safe execution v0.3.2. Tags through `v0.3.1-creative-selection` are unchanged. T
 - Alembic `f7b2d4e81a90` context fidelity: creative tasks, concept candidates, nullable bundle creative, selected concept
 - Alembic `b3d8f1a64c20` creative selection: concept batches, manual evaluations, story-audit records, model-run binding
 - Alembic `c5a1e8d42f06` safe execution: run authorizations, provider invocations, and deterministic fingerprint provenance
+- Alembic `d8e4c1b27a55` freezes the explicit model for each authorized provider
 - Dry-run context compiler at `GET /api/creatives/{id}/context-preview`
 - Persisted context bundles at `POST /api/creatives/{id}/context-bundles`
 - Provider packet export: `creative-os export-context-bundle <bundle_id> --format markdown|json`

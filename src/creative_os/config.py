@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from pydantic import SecretStr, field_serializer, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -22,6 +23,23 @@ class Settings(BaseSettings):
     text_reasoning_max_input_tokens: int = 100_000
     text_reasoning_max_output_tokens: int = 4096
     text_reasoning_max_providers: int = 2
+    xai_api_key: SecretStr | None = None
+    xai_model: str | None = None
+    openai_api_key: SecretStr | None = None
+    openai_model: str | None = None
+
+    @field_validator("xai_api_key", "openai_api_key", "xai_model", "openai_model", mode="before")
+    @classmethod
+    def _blank_provider_value(cls, value: object) -> object:
+        if isinstance(value, str) and not value.strip():
+            return None
+        return value
+
+    @field_serializer("xai_api_key", "openai_api_key")
+    def _redact_provider_secret(self, value: SecretStr | None) -> str | None:
+        if value is None or not value.get_secret_value().strip():
+            return None
+        return "configured"
 
     def resolved_snapshot_root(self) -> Path:
         path = self.snapshot_root

@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from typing import Any
 from urllib import error, request
 
+from pydantic import SecretStr
+
 from creative_os.config import get_settings
 
 ALLOWED_OUTPUTS = frozenset({"CONCEPT_GENERATION", "STORY_DEVELOPMENT_AUDIT"})
@@ -73,6 +75,17 @@ class CreativeReasoningProvider:
     def explicit_model(self) -> str | None:
         return None
 
+    def public_view(self) -> dict[str, object]:
+        """Operator-facing status. The API key is not included."""
+        model = self.explicit_model()
+        return {
+            "name": self.name,
+            "configured": self.available() and model is not None,
+            "available": self.available(),
+            "explicit_model": model,
+            "status": self.readiness(),
+        }
+
     def generate_concepts(self, packet_text: str) -> ReasoningResult:
         raise ProviderUnavailable(self.name)
 
@@ -85,23 +98,30 @@ class _ChatCompletionsProvider(CreativeReasoningProvider):
 
     uses_paid_transport = True
     url = ""
-    env_keys: tuple[str, ...] = ()
-    model_env = ""
+    settings_key = ""
+    settings_model = ""
+    legacy_key_env = ""
 
     def available(self) -> bool:
         """A key is present. That is not permission to spend."""
-        return _secret(self.env_keys) is not None
+        return self._credentials()[0] is not None
 
     def explicit_model(self) -> str | None:
-        value = os.environ.get(self.model_env, "").strip()
-        return value or None
+        return self._credentials()[1]
 
     def readiness(self) -> str:
-        if not self.available() or self.explicit_model() is None:
+        secret, model = self._credentials()
+        if secret is None or model is None:
             return "NOT_CONFIGURED"
         if not get_settings().live_text_reasoning_enabled:
             return "EXECUTION_DISABLED"
         return "READY"
+
+    def _credentials(self) -> tuple[str | None, str | None]:
+        settings = get_settings()
+        secret = _configured_secret(getattr(settings, self.settings_key), self.legacy_key_env)
+        model = _configured_model(getattr(settings, self.settings_model))
+        return secret, model
 
     def generate_concepts(self, packet_text: str) -> ReasoningResult:
         return self._complete(packet_text, "CONCEPT_GENERATION")
@@ -110,8 +130,7 @@ class _ChatCompletionsProvider(CreativeReasoningProvider):
         return self._complete(packet_text, "STORY_DEVELOPMENT_AUDIT")
 
     def _complete(self, packet_text: str, output_name: str) -> ReasoningResult:
-        secret = _secret(self.env_keys)
-        model = self.explicit_model()
+        secret, model = self._credentials()
         if secret is None or model is None:
             raise ProviderUnavailable(self.name, "NOT_CONFIGURED")
         body: dict[str, Any] = {
@@ -183,15 +202,17 @@ class _ChatCompletionsProvider(CreativeReasoningProvider):
 class GrokReasoningProvider(_ChatCompletionsProvider):
     name = "grok"
     url = "https://api.x.ai/v1/chat/completions"
-    env_keys = ("COS_XAI_API_KEY", "XAI_API_KEY")
-    model_env = "COS_XAI_MODEL"
+    settings_key = "xai_api_key"
+    settings_model = "xai_model"
+    legacy_key_env = "XAI_API_KEY"
 
 
 class OpenAIReasoningProvider(_ChatCompletionsProvider):
     name = "openai"
     url = "https://api.openai.com/v1/chat/completions"
-    env_keys = ("COS_OPENAI_API_KEY", "OPENAI_API_KEY")
-    model_env = "COS_OPENAI_MODEL"
+    settings_key = "openai_api_key"
+    settings_model = "openai_model"
+    legacy_key_env = "OPENAI_API_KEY"
 
 
 def configured_reasoning_providers() -> list[CreativeReasoningProvider]:
@@ -205,12 +226,23 @@ def reasoning_provider(name: str) -> CreativeReasoningProvider:
     raise KeyError(name)
 
 
-def _secret(names: tuple[str, ...]) -> str | None:
-    for name in names:
-        value = os.environ.get(name)
+def _configured_secret(primary: SecretStr | None, legacy_name: str) -> str | None:
+    """COS_* on Settings wins. A legacy key is used only when that COS value is absent."""
+    if isinstance(primary, SecretStr):
+        value = primary.get_secret_value().strip()
         if value:
             return value
-    return None
+    if not legacy_name:
+        return None
+    legacy = os.environ.get(legacy_name, "").strip()
+    return legacy or None
+
+
+def _configured_model(value: str | None) -> str | None:
+    if value is None:
+        return None
+    text = value.strip()
+    return text or None
 
 
 def _int_or_none(value: object) -> int | None:

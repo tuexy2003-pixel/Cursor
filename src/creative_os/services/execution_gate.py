@@ -14,7 +14,11 @@ from creative_os.models import (
     ProviderInvocation,
     RunAuthorization,
 )
-from creative_os.providers.reasoning import MAX_PROVIDERS_PER_COMPARISON, CreativeReasoningProvider
+from creative_os.providers.reasoning import (
+    MAX_PROVIDERS_PER_COMPARISON,
+    CreativeReasoningProvider,
+    reasoning_provider,
+)
 from creative_os.util import ensure_utc, utcnow
 
 NETWORK_ATTEMPT = 1
@@ -128,11 +132,18 @@ def create_authorization(
         max_input_tokens=settings.text_reasoning_max_input_tokens,
         max_providers=max_providers,
         allowed_providers=names,
+        provider_models={provider.name: model},
         max_cost=None,
         currency=None,
         notes=notes,
         idempotency_key=idempotency_key,
     )
+    return _persist_authorization(session, authorization, idempotency_key)
+
+
+def _persist_authorization(
+    session: Session, authorization: RunAuthorization, idempotency_key: str
+) -> RunAuthorization:
     existing = session.scalar(
         select(RunAuthorization).where(RunAuthorization.idempotency_key == idempotency_key)
     )
@@ -152,6 +163,86 @@ def create_authorization(
             raise
         return existing
     return authorization
+
+
+def _expected_model(authorization: RunAuthorization, provider_name: str) -> str | None:
+    models = authorization.provider_models
+    if isinstance(models, dict) and provider_name in models and models[provider_name]:
+        return str(models[provider_name])
+    if provider_name == authorization.provider_name:
+        return authorization.model_name
+    return None
+
+
+def create_named_authorization(
+    session: Session,
+    bundle: ContextBundle,
+    *,
+    actor: str,
+    provider_names: list[str],
+    models: dict[str, str],
+    max_providers: int,
+    max_attempts: int,
+    idempotency_key: str,
+    notes: str | None = None,
+) -> RunAuthorization:
+    """Freeze a human comparison authorization. This function does not call a provider."""
+    operator = get_settings().operator_identity
+    if actor != operator:
+        raise AuthorizationError("only the local operator can authorize a paid run")
+    if not idempotency_key.strip():
+        raise AuthorizationError("an idempotency key is required")
+    names = list(dict.fromkeys(provider_names))
+    if not names or len(names) > MAX_PROVIDERS_PER_COMPARISON:
+        raise AuthorizationError("this phase allows at most 2 providers")
+    if max_providers > MAX_PROVIDERS_PER_COMPARISON or max_providers < len(names):
+        raise AuthorizationError("max_providers must cover the named providers and stay at most 2")
+    if max_attempts < 1:
+        raise AuthorizationError("max_attempts must be at least 1")
+    task = (bundle.compiled_payload or {}).get("task") or {}
+    stage = str(task.get("expected_output_type") or "")
+    if stage not in {"CONCEPT_GENERATION", "STORY_DEVELOPMENT_AUDIT"}:
+        raise AuthorizationError("authorization stage is not an executable text stage")
+    frozen: dict[str, str] = {}
+    providers = []
+    for name in names:
+        try:
+            provider = reasoning_provider(name)
+        except KeyError as exc:
+            raise AuthorizationError(f"unknown text reasoning provider: {name}") from exc
+        providers.append(provider)
+        configured = provider.explicit_model()
+        if not provider.available() or configured is None:
+            raise AuthorizationError(f"{name} is NOT_CONFIGURED")
+        requested = str(models.get(name) or "").strip()
+        if requested != configured:
+            raise AuthorizationError(f"{name} model does not match the configured model")
+        frozen[name] = configured
+    settings = get_settings()
+    primary = providers[0]
+    authorization = RunAuthorization(
+        context_bundle_id=bundle.id,
+        context_bundle_hash=bundle.payload_hash,
+        provider_name=primary.name,
+        model_name=frozen[primary.name],
+        stage=stage,
+        created_by=operator,
+        created_at=utcnow(),
+        expires_at=utcnow() + timedelta(hours=1),
+        status="AUTHORIZED",
+        max_attempts=max_attempts,
+        attempts_used=0,
+        max_output_tokens=settings.text_reasoning_max_output_tokens,
+        max_input_tokens=settings.text_reasoning_max_input_tokens,
+        max_providers=max_providers,
+        allowed_providers=names,
+        provider_models=frozen,
+        max_cost=None,
+        currency=None,
+        notes=notes,
+        idempotency_key=idempotency_key,
+    )
+    return _persist_authorization(session, authorization, idempotency_key)
 
 
 def find_invocation(session: Session, idempotency_key: str) -> ProviderInvocation | None:
@@ -220,7 +311,8 @@ def authorization_block(
     if provider.name not in allowed:
         return "AUTHORIZATION_MISMATCH"
     model = provider.explicit_model()
-    if model is None or model != authorization.model_name:
+    expected = _expected_model(authorization, provider.name)
+    if model is None or expected is None or model != expected:
         return "AUTHORIZATION_MISMATCH"
     if authorization.stage != stage:
         return "AUTHORIZATION_MISMATCH"

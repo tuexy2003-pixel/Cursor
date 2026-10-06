@@ -34,7 +34,11 @@ Same-response fenced JSON parsing is response salvage. It is not a second networ
 
 ## Explicit model
 
-Paid execution reads `COS_XAI_MODEL` or `COS_OPENAI_MODEL`. There is no fallback model name. The chosen model is frozen onto the authorization and the model run. If the provider returns a different model, the run is `PROVIDER_ERROR` and no concept or audit record is stored.
+Paid execution reads `COS_XAI_MODEL` or `COS_OPENAI_MODEL` through application settings. The same names work as process environment variables or as `.env` entries. A process variable overrides the file. `XAI_API_KEY` and `OPENAI_API_KEY` are legacy key fallbacks used only when the matching `COS_*` key is absent. The model is never taken from a legacy variable. There is no fallback model name. The chosen model is frozen onto the authorization and the model run. If the provider returns a different model, the run is `PROVIDER_ERROR` and no concept or audit record is stored.
+
+API responses, the operator page, and model-run metadata show whether a key is configured and which model name is selected. They do not include the key.
+
+`POST /api/runs/authorizations` freezes a one- or two-provider authorization for a bundle id and hash. Creating it does not call a provider. `AUTHORIZE & RUN ONCE` remains the single-provider smoke path.
 
 If the provider returns a request id, it is stored. If it returns a numeric cost, that cost is stored. Otherwise cost is `UNKNOWN`. Token counts are not converted into money.
 
@@ -51,6 +55,6 @@ Historical manual evaluation files are not rewritten. Current structured fingerp
 1. Maria, DoorDash, concept generation, exactly 2 concepts
 2. Optional later: story-development audit of the current Target creative, diagnosis only
 
-The operator confirms provider, model, stage, task, bundle id, hash, size, max attempts, max output tokens, daily count, and unknown cost status, then chooses `AUTHORIZE & RUN ONCE`.
+The operator confirms provider, model, stage, task, bundle id, hash, size, max attempts, max output tokens, daily count, and unknown cost status, then chooses `AUTHORIZE & RUN ONCE`. For that first real call, set `COS_TEXT_REASONING_DAILY_RUN_LIMIT=1`. The default stays 10. Raise it in the environment only after the run is reviewed.
 
 The compiler packet field `provider_execution` remains `NOT_IMPLEMENTED`. The compiler still does not call a provider.

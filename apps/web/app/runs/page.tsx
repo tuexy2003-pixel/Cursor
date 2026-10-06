@@ -5,9 +5,21 @@ import { apiGet, apiSend } from "../../lib/api";
 
 type ProviderChoice = {
   name: string;
+  configured: boolean;
   available: boolean;
   explicit_model: string | null;
   status: string;
+};
+type NamedAuthorization = {
+  id: string;
+  context_bundle_id: string;
+  context_bundle_hash: string;
+  providers: string[];
+  models: Record<string, string> | null;
+  stage: string;
+  status: string;
+  max_attempts: number;
+  max_providers: number;
 };
 type BundleChoice = {
   id: string;
@@ -156,6 +168,8 @@ export default function RunsPage() {
   const [result, setResult] = useState<RunView | null>(null);
   const [message, setMessage] = useState("");
   const [compareNames, setCompareNames] = useState<string[]>([]);
+  const [compareKey, setCompareKey] = useState("");
+  const [compareAuthorization, setCompareAuthorization] = useState<NamedAuthorization | null>(null);
   const [compareMessage, setCompareMessage] = useState("");
 
   function load() {
@@ -197,20 +211,43 @@ export default function RunsPage() {
   }
 
   function toggleCompare(name: string) {
+    setCompareAuthorization(null);
     setCompareNames((current) => {
-      if (current.includes(name)) return current.filter((item) => item !== name);
-      if (current.length >= 2) return current;
-      return [...current, name];
+      const next = current.includes(name)
+        ? current.filter((item) => item !== name)
+        : current.length >= 2
+          ? current
+          : [...current, name];
+      setCompareKey(next.length ? crypto.randomUUID() : "");
+      return next;
     });
   }
 
-  async function compare() {
+  async function createComparisonAuthorization() {
+    if (!bundleId || compareNames.length === 0 || !compareKey) return;
+    const models: Record<string, string> = {};
+    for (const name of compareNames) {
+      const provider = data?.text_reasoning_providers.find((row) => row.name === name);
+      if (!provider?.explicit_model) {
+        setCompareMessage(`${name} needs an explicit model before it can be authorized`);
+        return;
+      }
+      models[name] = provider.explicit_model;
+    }
     setCompareMessage("");
     try {
-      await apiSend("/runs/compare", { context_bundle_id: bundleId, providers: compareNames });
-      setCompareMessage("comparison returned without a named authorization");
+      const response = await apiSend<{ authorization: NamedAuthorization }>("/runs/authorizations", {
+        context_bundle_id: bundleId,
+        providers: compareNames,
+        models,
+        max_providers: compareNames.length,
+        max_attempts: 1,
+        idempotency_key: compareKey,
+        notes: "human comparison authorization",
+      });
+      setCompareAuthorization(response.authorization);
     } catch (error) {
-      setCompareMessage(error instanceof Error ? error.message : "comparison rejected");
+      setCompareMessage(error instanceof Error ? error.message : "authorization failed");
     }
   }
 
@@ -358,7 +395,8 @@ export default function RunsPage() {
       <h2>Provider comparison</h2>
       <p className="muted">
         Comparison is capped at 2 named providers and is not the first live action. No provider starts selected.
-        A paid comparison requires an authorization that names those providers.
+        Creating an authorization does not call a provider. A later comparison still needs the live flag and this
+        authorization.
       </p>
       {(data?.text_reasoning_providers ?? []).map((provider) => (
         <label className="choice" key={`compare-${provider.name}`}>
@@ -367,12 +405,25 @@ export default function RunsPage() {
             checked={compareNames.includes(provider.name)}
             onChange={() => toggleCompare(provider.name)}
           />
-          {provider.name}
+          {provider.name} · {provider.explicit_model ?? "model not set"} · {provider.status}
         </label>
       ))}
-      <button type="button" disabled={!bundleId || compareNames.length === 0} onClick={() => void compare()}>
-        Request named comparison
+      <button
+        type="button"
+        disabled={!bundleId || compareNames.length === 0 || !compareKey}
+        onClick={() => void createComparisonAuthorization()}
+      >
+        Create comparison authorization
       </button>
+      {compareAuthorization ? (
+        <div className="warning">
+          <p>Authorization {compareAuthorization.id} · {compareAuthorization.status}</p>
+          <p>Providers: {(compareAuthorization.providers ?? []).join(", ")}</p>
+          <p>Models: {JSON.stringify(compareAuthorization.models)}</p>
+          <p>Bundle hash: {compareAuthorization.context_bundle_hash}</p>
+          <p>Max providers: {compareAuthorization.max_providers} · Max attempts: {compareAuthorization.max_attempts}</p>
+        </div>
+      ) : null}
       {compareMessage ? <p className="error">{compareMessage}</p> : null}
 
       <h2>Recent runs</h2>

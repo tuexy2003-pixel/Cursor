@@ -8,6 +8,7 @@ from urllib.error import HTTPError
 import pytest
 from sqlalchemy import func, select
 
+from creative_os.api.routes import NamedAuthorizationIn, create_run_authorization
 from creative_os.config import get_settings, repo_root
 from creative_os.importers.handoff import import_handoff
 from creative_os.models import (
@@ -19,6 +20,7 @@ from creative_os.models import (
     ModelRun,
     PolicyRule,
     Program,
+    ProviderInvocation,
     RunAuthorization,
     StoryAuditRecord,
     StoryLockVersion,
@@ -30,7 +32,11 @@ from creative_os.providers.reasoning import (
 )
 from creative_os.services.context_bundles import create_context_bundle
 from creative_os.services.diversity import audit_batch, fingerprint_concept
-from creative_os.services.execution_gate import AuthorizationError, create_authorization
+from creative_os.services.execution_gate import (
+    AuthorizationError,
+    create_authorization,
+    create_named_authorization,
+)
 from creative_os.services.identity import assess_account_identity
 from creative_os.services.smoke import prepare_smoke_tests
 from creative_os.services.tasks import create_creative_task
@@ -442,6 +448,62 @@ def test_more_than_two_providers_are_rejected(session, monkeypatch) -> None:
             idempotency_key="too-many",
             allowed_providers=["grok", "openai", "other"],
             max_providers=3,
+        )
+
+
+def test_comparison_authorization_does_not_call_a_provider(session, monkeypatch) -> None:
+    bundle = _bundle(session)
+    _enable(monkeypatch)
+    monkeypatch.setenv("COS_OPENAI_API_KEY", "openai-test-key-not-real")
+    monkeypatch.setenv("COS_OPENAI_MODEL", "explicit-openai-model")
+    calls = _patch(monkeypatch, lambda: (_ for _ in ()).throw(AssertionError("provider transport was called")))
+    body = NamedAuthorizationIn(
+        context_bundle_id=bundle.id,
+        providers=["grok", "openai"],
+        models={"grok": "explicit-test-model", "openai": "explicit-openai-model"},
+        max_providers=2,
+        max_attempts=1,
+        idempotency_key="compare-auth",
+        notes="human comparison",
+    )
+    created = create_run_authorization(body, session)
+    view = created["authorization"]
+    assert isinstance(view, dict)
+    assert calls == []
+    assert view["status"] == "AUTHORIZED"
+    assert view["created_by"] == "operator"
+    assert view["models"] == {"grok": "explicit-test-model", "openai": "explicit-openai-model"}
+    assert view["context_bundle_id"] == bundle.id
+    assert view["context_bundle_hash"] == bundle.payload_hash
+    assert view["max_providers"] == 2
+    encoded = json.dumps(view)
+    assert "openai-test-key-not-real" not in encoded
+    assert "test-key-not-a-real-secret" not in encoded
+    assert session.scalar(select(func.count()).select_from(ProviderInvocation)) == 0
+    again = create_run_authorization(body, session)
+    assert again["authorization"]["id"] == view["id"]
+    assert calls == []
+    with pytest.raises(AuthorizationError):
+        create_named_authorization(
+            session,
+            bundle,
+            actor="grok",
+            provider_names=["grok", "openai"],
+            models={"grok": "explicit-test-model", "openai": "explicit-openai-model"},
+            max_providers=2,
+            max_attempts=1,
+            idempotency_key="provider-cannot-authorize",
+        )
+    with pytest.raises(AuthorizationError):
+        create_named_authorization(
+            session,
+            bundle,
+            actor="operator",
+            provider_names=["grok", "openai", "other"],
+            models={},
+            max_providers=3,
+            max_attempts=1,
+            idempotency_key="too-many-comparison",
         )
 
 

@@ -51,7 +51,7 @@ PYTHONPATH=src pytest -m core
 
 The API binds to loopback by default and has no authentication. `COS_API_HOST` must stay `127.0.0.1`, `localhost`, or `::1`. Any other host refuses to start. Remote mutation routes are not supported until operator authentication exists. Provider code cannot approve a story lock. Human approval uses `COS_OPERATOR_IDENTITY`, not an `actor` string from request JSON.
 
-Text reasoning can run only for concept generation and story-development audit, and only against an already frozen context bundle. A configured API key is not permission to spend. `COS_LIVE_TEXT_REASONING_ENABLED` defaults to false. A paid call also needs a human `RunAuthorization` for that bundle id and hash, an explicit `COS_XAI_MODEL` or `COS_OPENAI_MODEL`, and one idempotency key. Research, image, posting, and purchasing execution stay disabled. See `docs/V0_3_2_SAFE_EXECUTION.md`.
+Text reasoning can run only for concept generation and story-development audit, and only against an already frozen context bundle. A configured API key is not permission to spend. `COS_LIVE_TEXT_REASONING_ENABLED` defaults to false. A paid call also needs a human `RunAuthorization` for that bundle id and hash, an explicit `COS_XAI_MODEL` or `COS_OPENAI_MODEL`, and one idempotency key. Those provider values are read from the process environment or from `.env`. A process variable overrides the file. Research, image, posting, and purchasing execution stay disabled. See `docs/V0_3_2_SAFE_EXECUTION.md`.
 
 ## What the import preserves
 

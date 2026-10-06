@@ -80,6 +80,7 @@ from creative_os.services.context_compiler import compile_context
 from creative_os.services.diff import deep_diff
 from creative_os.services.execution_gate import (
     AuthorizationError,
+    create_named_authorization,
     execution_gate_view,
     preflight,
     usage_summary,
@@ -1216,6 +1217,16 @@ class AuthorizeOnceIn(BaseModel):
     idempotency_key: str
 
 
+class NamedAuthorizationIn(BaseModel):
+    context_bundle_id: str
+    providers: list[str] = Field(min_length=1, max_length=2)
+    models: dict[str, str]
+    max_providers: int = 2
+    max_attempts: int = 1
+    idempotency_key: str
+    notes: str | None = None
+
+
 @router.get("/runs")
 def runs(session: Session = Depends(session_dep)) -> dict[str, object]:
     providers = session.scalars(select(ModelProvider)).all()
@@ -1237,15 +1248,7 @@ def runs(session: Session = Depends(session_dep)) -> dict[str, object]:
         ],
         "execution_gate": execution_gate_view(session),
         "usage": usage_summary(session),
-        "text_reasoning_providers": [
-            {
-                "name": provider.name,
-                "available": provider.available(),
-                "explicit_model": provider.explicit_model(),
-                "status": provider.readiness(),
-            }
-            for provider in configured_reasoning_providers()
-        ],
+        "text_reasoning_providers": [provider.public_view() for provider in configured_reasoning_providers()],
         "allowed_stages": sorted(ALLOWED_OUTPUTS),
         "disabled_capabilities": sorted(DISABLED_CAPABILITIES),
         "context_bundles": [_bundle_choice(row) for row in bundles],
@@ -1271,6 +1274,28 @@ def runs_preflight(
 @router.get("/runs/usage")
 def runs_usage(session: Session = Depends(session_dep)) -> dict[str, object]:
     return usage_summary(session)
+
+
+@router.post("/runs/authorizations")
+def create_run_authorization(
+    body: NamedAuthorizationIn, session: Session = Depends(session_dep)
+) -> dict[str, object]:
+    bundle = _bundle_or_404(session, body.context_bundle_id)
+    try:
+        authorization = create_named_authorization(
+            session,
+            bundle,
+            actor=get_settings().operator_identity,
+            provider_names=body.providers,
+            models=body.models,
+            max_providers=body.max_providers,
+            max_attempts=body.max_attempts,
+            idempotency_key=body.idempotency_key,
+            notes=body.notes,
+        )
+    except AuthorizationError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return {"authorization": _authorization_view(authorization)}
 
 
 @router.post("/runs/authorize-once")
@@ -1334,6 +1359,24 @@ def compare_runs(body: CompareRunsIn, session: Session = Depends(session_dep)) -
         "context_bundle_id": bundle.id,
         "context_bundle_hash": bundle.payload_hash,
         "runs": [_run_view(session, row) for row in created],
+    }
+
+
+def _authorization_view(row: RunAuthorization) -> dict[str, object]:
+    return {
+        "id": row.id,
+        "context_bundle_id": row.context_bundle_id,
+        "context_bundle_hash": row.context_bundle_hash,
+        "provider": row.provider_name,
+        "model": row.model_name,
+        "providers": row.allowed_providers,
+        "models": row.provider_models,
+        "stage": row.stage,
+        "status": row.status,
+        "created_by": row.created_by,
+        "max_attempts": row.max_attempts,
+        "max_providers": row.max_providers,
+        "notes": row.notes,
     }
 
 
