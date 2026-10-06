@@ -1,0 +1,196 @@
+{
+  "concepts": [
+    {
+      "title": "edited after the order went in",
+      "family": "I",
+      "premise": "LABEL: FICTIONAL/STAGED. Maria sends a DoorDash order that matches the list a friend group already typed for a weeknight hang. After the order exists, one friend edits that request to a different item and the chat treats Maria as the person who got it wrong.",
+      "human_event": "A friend rewrites the food request after Maria has already placed the order, and the group assigns her the blame while the food is still on the way.",
+      "action_trigger": "The blame lands in the group chat before the dropoff.",
+      "expected_consequence": "Maria expects the original list and the placed order to show that she sent what was written at the time.",
+      "stakes": "She looks careless in front of the friends whose hang she just organized.",
+      "hook_direction": "Dark-mode iMessage thread crop plus a native floating hook that the blamed item was never the item she sent. The hook adds that timing context and does not restate the bubble. No order surface and no money language on the first slide.",
+      "reveal": "The request was edited after the order had already been placed.",
+      "proof_surface_direction": "About three slides: hook thread, then the DoorDash order surface for placed time and the items actually sent, then the chat state that makes the edit visible. Proof answers who changed the list. Any native discount line can exist only on the order surface, never in chat and never as its own slide.",
+      "payoff": "The group can see the blame attached to the rewritten request, while Maria stayed with the list she was given.",
+      "commerce_relation": "ARTIFACT. Parallel discovery hypothesis only: the order is opened to settle timing. Candidate economic job is amplified proof demand if a native discount line later creates a separate audit question. If that line only makes this same order cheaper, the map is NO TRANSITION and the concept stays organic.",
+      "primary_comment_door": "Whether changing the text after the order is worse than sending the wrong item.",
+      "secondary_comment_doors": [
+        "Who the group should believe before anyone opens the order",
+        "Whether Maria should have kept her own proof of the list",
+        "What the placed order actually contains",
+        "Whether anything else on the order surface is a second thing to audit"
+      ],
+      "viral_texture_opportunities": [
+        "Side-taking before the edit is shown",
+        "A clock-versus-edit comparison people can pause on",
+        "Stitches about checking a chat before accusing the person who ordered"
+      ],
+      "risks": [
+        "The reveal fails if edit labels and placed time cannot both be shown literally",
+        "A discount line on the proof slide can swallow the human reveal",
+        "The accusation-plus-proof shape gets weak if the edit itself is not obvious"
+      ],
+      "research_needed": [
+        "Whether iMessage edit labels and DoorDash placed-time can be shown from real surfaces without invented UI",
+        "Normal price of a small friend-group DoorDash food order",
+        "Any current restaurant or DoorDash promotion that would already explain a low total",
+        "Whether a staged native discount line would still read as clean campaign space"
+      ],
+      "why_it_fits_account": "Maria's food lane, DoorDash, and a 15–20 friend-group phone world. The hang still matters if the perk is removed."
+    },
+    {
+      "title": "he said he was the one who ordered",
+      "family": "I",
+      "premise": "LABEL: FICTIONAL/STAGED. Maria's younger sibling asks her to place the DoorDash order for his friends because the app is on her phone. She sends his list. He later tells those friends he is the one who set it up.",
+      "human_event": "A younger sibling takes the social credit for a food order Maria placed from his list.",
+      "action_trigger": "Maria sees his version of the story reach a chat she is in.",
+      "expected_consequence": "She expects the credit to stay inside his friend group, then sees it treated as his gesture.",
+      "stakes": "Exposing the order embarrasses him in front of his friends; staying quiet turns her effort into his reputation.",
+      "hook_direction": "Cropped dark-mode thread of him claiming the gesture, plus a floating hook that the order lives on Maria's phone. No receipt and no money language on the first slide.",
+      "reveal": "His private list to Maria and the placed order match, and the order was sent from her account.",
+      "proof_surface_direction": "Hook thread, then the private ask beside the DoorDash item list, then her still holding the proof. The surface proves who sent which items. It does not prove payment motives or a promotion. Native discount line only if that order surface already contains it, and it is not the reveal.",
+      "payoff": "Maria has matching proof of his ask and her order, and the choice to expose him is still open.",
+      "commerce_relation": "ARTIFACT. The order legitimizes who placed the items. Candidate economic job is amplified proof demand only if a native discount line creates a separate question. Who-paid and cheaper-same-order are NO TRANSITION. Do not add items to change the total.",
+      "primary_comment_door": "Whether Maria should show the proof or let her sibling keep the credit.",
+      "secondary_comment_doors": [
+        "Whether asking her to order makes the credit shared",
+        "Whether his friends would care who tapped send",
+        "Whether the item list matches the story he told",
+        "Whether a leftover line on the order is worth a second look"
+      ],
+      "viral_texture_opportunities": [
+        "A private-list versus public-claim split",
+        "Sibling-credit arguments in comments",
+        "People pausing on whether they would post the proof"
+      ],
+      "risks": [
+        "The concept turns mean if the payoff humiliates the sibling",
+        "Showing a total pulls the story into who paid",
+        "Campaign salience fails if the order surface has nothing unexplained on it"
+      ],
+      "research_needed": [
+        "How a DoorDash customer order displays the account and item list without a checkout or dasher view",
+        "Normal basket for a sibling-and-friends food order",
+        "Existing promotions that would already explain the economics",
+        "Comment behavior around sibling credit, which is not researched"
+      ],
+      "why_it_fits_account": "Food, family, and a high-school or first-year phone life. DoorDash is the proof artifact. The credit conflict holds with no discount."
+    },
+    {
+      "title": "the plain bag was on purpose",
+      "family": "I",
+      "premise": "LABEL: FICTIONAL/STAGED. After Dre's game, Maria sends one plain DoorDash order to the field because his little brother is waiting in the car and will only eat that. Dre already ate. Teammates see the small bag and treat it like she shorted him.",
+      "human_event": "Maria follows Dre's morning request for his little brother's plain order, and his teammates misread the bag in public. Maria and Dre already agree.",
+      "action_trigger": "A teammate message about the sad bag reaches her before Dre gets it to the car.",
+      "expected_consequence": "She expects Dre to recognize the order he asked for, and she expects the handoff to stay between them.",
+      "stakes": "She looks like a careless girlfriend in front of his team.",
+      "hook_direction": "Dark-mode thread crop of the teammates reading the bag, plus a floating hook that the bag is for the kid in the car. The hook must add the brother, not repeat the mockery. No order total and no savings language.",
+      "reveal": "Dre asked that morning for that exact plain item because his brother was going to be in the car.",
+      "proof_surface_direction": "Hook thread, then the morning ask beside a DoorDash item list that contains only that plain item, then the bag at the car with the brother. The small list is the story. No added meal, no savings slide, and no payment slide.",
+      "payoff": "The plain bag matches the request, and the public misread loses its target.",
+      "commerce_relation": "NO TRANSITION. She already orders the exact small thing the situation needs. Promotional value would only cheapen a decided order. Do not add food to enlarge a subtotal. If the order surface is used as proof, a native discount line must not become the joke. Likely organic if no separate anomaly exists.",
+      "primary_comment_door": "Whether the teammates were out of line for judging the bag.",
+      "secondary_comment_doors": [
+        "Whether a field handoff should have stayed private",
+        "Whether Dre should have answered them himself",
+        "What the little brother will actually eat",
+        "Whether a one-item order even belongs on a campaign surface"
+      ],
+      "viral_texture_opportunities": [
+        "A bag that looks cold until the car context arrives",
+        "Girlfriend-versus-team side taking",
+        "The morning text as the pause point"
+      ],
+      "risks": [
+        "Teammate mockery can drift into a couple fight, which this account should not stage",
+        "A small basket can tempt padding for economics",
+        "Campaign salience fails because cheaper does not change the order"
+      ],
+      "research_needed": [
+        "Whether a high-school field dropoff is a plausible DoorDash handoff",
+        "The real current item that fits a picky younger sibling, left unnamed until verified",
+        "Normal price of that single item",
+        "Any existing promo that would already explain the total"
+      ],
+      "why_it_fits_account": "Maria's food-and-couples lane uses Dre as the approved recurring boyfriend. The world is school sports, a younger sibling, and DoorDash, and the care still reads if the perk is deleted."
+    },
+    {
+      "title": "mom thinks she cooked",
+      "family": "I",
+      "premise": "LABEL: FICTIONAL/STAGED. Maria is at Dre's with a DoorDash dinner and sends her mom a photo of the food. Mom takes it as proof that Maria cooked and is about to pass that news into the family chat. Correcting her also shows where Maria is.",
+      "human_event": "A cropped dinner photo leads Maria's mom to credit her with cooking, and the family forward is minutes away.",
+      "action_trigger": "Mom replies with pride and moves to tell the family.",
+      "expected_consequence": "Maria expects a quick food photo to satisfy her mom without a location question.",
+      "stakes": "The family is about to hear a lie, and the correction outs that she is at Dre's.",
+      "hook_direction": "Dark-mode thread of mom's praise plus a floating hook that the family chat is next. The food photo can sit in thread. No receipt on the first slide and no discount language.",
+      "reveal": "The meal is a DoorDash dropoff, with the bag still in the room.",
+      "proof_surface_direction": "Hook thread, then the wider photo or DoorDash order that shows delivery, then Maria facing the reply before the forward. The human reveal is delivery versus cooking. A campaign line must not take that reveal. If the only honest proof is an order surface that also shows a discount, keep this organic so the stronger reveal stays the bag.",
+      "payoff": "Maria sees she has to answer before the proud-mom version spreads, and the bag is already visible.",
+      "commerce_relation": "ARTIFACT for the human proof only. The order or bag shows that she did not cook. It does not show intent beyond the visible delivery. NO TRANSITION if promotional value merely cheapens dinner she already ate. Parallel campaign discovery is a salience risk because it can overwrite the cooking reveal.",
+      "primary_comment_door": "Whether Maria should correct her mom before the family forward.",
+      "secondary_comment_doors": [
+        "Whether the crop was deliberate",
+        "Whether being at Dre's is the real problem",
+        "Whether mom's pride is harmless enough to leave alone",
+        "Whether the bag alone settles it"
+      ],
+      "viral_texture_opportunities": [
+        "A cropped plate versus the bag in the corner",
+        "Parent-text urgency",
+        "Comments splitting on honesty versus privacy"
+      ],
+      "risks": [
+        "The double stake gets muddy if location and cooking compete as the reveal",
+        "A receipt payoff violates the rule against payment as the last slide",
+        "A visible discount on the same slide as the bag destroys the stronger human reveal"
+      ],
+      "research_needed": [
+        "A cleared visual base for a dorm-or-bedroom food dropoff with a real bag",
+        "How a DoorDash completed order displays items without inventing a promotion",
+        "Normal price of a two-person weeknight order",
+        "Existing promotions that would already explain a low total"
+      ],
+      "why_it_fits_account": "Food, parents, and Dre in a first-year or late-high-school phone world. The mom thread still works if MyDashPerks is removed."
+    },
+    {
+      "title": "everyone was gonna bring their own",
+      "family": "D",
+      "premise": "LABEL: FICTIONAL/STAGED. Family D. Maria already told a small dorm hang that she would handle food. The chat starts assigning chips and drinks for people to bring. Her constraint is that she wants to be the person who actually fed the room, with one DoorDash order limited to the items the people coming already named.",
+      "human_event": "A first-year host is about to be turned into the person who only unlocks the room while everyone brings snacks.",
+      "action_trigger": "The bring-your-own assignments start in the group chat after she said she had food.",
+      "expected_consequence": "She expects one order, matched to the real headcount, to make the night her hosting instead of a snack pile.",
+      "stakes": "She becomes a coordinator with a door code, which fails the hosted night she already claimed.",
+      "hook_direction": "Dark-mode chat of people claiming snacks, plus a floating hook that she already said food was handled. Desire leads. No price, no retailer name, and no savings language on the first slide.",
+      "reveal": "A single placed order covers exactly the people coming and only the items they already named.",
+      "proof_surface_direction": "Hook chat, then the DoorDash order whose item count matches the headcount, then the food arriving as the plan for the night. No extra item is added to grow a discount. Native discount line only on that order surface, never in chat and never as a savings slide.",
+      "payoff": "The room is fed by the order she said she would handle, and the bring-your-own list is leftover.",
+      "commerce_relation": "OUTCOME-MEANS hypothesis, Gate 2A only if research finds a real boundary from everyone-brings-snacks to she-feeds-the-room. Candidate economic job is an outcome transformation, using the smallest material amount that crosses it, never a default maximum. If she could already place that natural order, mark NO TRANSITION and do not campaign it. Two campaign-independent engines remain outcome desire and method gap even if the perk is deleted.",
+      "primary_comment_door": "Whether ordering for the room counts as actually hosting.",
+      "secondary_comment_doors": [
+        "Whether she should have let people bring food anyway",
+        "How closely the order matches the headcount",
+        "What belongs on a four-person dorm order",
+        "How the order was possible for a first-year, left unanswered on purpose"
+      ],
+      "viral_texture_opportunities": [
+        "Bring-your-own assignments colliding with one exact order",
+        "A headcount-matched list people can audit",
+        "Method curiosity after the hosted outcome is already believed"
+      ],
+      "risks": [
+        "Family D evidence is thin in the current skill notes, so confidence stays lower",
+        "A discount that only cheapens an order she already wanted is NO TRANSITION",
+        "Adding dessert or a premium item for headroom breaks the basket rule",
+        "Naming a chain or a price would invent research"
+      ],
+      "research_needed": [
+        "Normal DoorDash basket and price for a small dorm hang using only items guests already named",
+        "The smallest material amount, if any, that changes bring-your-own into one host order for a 15–20 spender",
+        "Existing promotions that already explain a low total",
+        "A real, current, desirable food object with verified live price before any later lock",
+        "Comment behavior about delivery-as-hosting, which is not researched"
+      ],
+      "why_it_fits_account": "Maria's food lane in a first-year dorm, with DoorDash as the means. Electronics stay off this account. The wanted hosted night still exists if the campaign is removed."
+    }
+  ]
+}
