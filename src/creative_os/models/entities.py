@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 from typing import Any
 from uuid import uuid4
 
@@ -160,29 +161,49 @@ class StoryLockVersion(Base):
     story_lock: Mapped[StoryLock] = relationship(back_populates="versions")
 
 
+_STORY_LOCK_CONTENT = (
+    "content_json",
+    "content_markdown",
+    "content_hash",
+    "document_hash",
+    "change_reason",
+    "supersedes_version_id",
+    "source_path",
+    "source_hash",
+    "version_number",
+    "story_lock_id",
+)
+_STORY_LOCK_TRANSITIONS = {
+    ("PENDING", "APPROVED"),
+    ("PENDING", "REJECTED"),
+    ("PENDING", "NEEDS_CHANGES"),
+}
+
+
 @event.listens_for(StoryLockVersion, "before_update")
 def _reject_story_lock_mutation(_mapper, _connection, target: StoryLockVersion) -> None:
     from sqlalchemy.orm.attributes import get_history
 
-    protected = (
-        "content_json",
-        "content_markdown",
-        "content_hash",
-        "document_hash",
-        "change_reason",
-        "approved_by",
-        "supersedes_version_id",
-        "source_path",
-        "source_hash",
-        "version_number",
-        "story_lock_id",
-        "approval_state",
-    )
-    for attr in protected:
+    from creative_os.services.lifecycle import consume_lifecycle
+
+    for attr in _STORY_LOCK_CONTENT:
         if get_history(target, attr).has_changes():
             raise ImmutableVersionError(
                 f"story lock version {target.id} is immutable; field {attr} cannot change"
             )
+    state_history = get_history(target, "approval_state")
+    actor_history = get_history(target, "approved_by")
+    if not state_history.has_changes() and not actor_history.has_changes():
+        return
+    if not consume_lifecycle(target):
+        raise ImmutableVersionError(
+            f"story lock version {target.id} lifecycle can change only through the decision service"
+        )
+    if state_history.has_changes():
+        old = state_history.deleted[0] if state_history.deleted else None
+        new = state_history.added[0] if state_history.added else None
+        if (old, new) not in _STORY_LOCK_TRANSITIONS:
+            raise ImmutableVersionError(f"story lock version {target.id} cannot move from {old} to {new}")
 
 
 class ApprovalEvent(Base):
@@ -231,6 +252,38 @@ class SkillVersion(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
 
+_SKILL_CONTENT = (
+    "content",
+    "content_hash",
+    "source_path",
+    "scope_level",
+    "rule_kind",
+    "skill_id",
+    "version_label",
+    "supersedes_version_id",
+    "dependencies",
+)
+
+
+@event.listens_for(SkillVersion, "before_update")
+def _reject_skill_content_mutation(_mapper, _connection, target: SkillVersion) -> None:
+    from sqlalchemy.orm.attributes import get_history
+
+    from creative_os.services.lifecycle import consume_lifecycle
+
+    for attr in _SKILL_CONTENT:
+        if get_history(target, attr).has_changes():
+            raise ImmutableVersionError(f"skill version {target.id} content field {attr} cannot change")
+    status_history = get_history(target, "status")
+    approval_history = get_history(target, "approval_state")
+    if not status_history.has_changes() and not approval_history.has_changes():
+        return
+    if not consume_lifecycle(target):
+        raise ImmutableVersionError(
+            f"skill version {target.id} lifecycle can change only through an explicit transition"
+        )
+
+
 class PolicyRule(Base):
     __tablename__ = "policy_rules"
     __table_args__ = (UniqueConstraint("code", "content_hash", "scope_level", "scope_id"),)
@@ -252,6 +305,46 @@ class PolicyRule(Base):
     source_artifact_id: Mapped[str | None] = mapped_column(ForeignKey("source_artifacts.id"), nullable=True)
     approval_state: Mapped[str] = mapped_column(String(40), default="APPROVED")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+_POLICY_CONTENT = (
+    "code",
+    "scope_level",
+    "scope_id",
+    "rule_kind",
+    "title",
+    "text",
+    "content_hash",
+    "source_path",
+    "source_skill_version_id",
+    "source_artifact_id",
+    "supersedes_rule_id",
+)
+_POLICY_STATUS_TRANSITIONS = {("active", "superseded")}
+
+
+@event.listens_for(PolicyRule, "before_update")
+def _reject_policy_content_mutation(_mapper, _connection, target: PolicyRule) -> None:
+    from sqlalchemy.orm.attributes import get_history
+
+    from creative_os.services.lifecycle import consume_lifecycle
+
+    for attr in _POLICY_CONTENT:
+        if get_history(target, attr).has_changes():
+            raise ImmutableVersionError(f"policy rule {target.id} content field {attr} cannot change")
+    lifecycle_fields = ("status", "approval_state", "effective_from", "effective_to")
+    if not any(get_history(target, attr).has_changes() for attr in lifecycle_fields):
+        return
+    if not consume_lifecycle(target):
+        raise ImmutableVersionError(
+            f"policy rule {target.id} lifecycle can change only through an explicit transition"
+        )
+    status_history = get_history(target, "status")
+    if status_history.has_changes():
+        old = status_history.deleted[0] if status_history.deleted else None
+        new = status_history.added[0] if status_history.added else None
+        if (old, new) not in _POLICY_STATUS_TRANSITIONS:
+            raise ImmutableVersionError(f"policy rule {target.id} cannot move from {old} to {new}")
 
 
 class SourceSnapshot(Base):
@@ -465,6 +558,44 @@ class ModelRun(Base):
     cost: Mapped[float | None] = mapped_column(Numeric(12, 4), nullable=True)
     latency_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
     error: Mapped[str | None] = mapped_column(Text, nullable=True)
+    context_bundle_id: Mapped[str | None] = mapped_column(ForeignKey("context_bundles.id"), nullable=True)
+
+
+class ContextBundle(Base):
+    __tablename__ = "context_bundles"
+    __table_args__ = (Index("ix_context_bundles_creative", "creative_id", "created_at"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    creative_id: Mapped[str] = mapped_column(ForeignKey("creatives.id"))
+    requested_stage: Mapped[str] = mapped_column(String(80))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    as_of: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    story_lock_version_id: Mapped[str | None] = mapped_column(
+        ForeignKey("story_lock_versions.id"), nullable=True
+    )
+    account_id: Mapped[str | None] = mapped_column(ForeignKey("accounts.id"), nullable=True)
+    campaign_id: Mapped[str | None] = mapped_column(ForeignKey("campaigns.id"), nullable=True)
+    account_dna_profile_id: Mapped[str | None] = mapped_column(
+        ForeignKey("account_dna_profiles.id"), nullable=True
+    )
+    creative_genome_id: Mapped[str | None] = mapped_column(ForeignKey("creative_genomes.id"), nullable=True)
+    policy_rule_ids: Mapped[list[Any]] = mapped_column(JSON)
+    skill_version_ids: Mapped[list[Any]] = mapped_column(JSON)
+    benchmark_ids: Mapped[list[Any]] = mapped_column(JSON)
+    reference_ids: Mapped[list[Any]] = mapped_column(JSON)
+    mechanic_as_of: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    compiled_payload: Mapped[dict[str, Any]] = mapped_column(JSON)
+    compiled_text: Mapped[str] = mapped_column(Text)
+    payload_hash: Mapped[str] = mapped_column(String(64))
+    compiler_version: Mapped[str] = mapped_column(String(40))
+    size_estimate: Mapped[int] = mapped_column(Integer)
+    token_estimate: Mapped[int] = mapped_column(Integer)
+    status: Mapped[str] = mapped_column(String(40))
+
+
+@event.listens_for(ContextBundle, "before_update")
+def _reject_context_bundle_mutation(_mapper, _connection, target: ContextBundle) -> None:
+    raise ImmutableVersionError(f"context bundle {target.id} is immutable")
 
 
 class CreativeGenome(Base):
@@ -563,7 +694,6 @@ class ExperimentVariant(Base):
     is_control: Mapped[bool] = mapped_column(Boolean, default=False)
     changes: Mapped[dict[str, Any]] = mapped_column(JSON)
     fixed: Mapped[dict[str, Any]] = mapped_column(JSON)
-    post_id: Mapped[str | None] = mapped_column(ForeignKey("posts.id"), nullable=True)
 
 
 class ExperimentVariantPost(Base):
@@ -581,11 +711,13 @@ class Post(Base):
     __table_args__ = (
         Index("ix_posts_account_published", "account_id", "published_at"),
         Index("ix_posts_creative_id", "creative_id"),
+        Index("ix_posts_campaign_id", "campaign_id"),
     )
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     creative_id: Mapped[str | None] = mapped_column(ForeignKey("creatives.id"), nullable=True)
     account_id: Mapped[str | None] = mapped_column(ForeignKey("accounts.id"), nullable=True)
+    campaign_id: Mapped[str | None] = mapped_column(ForeignKey("campaigns.id"), nullable=True)
     external_id: Mapped[str | None] = mapped_column(String(160), nullable=True)
     platform: Mapped[str] = mapped_column(String(40))
     story_lock_version_id: Mapped[str | None] = mapped_column(
@@ -633,7 +765,7 @@ class PerformanceSnapshot(Base):
     link_clicks: Mapped[int | None] = mapped_column(Integer, nullable=True)
     conversions: Mapped[int | None] = mapped_column(Integer, nullable=True)
     revenue: Mapped[str | None] = mapped_column(String(40), nullable=True)
-    revenue_amount: Mapped[float | None] = mapped_column(Numeric(12, 2), nullable=True)
+    revenue_amount: Mapped[Decimal | None] = mapped_column(Numeric(12, 2), nullable=True)
     revenue_currency: Mapped[str | None] = mapped_column(String(8), nullable=True)
     watch_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     slide_notes: Mapped[str | None] = mapped_column(Text, nullable=True)

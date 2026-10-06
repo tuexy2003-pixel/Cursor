@@ -23,6 +23,7 @@ from creative_os.models import (
     CommentClusterMember,
     CommentDoor,
     CommentDoorMapping,
+    ContextBundle,
     Creative,
     CreativeGenome,
     Experiment,
@@ -57,22 +58,26 @@ from creative_os.schemas.story_lock import (
 )
 from creative_os.services.consistency import (
     ConsistencyError,
+    resolve_post_attribution,
     validate_cluster_comments,
     validate_door_mapping,
     validate_post,
 )
+from creative_os.services.context_bundles import create_context_bundle
 from creative_os.services.context_compiler import compile_context
 from creative_os.services.diff import deep_diff
 from creative_os.services.experiments import validate_experiment_isolation
 from creative_os.services.mechanics import mechanic_report
 from creative_os.services.story_lock_render import render_canonical_markdown
 from creative_os.services.story_locks import (
+    StoryLockDecisionError,
     apply_story_lock_correction,
     decide_story_lock_version,
     propose_story_lock_change,
+    version_belongs_to_creative,
 )
 from creative_os.services.validate_creative import validate_creative
-from creative_os.util import utcnow
+from creative_os.util import post_age_hours, utcnow
 from creative_os.validation.regression import run_regression_case
 
 router = APIRouter()
@@ -113,7 +118,14 @@ class PostIn(BaseModel):
     story_lock_version_id: str | None = None
     creative_genome_id: str | None = None
     experiment_variant_id: str | None = None
+    attribution_mode: str = "CURRENT_PUBLISH"
     assets: list[PostAssetIn] = Field(default_factory=list)
+
+
+class ContextBundleIn(BaseModel):
+    stage: str = "STORY_DEVELOPMENT"
+    as_of: datetime | None = None
+    heuristic_budget: int = 24
 
 
 class SnapshotIn(BaseModel):
@@ -368,9 +380,19 @@ def creative_detail(creative_id: str, session: Session = Depends(session_dep)) -
     }
 
 
+def _decision_http(exc: StoryLockDecisionError) -> HTTPException:
+    status = 409 if exc.code in {"OUTDATED_PROPOSAL", "STALE_PRECONDITION"} else 400
+    return HTTPException(status_code=status, detail=f"{exc.code}: {exc}")
+
+
 def _lock_version(session: Session, creative_id: str, token: str) -> StoryLockVersion | None:
     found = session.get(StoryLockVersion, token)
     if found is not None:
+        if not version_belongs_to_creative(session, creative_id, found):
+            raise StoryLockDecisionError(
+                "CROSS_CREATIVE",
+                "story lock version does not belong to this creative",
+            )
         return found
     if not token.isdigit():
         return None
@@ -421,8 +443,11 @@ def lock_diff(
     session: Session = Depends(session_dep),
 ) -> dict[str, object]:
     _creative_or_404(session, creative_id)
-    older = _lock_version(session, creative_id, left)
-    newer = _lock_version(session, creative_id, right)
+    try:
+        older = _lock_version(session, creative_id, left)
+        newer = _lock_version(session, creative_id, right)
+    except StoryLockDecisionError as exc:
+        raise _decision_http(exc) from exc
     if older is None or newer is None:
         raise HTTPException(status_code=404, detail="story lock version not found")
     return {"paths": deep_diff(older.content_json, newer.content_json)}
@@ -444,7 +469,10 @@ def correct_lock(
             operator,
             body.reason,
             patches=body.patches,
+            expected_current_story_lock_version_id=body.expected_current_story_lock_version_id,
         )
+    except StoryLockDecisionError as exc:
+        raise _decision_http(exc) from exc
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     return {
@@ -472,7 +500,10 @@ def propose_lock(
             body.proposer,
             body.reason,
             patches=body.patches,
+            expected_current_story_lock_version_id=body.expected_current_story_lock_version_id,
         )
+    except StoryLockDecisionError as exc:
+        raise _decision_http(exc) from exc
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     return {
@@ -491,12 +522,17 @@ def decide_lock(
     session: Session = Depends(session_dep),
 ) -> dict[str, object]:
     creative = _creative_or_404(session, creative_id)
-    version = _lock_version(session, creative_id, version_id)
+    try:
+        version = _lock_version(session, creative_id, version_id)
+    except StoryLockDecisionError as exc:
+        raise _decision_http(exc) from exc
     if version is None:
         raise HTTPException(status_code=404, detail="story lock version not found")
     operator = get_settings().operator_identity
     try:
         decide_story_lock_version(session, creative, version, body.decision, operator, body.notes)
+    except StoryLockDecisionError as exc:
+        raise _decision_http(exc) from exc
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     return {
@@ -515,7 +551,73 @@ def context_preview(
     session: Session = Depends(session_dep),
 ) -> dict[str, object]:
     creative = _creative_or_404(session, creative_id)
-    return compile_context(session, creative, stage=stage, heuristic_budget=heuristic_budget)
+    try:
+        return compile_context(session, creative, stage=stage, heuristic_budget=heuristic_budget)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@router.post("/creatives/{creative_id}/context-bundles")
+def compile_bundle(
+    creative_id: str,
+    body: ContextBundleIn,
+    session: Session = Depends(session_dep),
+) -> dict[str, object]:
+    creative = _creative_or_404(session, creative_id)
+    try:
+        bundle = create_context_bundle(
+            session,
+            creative,
+            stage=body.stage,
+            as_of=body.as_of,
+            heuristic_budget=body.heuristic_budget,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return _bundle_view(bundle)
+
+
+@router.get("/creatives/{creative_id}/context-bundles/{bundle_id}")
+def read_bundle(creative_id: str, bundle_id: str, session: Session = Depends(session_dep)) -> dict[str, object]:
+    _creative_or_404(session, creative_id)
+    bundle = session.get(ContextBundle, bundle_id)
+    if bundle is None or bundle.creative_id != creative_id:
+        raise HTTPException(status_code=404, detail="context bundle not found")
+    return _bundle_view(bundle)
+
+
+def _bundle_view(bundle: ContextBundle) -> dict[str, object]:
+    payload = bundle.compiled_payload
+    return {
+        "id": bundle.id,
+        "payload_hash": bundle.payload_hash,
+        "compiler_version": bundle.compiler_version,
+        "status": bundle.status,
+        "requested_stage": bundle.requested_stage,
+        "as_of": bundle.as_of.isoformat(),
+        "creative_id": bundle.creative_id,
+        "account_id": bundle.account_id,
+        "campaign_id": bundle.campaign_id,
+        "story_lock_version_id": bundle.story_lock_version_id,
+        "account_dna_profile_id": bundle.account_dna_profile_id,
+        "creative_genome_id": bundle.creative_genome_id,
+        "size_estimate": bundle.size_estimate,
+        "token_estimate": bundle.token_estimate,
+        "provider_execution": "NOT_IMPLEMENTED",
+        "global_invariants": payload.get("global_invariants", []),
+        "program_policies": payload.get("program_policies", []),
+        "account_policies": payload.get("account_policies", []),
+        "campaign_policies": payload.get("campaign_policies", []),
+        "creative_locks": payload.get("creative_locks", []),
+        "skill_versions": payload.get("skill_versions", []),
+        "benchmarks": payload.get("benchmarks", []),
+        "comment_doors": payload.get("comment_doors", []),
+        "continuity": payload.get("continuity", []),
+        "mechanic_context": payload.get("mechanic_context"),
+        "references": payload.get("references", []),
+        "excluded_for_token_budget": payload.get("excluded_for_token_budget", []),
+        "compiled_text": bundle.compiled_text,
+    }
 
 
 @router.post("/creatives/{creative_id}/validation")
@@ -819,9 +921,6 @@ def create_post(body: PostIn, session: Session = Depends(session_dep)) -> dict[s
     if lock_id is None and creative is not None:
         lock_id = creative.current_approved_story_lock_version_id
     story_lock = session.get(StoryLockVersion, lock_id) if lock_id else None
-    genome_id = body.creative_genome_id
-    if genome_id is None and creative is not None:
-        genome_id = creative.current_genome_id
     variant = session.get(ExperimentVariant, body.experiment_variant_id) if body.experiment_variant_id else None
     if body.experiment_variant_id and variant is None:
         raise HTTPException(status_code=400, detail="experiment variant was not found")
@@ -832,6 +931,18 @@ def create_post(body: PostIn, session: Session = Depends(session_dep)) -> dict[s
             raise HTTPException(status_code=400, detail=f"asset {spec.asset_id} was not found")
         assets.append(asset)
     try:
+        account_id, campaign_id, genome_id = resolve_post_attribution(
+            session,
+            creative=creative,
+            account_id=body.account_id,
+            campaign_id=body.campaign_id,
+            story_lock_version_id=lock_id,
+            creative_genome_id=body.creative_genome_id,
+            assets=assets,
+            attribution_mode=body.attribution_mode,
+        )
+        account = session.get(Account, account_id) if account_id else None
+        campaign = session.get(Campaign, campaign_id) if campaign_id else None
         validate_post(
             session,
             creative=creative,
@@ -845,7 +956,8 @@ def create_post(body: PostIn, session: Session = Depends(session_dep)) -> dict[s
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     post = Post(
         creative_id=body.creative_id,
-        account_id=body.account_id,
+        account_id=account_id,
+        campaign_id=campaign_id,
         platform=body.platform,
         url=body.url,
         notes=body.notes,
@@ -881,7 +993,7 @@ def add_snapshot(post_id: str, body: SnapshotIn, session: Session = Depends(sess
     captured_at = utcnow()
     age = None
     if post.published_at is not None:
-        age = (captured_at - post.published_at).total_seconds() / 3600
+        age = post_age_hours(post.published_at, captured_at)
     amount = _money(body.revenue_amount)
     snap = PerformanceSnapshot(
         post_id=post.id,

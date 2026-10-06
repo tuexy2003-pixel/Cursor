@@ -2,7 +2,7 @@
 
 ## Current phase
 
-Core integrity v0.2. The preservation baseline tag `v0.1.0-preservation-baseline` is unchanged. Provider execution still returns `NOT_IMPLEMENTED`. See `docs/V0_2_INTEGRITY_HARDENING.md`.
+Trust and context bundles v0.2.1. Tags `v0.1.0-preservation-baseline` and `v0.2.0-core-integrity` are unchanged. Provider execution still returns `NOT_IMPLEMENTED`. See `docs/V0_2_1_TRUST_CONTEXT.md`.
 
 ## Completed
 
@@ -10,7 +10,9 @@ Core integrity v0.2. The preservation baseline tag `v0.1.0-preservation-baseline
 - Versioned skills, story locks, assets, approvals, genome, DNA, experiments, posts, and comments
 - Alembic `76f00d0e35cb` initial schema and `b7c1a9e0d4f2` preservation baseline
 - Alembic `c8d4e1a07b33` core integrity: canonical story-lock hash, source snapshots, selective staleness, policy provenance, post/genome/DNA bindings, indexes, and foreign keys
+- Alembic `e1f6a2c39d55` trust and context: proposal lifecycle, exact snapshot trees, policy eligibility, context bundles, post campaign binding
 - Dry-run context compiler at `GET /api/creatives/{id}/context-preview`
+- Persisted context bundles at `POST /api/creatives/{id}/context-bundles`
 - Portable review marker `pytest -m core`
 
 ## Checks

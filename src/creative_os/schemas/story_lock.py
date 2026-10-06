@@ -95,6 +95,7 @@ class StoryLockCorrection(BaseModel):
     patches: list[FieldPatch] = Field(default_factory=list)
     actor: str = ""
     reason: str
+    expected_current_story_lock_version_id: str | None = None
 
 
 class StoryLockProposal(BaseModel):
@@ -102,6 +103,7 @@ class StoryLockProposal(BaseModel):
     patches: list[FieldPatch] = Field(default_factory=list)
     proposer: str
     reason: str
+    expected_current_story_lock_version_id: str | None = None
 
 
 class StoryLockDecision(BaseModel):

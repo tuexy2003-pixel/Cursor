@@ -96,52 +96,84 @@ def import_handoff(
     return report
 
 
-def _import_files(session: Session, root: Path, label: str, report: ImportReport) -> None:
-    now = utcnow()
-    snapshot = session.scalar(select(SourceSnapshot).where(SourceSnapshot.label == label))
-    if snapshot is None:
-        snapshot = SourceSnapshot(
-            label=label,
-            captured_at=now,
-            root_hash=None,
-            source_description=f"Imported from {root}",
-            immutable=True,
-            created_at=now,
-        )
-        session.add(snapshot)
-        session.flush()
-    manifest_lines: list[str] = []
+def _scan_tree(root: Path) -> list[tuple[str, str, int]]:
+    rows: list[tuple[str, str, int]] = []
     for path in sorted(item for item in root.rglob("*") if item.is_file()):
         relative = path.relative_to(root).as_posix()
         data = path.read_bytes()
-        digest = sha256_bytes(data)
-        manifest_lines.append(f"{digest}  {relative}")
-        existing = session.scalar(
-            select(SourceArtifact).where(
-                SourceArtifact.snapshot_id == snapshot.id,
-                SourceArtifact.relative_path == relative,
+        rows.append((relative, sha256_bytes(data), len(data)))
+    return rows
+
+
+def _manifest_hash(rows: list[tuple[str, str, int]]) -> str:
+    lines = [f"{digest}  {relative}" for relative, digest, _size in rows]
+    return sha256_text("\n".join(lines))
+
+
+def _import_files(session: Session, root: Path, label: str, report: ImportReport) -> None:
+    now = utcnow()
+    incoming = _scan_tree(root)
+    incoming_map = {relative: (digest, size) for relative, digest, size in incoming}
+    snapshot = session.scalar(select(SourceSnapshot).where(SourceSnapshot.label == label))
+    if snapshot is not None:
+        existing = session.scalars(
+            select(SourceArtifact).where(SourceArtifact.snapshot_id == snapshot.id)
+        ).all()
+        existing_map = {row.relative_path: (row.sha256, row.size_bytes) for row in existing}
+        if not existing_map and snapshot.root_hash is None:
+            _seal_snapshot(session, snapshot, root, incoming, now, report)
+            return
+        if existing_map != incoming_map:
+            added = sorted(set(incoming_map) - set(existing_map))
+            removed = sorted(set(existing_map) - set(incoming_map))
+            changed = sorted(
+                path
+                for path in set(incoming_map) & set(existing_map)
+                if incoming_map[path][0] != existing_map[path][0]
             )
-        )
-        if existing and existing.sha256 == digest:
-            report.add(True)
-            continue
-        if existing:
             raise SnapshotIntegrityError(
-                f"snapshot {label} already has {relative} with hash {existing.sha256}; "
-                f"new bytes hash to {digest}"
+                f"snapshot {label} is immutable; added={added} removed={removed} changed={changed}"
             )
+        for _row in incoming:
+            report.add(True)
+        return
+    snapshot = SourceSnapshot(
+        label=label,
+        captured_at=now,
+        root_hash=_manifest_hash(incoming),
+        source_description=f"Imported from {root}",
+        immutable=True,
+        created_at=now,
+    )
+    session.add(snapshot)
+    session.flush()
+    _seal_snapshot(session, snapshot, root, incoming, now, report)
+
+
+def _seal_snapshot(
+    session: Session,
+    snapshot: SourceSnapshot,
+    root: Path,
+    incoming: list[tuple[str, str, int]],
+    now,
+    report: ImportReport,
+) -> None:
+    """Record the first manifest for a new snapshot or an unsealed migration placeholder."""
+    snapshot.root_hash = _manifest_hash(incoming)
+    snapshot.source_description = f"Imported from {root}"
+    for relative, digest, size in incoming:
         session.add(
             SourceArtifact(
                 snapshot_id=snapshot.id,
                 relative_path=relative,
                 sha256=digest,
-                size_bytes=len(data),
+                size_bytes=size,
                 kind=_kind(relative),
                 imported_at=now,
             )
         )
         report.add(False)
-    snapshot.root_hash = sha256_text("\n".join(manifest_lines))
+    session.flush()
 
 
 def _kind(relative: str) -> str:

@@ -1,6 +1,7 @@
 import re
 from datetime import date
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
+from typing import Any
 
 from creative_os.util import money
 
@@ -41,6 +42,30 @@ def line_items_match_subtotal(prices: list[str], subtotal: str | None) -> tuple[
     if subtotal is None or not prices:
         return "NOT_APPLICABLE", "no line prices or subtotal"
     total = sum((money(price) for price in prices), Decimal("0.00"))
+    if total == money(subtotal):
+        return "PASS", f"line items sum to {subtotal}"
+    return "FAIL", f"line items sum to {total}, subtotal is {subtotal}"
+
+
+def line_items_subtotal_status(items: list[Any], subtotal: str | None) -> tuple[str, str]:
+    priced = [item for item in items if item.unit_price]
+    if subtotal is None or not priced:
+        return "NOT_APPLICABLE", "no line prices or subtotal"
+    total = Decimal("0.00")
+    for item in priced:
+        quantity_text = item.quantity
+        if quantity_text is None or str(quantity_text).strip() == "":
+            quantity = Decimal(1)
+        else:
+            try:
+                quantity = Decimal(str(quantity_text).strip())
+            except InvalidOperation:
+                return (
+                    "HUMAN_REVIEW_REQUIRED",
+                    f"quantity {quantity_text!r} is not a number",
+                )
+        total += money(item.unit_price) * quantity
+    total = total.quantize(Decimal("0.01"))
     if total == money(subtotal):
         return "PASS", f"line items sum to {subtotal}"
     return "FAIL", f"line items sum to {total}, subtotal is {subtotal}"

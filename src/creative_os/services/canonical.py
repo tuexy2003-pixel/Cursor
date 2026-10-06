@@ -18,3 +18,8 @@ def canonical_json(document: StoryLockDocument | dict[str, Any]) -> str:
 
 def document_hash(document: StoryLockDocument | dict[str, Any]) -> str:
     return sha256_text(canonical_json(document))
+
+
+def stable_digest(payload: dict[str, Any]) -> str:
+    text = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return sha256_text(text)

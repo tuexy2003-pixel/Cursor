@@ -61,6 +61,6 @@ Provider execution still returns `NOT_IMPLEMENTED`.
 - 19 regression cases
 - Supplemental visual hashes, dimensions, and only the relationships the notes state
 
-Creative values come from the current approved story lock. A human correction appends a version and records approval. Only deliverables whose declared field dependencies intersect the change go stale. Reusable bases and ingredients stay current. See `docs/V0_2_INTEGRITY_HARDENING.md`.
+Creative values come from the current approved story lock. A human correction appends a version and records approval. Only deliverables whose declared field dependencies intersect the change go stale. Reusable bases and ingredients stay current. See `docs/V0_2_INTEGRITY_HARDENING.md` and `docs/V0_2_1_TRUST_CONTEXT.md`.
 
 Provider execution is stubbed and returns `NOT_IMPLEMENTED`.

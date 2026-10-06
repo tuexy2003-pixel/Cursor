@@ -1,5 +1,6 @@
 """Dry-run context package. This does not call a provider."""
 
+from datetime import datetime
 from typing import Any
 
 from sqlalchemy import select
@@ -21,22 +22,56 @@ from creative_os.models import (
 )
 from creative_os.schemas.story_lock import StoryLockDocument
 from creative_os.services.mechanics import mechanic_report
-from creative_os.services.policy_resolver import resolve_policy
+from creative_os.services.policy_resolver import resolve_policy_detail
+from creative_os.util import ensure_utc, utcnow
+
+COMPILER_VERSION = "context-compiler-0.2.1"
 
 STAGE_SKILLS: dict[str, set[str]] = {
-    "story": {"story-development", "story-conflict-scout", "synthetic-story-generator"},
-    "production": {
-        "production-spec-qa",
-        "ios-26-production-normalization",
-        "visual-surface-acquisition",
-    },
-    "research": {
+    "RESEARCH": {
         "live-heat-scout",
         "object-culture-scout",
         "find-purchase-screens-on-pinterest",
         "adaptation-blitz-match",
     },
+    "CONCEPT_GENERATION": {
+        "commercial-aware-synthesis",
+        "getting-started",
+        "commerce-world-mapper",
+    },
+    "STORY_DEVELOPMENT": {
+        "story-development",
+        "story-conflict-scout",
+        "synthetic-story-generator",
+        "chat-story-slideshow",
+    },
+    "PRODUCTION_ROUTING": {"visual-surface-acquisition", "source-card"},
+    "PRODUCTION_QA": {"production-spec-qa", "ios-26-production-normalization"},
+    "PERFORMANCE_INTERPRETATION": set(),
 }
+STAGE_ALIASES = {
+    "story": "STORY_DEVELOPMENT",
+    "production": "PRODUCTION_QA",
+    "research": "RESEARCH",
+    "full": "PIPELINE",
+}
+
+
+def canonical_stage(stage: str) -> str:
+    name = STAGE_ALIASES.get(stage, stage)
+    if name != "PIPELINE" and name not in STAGE_SKILLS:
+        raise ValueError(f"unknown context stage: {stage}")
+    return name
+
+
+def required_slugs(stage: str) -> set[str]:
+    name = canonical_stage(stage)
+    if name == "PIPELINE":
+        required: set[str] = set()
+        for slugs in STAGE_SKILLS.values():
+            required.update(slugs)
+        return required
+    return set(STAGE_SKILLS[name])
 
 
 def compile_context(
@@ -44,15 +79,21 @@ def compile_context(
     creative: Creative,
     stage: str = "full",
     heuristic_budget: int = 24,
+    as_of: datetime | None = None,
+    include_skill_content: bool = False,
 ) -> dict[str, Any]:
-    rules = resolve_policy(session, creative)
+    moment = ensure_utc(as_of or utcnow())
+    stage_name = canonical_stage(stage)
+    rules, policy_excluded = resolve_policy_detail(session, creative, moment)
     policy_items = [_rule_item(rule) for rule in rules]
     invariants = [item for item in policy_items if item["rule_kind"] == "INVARIANT"]
     optional = [item for item in policy_items if item["rule_kind"] != "INVARIANT"]
     kept_optional = optional[:heuristic_budget]
     excluded = [{**item, "reason_excluded": "heuristic token budget"} for item in optional[heuristic_budget:]]
+    for rule, reason in policy_excluded:
+        excluded.append({**_rule_item(rule), "reason_excluded": reason})
     included_rules = invariants + kept_optional
-    skills, skill_excluded = _skills(session, stage, heuristic_budget)
+    skills, skill_excluded = _skills(session, stage_name, include_skill_content)
     excluded.extend(skill_excluded)
     lock = _lock(session, creative)
     dna = _dna(session, creative)
@@ -63,7 +104,9 @@ def compile_context(
     return {
         "dry_run": True,
         "provider_execution": "NOT_IMPLEMENTED",
-        "requested_stage": stage,
+        "compiler_version": COMPILER_VERSION,
+        "as_of": moment.isoformat(),
+        "requested_stage": stage_name,
         "creative": {"id": creative.id, "name": creative.name, "slug": creative.slug},
         "current_story_lock_version": None
         if lock is None
@@ -84,7 +127,7 @@ def compile_context(
         "account_dna": dna,
         "creative_genome": genome,
         "benchmarks": benchmarks,
-        "mechanic_context": mechanic_report(session, creative.account_id),
+        "mechanic_context": mechanic_report(session, creative.account_id, as_of=moment),
         "references": _references(session, creative),
         "comment_doors": _doors(session, lock),
         "continuity": []
@@ -114,36 +157,70 @@ def _rule_item(rule: Any) -> dict[str, Any]:
     }
 
 
-def _skills(session: Session, stage: str, budget: int) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+def _skills(
+    session: Session,
+    stage: str,
+    include_content: bool,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     artifacts = session.scalars(select(SkillArtifact).order_by(SkillArtifact.slug)).all()
-    wanted = STAGE_SKILLS.get(stage)
+    wanted = required_slugs(stage)
+    by_slug = {artifact.slug: artifact for artifact in artifacts}
     included: list[dict[str, Any]] = []
     excluded: list[dict[str, Any]] = []
+    for slug in sorted(wanted):
+        artifact = by_slug.get(slug)
+        if artifact is None or not artifact.current_version_id:
+            excluded.append(
+                {
+                    "slug": slug,
+                    "reason_excluded": "required stage skill has no current version",
+                    "authority": "active skill",
+                }
+            )
+            continue
+        version = session.get(SkillVersion, artifact.current_version_id)
+        if version is None or not version.status.startswith("ACTIVE"):
+            excluded.append(
+                {
+                    "slug": slug,
+                    "reason_excluded": "required stage skill is not active",
+                    "authority": "active skill",
+                    "version_id": None if version is None else version.id,
+                }
+            )
+            continue
+        included.append(_skill_item(artifact, version, stage, include_content))
     for artifact in artifacts:
-        if not artifact.current_version_id:
+        if artifact.slug in wanted or not artifact.current_version_id:
             continue
         version = session.get(SkillVersion, artifact.current_version_id)
         if version is None or not version.status.startswith("ACTIVE"):
             continue
-        item = {
-            "slug": artifact.slug,
-            "source": version.source_path,
-            "scope": version.scope_level,
-            "reason_included": f"current skill version for stage {stage}",
-            "version": version.version_label,
-            "version_id": version.id,
-            "authority": "active skill",
-            "content_hash": version.content_hash,
-            "rule_kind": version.rule_kind,
-        }
-        if wanted is not None and artifact.slug not in wanted:
-            excluded.append({**item, "reason_excluded": f"not part of stage {stage}"})
-            continue
-        if len(included) >= budget and (version.rule_kind or "") != "INVARIANT":
-            excluded.append({**item, "reason_excluded": "heuristic token budget"})
-            continue
-        included.append(item)
+        item = _skill_item(artifact, version, stage, include_content=False)
+        excluded.append({**item, "reason_excluded": f"not part of stage {stage}"})
     return included, excluded
+
+
+def _skill_item(
+    artifact: SkillArtifact,
+    version: SkillVersion,
+    stage: str,
+    include_content: bool,
+) -> dict[str, Any]:
+    item: dict[str, Any] = {
+        "slug": artifact.slug,
+        "source": version.source_path,
+        "scope": version.scope_level,
+        "reason_included": f"required skill for stage {stage}",
+        "version": version.version_label,
+        "version_id": version.id,
+        "authority": "active skill",
+        "content_hash": version.content_hash,
+        "rule_kind": version.rule_kind,
+    }
+    if include_content:
+        item["content"] = version.content
+    return item
 
 
 def _lock(session: Session, creative: Creative) -> StoryLockVersion | None:

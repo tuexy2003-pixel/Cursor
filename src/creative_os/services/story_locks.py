@@ -17,6 +17,7 @@ from creative_os.models.entities import ImmutableVersionError
 from creative_os.schemas.story_lock import FieldPatch, StoryLockDocument
 from creative_os.services.canonical import document_hash
 from creative_os.services.diff import changed_paths, document_diff
+from creative_os.services.lifecycle import mark_lifecycle
 from creative_os.services.projections import replace_version_projections
 from creative_os.services.story_lock_render import render_canonical_markdown
 from creative_os.util import sha256_text, utcnow
@@ -30,6 +31,13 @@ __all__ = [
 ]
 
 _REUSABLE_ROLES = {"BASE", "INGREDIENT", "REFERENCE", "EVIDENCE"}
+_DECISIONS = {"APPROVE": "APPROVED", "REJECT": "REJECTED", "NEEDS_CHANGES": "NEEDS_CHANGES"}
+
+
+class StoryLockDecisionError(ValueError):
+    def __init__(self, code: str, message: str) -> None:
+        super().__init__(message)
+        self.code = code
 
 
 def apply_story_lock_correction(
@@ -39,6 +47,7 @@ def apply_story_lock_correction(
     actor: str,
     reason: str,
     patches: list[FieldPatch] | None = None,
+    expected_current_story_lock_version_id: str | None = None,
 ) -> StoryLockVersion:
     """Trusted human path. The API must pass the server operator, not request JSON."""
     return _write_version(
@@ -50,6 +59,7 @@ def apply_story_lock_correction(
         reason=reason,
         approval_state="APPROVED",
         move_pointer=True,
+        expected_current_story_lock_version_id=expected_current_story_lock_version_id,
     )
 
 
@@ -60,6 +70,7 @@ def propose_story_lock_change(
     proposer: str,
     reason: str,
     patches: list[FieldPatch] | None = None,
+    expected_current_story_lock_version_id: str | None = None,
 ) -> StoryLockVersion:
     """A proposal never moves the current-approved pointer, even if the proposer name matches the operator."""
     return _write_version(
@@ -71,7 +82,13 @@ def propose_story_lock_change(
         reason=reason,
         approval_state="PENDING",
         move_pointer=False,
+        expected_current_story_lock_version_id=expected_current_story_lock_version_id,
     )
+
+
+def version_belongs_to_creative(session: Session, creative_id: str, version: StoryLockVersion) -> bool:
+    lock = session.get(StoryLock, version.story_lock_id)
+    return lock is not None and lock.creative_id == creative_id
 
 
 def decide_story_lock_version(
@@ -82,23 +99,54 @@ def decide_story_lock_version(
     actor: str,
     notes: str | None,
 ) -> StoryLockVersion:
-    allowed = {"APPROVE", "REJECT", "NEEDS_CHANGES"}
-    if decision not in allowed:
-        raise ValueError(f"decision must be one of {', '.join(sorted(allowed))}")
-    if version.approval_state != "PENDING" and decision != "APPROVE":
-        raise ValueError("only a pending proposal can be rejected or sent back")
-    previous_state = creative.current_approved_story_lock_version_id
-    if decision == "APPROVE" and version.approval_state == "PENDING":
+    if decision not in _DECISIONS:
+        raise StoryLockDecisionError(
+            "INVALID_DECISION", f"decision must be one of {', '.join(sorted(_DECISIONS))}"
+        )
+    if not version_belongs_to_creative(session, creative.id, version):
+        raise StoryLockDecisionError(
+            "CROSS_CREATIVE",
+            "story lock version does not belong to this creative",
+        )
+    if version.approval_state != "PENDING":
+        raise StoryLockDecisionError("NOT_PENDING", "only a pending proposal can be decided")
+    new_state = _DECISIONS[decision]
+    previous_pointer = creative.current_approved_story_lock_version_id
+    if decision == "APPROVE":
+        if version.supersedes_version_id != previous_pointer:
+            raise StoryLockDecisionError(
+                "OUTDATED_PROPOSAL",
+                "OUTDATED_PROPOSAL / REBASE_REQUIRED: proposal does not supersede the current approved lock",
+            )
+        current = session.get(StoryLockVersion, previous_pointer) if previous_pointer else None
+        paths = changed_paths(current.content_json, version.content_json) if current else []
+        mark_lifecycle(version)
+        version.approval_state = new_state
+        version.approved_by = actor
+        session.flush()
+        if current is not None:
+            _mark_affected_assets_stale(
+                session,
+                creative,
+                current.id,
+                version.id,
+                paths,
+                version.change_reason,
+            )
         creative.current_approved_story_lock_version_id = version.id
+    else:
+        mark_lifecycle(version)
+        version.approval_state = new_state
+        session.flush()
     session.add(
         ApprovalEvent(
             object_type="story_lock_version",
             object_id=version.story_lock_id,
             version_id=version.id,
-            status=decision if decision != "APPROVE" else "APPROVED",
+            status=new_state,
             actor=actor,
             notes=notes,
-            previous_state=previous_state,
+            previous_state=previous_pointer,
             created_at=utcnow(),
         )
     )
@@ -133,7 +181,16 @@ def _write_version(
     reason: str,
     approval_state: str,
     move_pointer: bool,
+    expected_current_story_lock_version_id: str | None = None,
 ) -> StoryLockVersion:
+    if (
+        expected_current_story_lock_version_id is not None
+        and expected_current_story_lock_version_id != creative.current_approved_story_lock_version_id
+    ):
+        raise StoryLockDecisionError(
+            "STALE_PRECONDITION",
+            "expected_current_story_lock_version_id does not match the current approved version",
+        )
     if not creative.current_approved_story_lock_version_id:
         raise ValueError("creative has no approved story lock version")
     current = session.get(StoryLockVersion, creative.current_approved_story_lock_version_id)

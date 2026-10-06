@@ -4,6 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from creative_os.models import Account, ApprovalEvent, PolicyRule, Program, SkillArtifact, SkillVersion
+from creative_os.services.lifecycle import mark_lifecycle
 from creative_os.util import sha256_text, utcnow
 
 EXAMPLE_BEFORE = "my birthday is literally tomorrow 😭"
@@ -97,6 +98,7 @@ def apply_scope_corrections(session: Session) -> str:
     if money is None:
         raise RuntimeError("money-path principle was not imported")
     if money.status == "active":
+        mark_lifecycle(money)
         money.status = "superseded"
         _approve_scope(
             session,
@@ -111,6 +113,7 @@ def apply_scope_corrections(session: Session) -> str:
     if lanes is None or "Maria" not in lanes.text:
         raise RuntimeError("account-lane principle was not imported")
     if lanes.status == "active":
+        mark_lifecycle(lanes)
         lanes.status = "superseded"
         _approve_scope(
             session,

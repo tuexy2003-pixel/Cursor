@@ -8,6 +8,7 @@ from creative_os.models import (
     CommentCluster,
     CommentDoor,
     Creative,
+    CreativeGenome,
     Experiment,
     ExperimentVariant,
     Post,
@@ -17,6 +18,76 @@ from creative_os.models import (
 
 class ConsistencyError(ValueError):
     pass
+
+
+_REUSABLE_ROLES = {"BASE", "INGREDIENT", "REFERENCE", "EVIDENCE"}
+_STALE_STATES = {"STALE", "STALE_REVIEW_REQUIRED"}
+
+
+def resolve_post_attribution(
+    session: Session,
+    *,
+    creative: Creative | None,
+    account_id: str | None,
+    campaign_id: str | None,
+    story_lock_version_id: str | None,
+    creative_genome_id: str | None,
+    assets: list[Asset],
+    attribution_mode: str,
+) -> tuple[str | None, str | None, str | None]:
+    if attribution_mode not in {"CURRENT_PUBLISH", "HISTORICAL_BACKFILL"}:
+        raise ConsistencyError("attribution_mode must be CURRENT_PUBLISH or HISTORICAL_BACKFILL")
+    resolved_account = account_id
+    if creative and creative.account_id:
+        if resolved_account is None:
+            resolved_account = creative.account_id
+        elif resolved_account != creative.account_id:
+            raise ConsistencyError("post account does not match the creative account")
+    resolved_campaign = campaign_id
+    if creative and creative.campaign_id:
+        if resolved_campaign is None:
+            resolved_campaign = creative.campaign_id
+        elif resolved_campaign != creative.campaign_id:
+            raise ConsistencyError("post campaign does not match the creative campaign")
+    genome_id = _resolve_genome(session, creative, story_lock_version_id, creative_genome_id)
+    if attribution_mode == "CURRENT_PUBLISH":
+        for asset in assets:
+            if (
+                asset.bound_story_lock_version_id
+                and story_lock_version_id
+                and asset.bound_story_lock_version_id != story_lock_version_id
+            ):
+                raise ConsistencyError(f"asset {asset.name} is bound to a different story lock")
+            if asset.role not in _REUSABLE_ROLES and (asset.stale or asset.staleness_state in _STALE_STATES):
+                raise ConsistencyError(f"stale deliverable {asset.name} cannot be published as current")
+    return resolved_account, resolved_campaign, genome_id
+
+
+def _resolve_genome(
+    session: Session,
+    creative: Creative | None,
+    story_lock_version_id: str | None,
+    creative_genome_id: str | None,
+) -> str | None:
+    if creative_genome_id:
+        genome = session.get(CreativeGenome, creative_genome_id)
+        if genome is None:
+            raise ConsistencyError("creative genome was not found")
+        if creative is None or genome.creative_id != creative.id:
+            raise ConsistencyError("creative genome belongs to a different creative")
+        if genome.source_story_lock_version_id != story_lock_version_id:
+            raise ConsistencyError("creative genome describes a different story lock version")
+        return genome.id
+    if creative is None or not creative.current_genome_id or not story_lock_version_id:
+        return None
+    genome = session.get(CreativeGenome, creative.current_genome_id)
+    if genome is None:
+        return None
+    if genome.creative_id != creative.id or genome.source_story_lock_version_id != story_lock_version_id:
+        return None
+    if genome.approval_state != "APPROVED":
+        return None
+    return genome.id
 
 
 def validate_post(
@@ -68,6 +139,10 @@ def validate_door_mapping(
     post = session.get(Post, cluster.post_id)
     if post is None:
         raise ConsistencyError("cluster post is missing")
+    if not post.creative_id or not post.story_lock_version_id:
+        raise ConsistencyError(
+            "post is missing the creative or story lock identity required to map a predicted door"
+        )
     if post.creative_id and door.creative_id != post.creative_id:
         raise ConsistencyError("comment door belongs to a different creative than the post")
     if (

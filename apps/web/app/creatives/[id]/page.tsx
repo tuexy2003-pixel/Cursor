@@ -39,6 +39,10 @@ export default function CreativeDetailPage() {
   const [hook, setHook] = useState("");
   const [reason, setReason] = useState("");
   const [message, setMessage] = useState<string | null>(null);
+  const [stage, setStage] = useState("STORY_DEVELOPMENT");
+  const [asOf, setAsOf] = useState("");
+  const [bundle, setBundle] = useState<Record<string, unknown> | null>(null);
+  const [openSkill, setOpenSkill] = useState<string | null>(null);
 
   function load() {
     apiGet<Detail>(`/creatives/${params.id}`).then(setDetail).catch((err: Error) => setError(err.message));
@@ -60,6 +64,20 @@ export default function CreativeDetailPage() {
       load();
     } catch (err) {
       setMessage(err instanceof Error ? err.message : "correction failed");
+    }
+  }
+
+  async function compileBundle(event: React.FormEvent) {
+    event.preventDefault();
+    setMessage(null);
+    try {
+      const result = await apiSend<Record<string, unknown>>(`/creatives/${params.id}/context-bundles`, {
+        stage,
+        as_of: asOf ? new Date(asOf).toISOString() : null,
+      });
+      setBundle(result);
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : "context bundle failed");
     }
   }
 
@@ -145,6 +163,74 @@ export default function CreativeDetailPage() {
           <p>
             Example invariant {detail.context_preview.global_invariants[0].code}: {detail.context_preview.global_invariants[0].reason_included}. Scope {detail.context_preview.global_invariants[0].scope}. Authority {detail.context_preview.global_invariants[0].authority}.
           </p>
+        )}
+      </section>
+      <section className="card">
+        <h2>Context bundle</h2>
+        <p className="muted">This freezes the exact package a future model would receive. Provider execution is NOT_IMPLEMENTED.</p>
+        <form onSubmit={compileBundle}>
+          <label>Stage
+            <select value={stage} onChange={(event) => setStage(event.target.value)}>
+              <option>RESEARCH</option>
+              <option>CONCEPT_GENERATION</option>
+              <option>STORY_DEVELOPMENT</option>
+              <option>PRODUCTION_ROUTING</option>
+              <option>PRODUCTION_QA</option>
+              <option>PERFORMANCE_INTERPRETATION</option>
+            </select>
+          </label>
+          <label>As of<input type="datetime-local" value={asOf} onChange={(event) => setAsOf(event.target.value)} /></label>
+          <button type="submit">Compile context bundle</button>
+        </form>
+        {bundle && (
+          <>
+            <ul>
+              <li>Bundle id: {String(bundle.id)}</li>
+              <li>Bundle hash: {String(bundle.payload_hash)}</li>
+              <li>Creative: {String(bundle.creative_id)}</li>
+              <li>Account: {String(bundle.account_id ?? "none")}</li>
+              <li>Campaign: {String(bundle.campaign_id ?? "none")}</li>
+              <li>Story lock: {String(bundle.story_lock_version_id)}</li>
+              <li>Account DNA: {String(bundle.account_dna_profile_id ?? "none")}</li>
+              <li>Genome: {String(bundle.creative_genome_id ?? "none")}</li>
+              <li>Stage: {String(bundle.requested_stage)}</li>
+              <li>As of: {String(bundle.as_of)}</li>
+              <li>Global invariants: {Array.isArray(bundle.global_invariants) ? bundle.global_invariants.length : 0}</li>
+              <li>Program rules: {Array.isArray(bundle.program_policies) ? bundle.program_policies.length : 0}</li>
+              <li>Account rules: {Array.isArray(bundle.account_policies) ? bundle.account_policies.length : 0}</li>
+              <li>Campaign rules: {Array.isArray(bundle.campaign_policies) ? bundle.campaign_policies.length : 0}</li>
+              <li>Creative locks: {Array.isArray(bundle.creative_locks) ? bundle.creative_locks.length : 0}</li>
+              <li>Skills: {Array.isArray(bundle.skill_versions) ? bundle.skill_versions.length : 0}</li>
+              <li>Benchmarks: {Array.isArray(bundle.benchmarks) ? bundle.benchmarks.length : 0}</li>
+              <li>Comment doors: {Array.isArray(bundle.comment_doors) ? bundle.comment_doors.length : 0}</li>
+              <li>Continuity: {Array.isArray(bundle.continuity) ? bundle.continuity.length : 0}</li>
+              <li>Mechanic history as of: {String((bundle.mechanic_context as { as_of?: string } | null)?.as_of ?? bundle.as_of)}</li>
+              <li>References: {Array.isArray(bundle.references) ? bundle.references.length : 0}</li>
+              <li>Excluded: {Array.isArray(bundle.excluded_for_token_budget) ? bundle.excluded_for_token_budget.length : 0}</li>
+              <li>Characters: {String(bundle.size_estimate)}. Token estimate: {String(bundle.token_estimate)}</li>
+              <li>Provider execution: {String(bundle.provider_execution)}</li>
+            </ul>
+            {Array.isArray(bundle.excluded_for_token_budget) && bundle.excluded_for_token_budget.length > 0 && (
+              <ul>
+                {bundle.excluded_for_token_budget.map((item) => {
+                  const row = item as { code?: string; slug?: string; name?: string; reason_excluded?: string };
+                  return <li key={`${row.code ?? row.slug ?? row.name}`}>{row.code ?? row.slug ?? row.name}: {row.reason_excluded}</li>;
+                })}
+              </ul>
+            )}
+            {Array.isArray(bundle.skill_versions) && bundle.skill_versions.map((skill) => {
+              const row = skill as { slug: string; version: string; content?: string; reason_included: string; authority: string };
+              return (
+                <div key={row.slug}>
+                  <button type="button" onClick={() => setOpenSkill(openSkill === row.slug ? null : row.slug)}>
+                    {row.slug} {row.version}
+                  </button>
+                  {openSkill === row.slug && <pre>{row.content}</pre>}
+                  <p className="muted">{row.reason_included}. {row.authority}.</p>
+                </div>
+              );
+            })}
+          </>
         )}
       </section>
       <section className="card">

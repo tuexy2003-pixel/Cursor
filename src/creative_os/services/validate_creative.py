@@ -14,7 +14,7 @@ from creative_os.validation.checks import (
     approval_status,
     arithmetic_status,
     aspect_ratio_status,
-    line_items_match_subtotal,
+    line_items_subtotal_status,
     lock_precedence_status,
     product_match_status,
     provenance_status,
@@ -48,8 +48,7 @@ def validate_creative(session: Session, creative: Creative) -> list[tuple[str, s
             document.economics.total,
         )
         results.append(("arithmetic", status, message))
-        prices = [item.unit_price for item in document.line_items if item.unit_price]
-        status, message = line_items_match_subtotal(prices, document.economics.subtotal)
+        status, message = line_items_subtotal_status(document.line_items, document.economics.subtotal)
         results.append(("line_item_subtotal", status, message))
     else:
         results.append(("arithmetic", "NOT_APPLICABLE", "no economics on the lock"))

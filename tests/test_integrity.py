@@ -396,7 +396,12 @@ def test_cluster_members_and_cross_creative_door(session) -> None:
     creative = _creative(session)
     other = session.scalar(select(Creative).where(Creative.slug != creative.slug))
     assert other is not None
-    post = Post(creative_id=creative.id, platform="tiktok", created_at=utcnow())
+    post = Post(
+        creative_id=creative.id,
+        platform="tiktok",
+        story_lock_version_id=creative.current_approved_story_lock_version_id,
+        created_at=utcnow(),
+    )
     session.add(post)
     session.flush()
     comment = Comment(post_id=post.id, body="the airpods??", created_at=utcnow())
