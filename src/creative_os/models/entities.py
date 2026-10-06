@@ -119,6 +119,14 @@ class Creative(Base):
         ),
         nullable=True,
     )
+    selected_concept_id: Mapped[str | None] = mapped_column(
+        ForeignKey(
+            "concept_candidates.id",
+            use_alter=True,
+            name="fk_creative_selected_concept",
+        ),
+        nullable=True,
+    )
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
@@ -561,12 +569,126 @@ class ModelRun(Base):
     context_bundle_id: Mapped[str | None] = mapped_column(ForeignKey("context_bundles.id"), nullable=True)
 
 
+class CreativeTask(Base):
+    __tablename__ = "creative_tasks"
+    __table_args__ = (Index("ix_creative_tasks_program", "program_id", "created_at"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    program_id: Mapped[str] = mapped_column(ForeignKey("programs.id"))
+    account_id: Mapped[str | None] = mapped_column(ForeignKey("accounts.id"), nullable=True)
+    campaign_id: Mapped[str | None] = mapped_column(ForeignKey("campaigns.id"), nullable=True)
+    creative_id: Mapped[str | None] = mapped_column(ForeignKey("creatives.id"), nullable=True)
+    ecosystem_id: Mapped[str | None] = mapped_column(ForeignKey("ecosystems.id"), nullable=True)
+    stage: Mapped[str] = mapped_column(String(80))
+    instruction: Mapped[str] = mapped_column(Text)
+    constraints: Mapped[dict[str, Any]] = mapped_column(JSON)
+    input_refs: Mapped[dict[str, Any]] = mapped_column(JSON)
+    created_by: Mapped[str] = mapped_column(String(160))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    status: Mapped[str] = mapped_column(String(40), default="OPEN")
+    expected_output_type: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+
+_TASK_CONTENT = (
+    "instruction",
+    "constraints",
+    "input_refs",
+    "stage",
+    "program_id",
+    "account_id",
+    "campaign_id",
+    "creative_id",
+    "ecosystem_id",
+    "expected_output_type",
+    "notes",
+    "created_by",
+)
+
+
+@event.listens_for(CreativeTask, "before_update")
+def _reject_consumed_task_mutation(_mapper, _connection, target: CreativeTask) -> None:
+    from sqlalchemy.orm.attributes import get_history
+
+    from creative_os.services.lifecycle import consume_lifecycle
+
+    status = get_history(target, "status")
+    old = status.deleted[0] if status.deleted else target.status
+    if old == "CONSUMED":
+        raise ImmutableVersionError(
+            f"creative task {target.id} is immutable after it compiled a context bundle"
+        )
+    content_changed = any(get_history(target, attr).has_changes() for attr in _TASK_CONTENT)
+    if not status.has_changes():
+        return
+    new = status.added[0] if status.added else None
+    if (old, new) != ("OPEN", "CONSUMED") or not consume_lifecycle(target) or content_changed:
+        raise ImmutableVersionError("creative task status can only move from OPEN to CONSUMED")
+
+
+class ConceptCandidate(Base):
+    __tablename__ = "concept_candidates"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    task_id: Mapped[str | None] = mapped_column(ForeignKey("creative_tasks.id"), nullable=True)
+    program_id: Mapped[str] = mapped_column(ForeignKey("programs.id"))
+    account_id: Mapped[str | None] = mapped_column(ForeignKey("accounts.id"), nullable=True)
+    campaign_id: Mapped[str | None] = mapped_column(ForeignKey("campaigns.id"), nullable=True)
+    ecosystem_id: Mapped[str | None] = mapped_column(ForeignKey("ecosystems.id"), nullable=True)
+    source_model_run_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    title: Mapped[str] = mapped_column(String(240))
+    premise: Mapped[str | None] = mapped_column(Text, nullable=True)
+    family: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    hook_direction: Mapped[str | None] = mapped_column(Text, nullable=True)
+    commerce_relation: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    structured_payload: Mapped[dict[str, Any]] = mapped_column(JSON)
+    status: Mapped[str] = mapped_column(String(40), default="PROPOSED")
+    created_by: Mapped[str] = mapped_column(String(160))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+_CONCEPT_CONTENT = (
+    "title",
+    "premise",
+    "family",
+    "hook_direction",
+    "commerce_relation",
+    "structured_payload",
+    "task_id",
+    "program_id",
+    "account_id",
+    "campaign_id",
+    "ecosystem_id",
+    "created_by",
+)
+_CONCEPT_TRANSITIONS = {("PROPOSED", "SELECTED"), ("PROPOSED", "REJECTED"), ("SELECTED", "SUPERSEDED")}
+
+
+@event.listens_for(ConceptCandidate, "before_update")
+def _reject_concept_mutation(_mapper, _connection, target: ConceptCandidate) -> None:
+    from sqlalchemy.orm.attributes import get_history
+
+    from creative_os.services.lifecycle import consume_lifecycle
+
+    status = get_history(target, "status")
+    old = status.deleted[0] if status.deleted else target.status
+    content_changed = any(get_history(target, attr).has_changes() for attr in _CONCEPT_CONTENT)
+    if old in {"SELECTED", "REJECTED", "SUPERSEDED"} and content_changed:
+        raise ImmutableVersionError(f"concept {target.id} content is immutable after {old}")
+    if not status.has_changes():
+        return
+    new = status.added[0] if status.added else None
+    if (old, new) not in _CONCEPT_TRANSITIONS or not consume_lifecycle(target) or content_changed:
+        raise ImmutableVersionError(f"concept {target.id} cannot move from {old} to {new}")
+
+
 class ContextBundle(Base):
     __tablename__ = "context_bundles"
     __table_args__ = (Index("ix_context_bundles_creative", "creative_id", "created_at"),)
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
-    creative_id: Mapped[str] = mapped_column(ForeignKey("creatives.id"))
+    creative_id: Mapped[str | None] = mapped_column(ForeignKey("creatives.id"), nullable=True)
+    creative_task_id: Mapped[str | None] = mapped_column(ForeignKey("creative_tasks.id"), nullable=True)
     requested_stage: Mapped[str] = mapped_column(String(80))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     as_of: Mapped[datetime] = mapped_column(DateTime(timezone=True))
@@ -628,6 +750,33 @@ class GenomeFacet(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
 
+def _approved_parent(connection, table: str, parent_id: str) -> bool:
+    from sqlalchemy import text
+
+    row = connection.execute(
+        text(f"SELECT approval_state FROM {table} WHERE id = :id"),
+        {"id": parent_id},
+    ).first()
+    return row is not None and row[0] == "APPROVED"
+
+
+def _reject_if_approved(connection, table: str, parent_id: str, message: str) -> None:
+    if _approved_parent(connection, table, parent_id):
+        raise ImmutableVersionError(message)
+
+
+@event.listens_for(GenomeFacet, "before_insert")
+@event.listens_for(GenomeFacet, "before_update")
+@event.listens_for(GenomeFacet, "before_delete")
+def _reject_approved_facet_mutation(_mapper, connection, target: GenomeFacet) -> None:
+    _reject_if_approved(
+        connection,
+        "creative_genomes",
+        target.genome_id,
+        "approved creative genome facets cannot change in place",
+    )
+
+
 class AccountDnaProfile(Base):
     __tablename__ = "account_dna_profiles"
     __table_args__ = (UniqueConstraint("account_id", "version_number"),)
@@ -659,6 +808,60 @@ class AccountDnaObservation(Base):
     source_path: Mapped[str | None] = mapped_column(Text, nullable=True)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+_PROFILE_TRANSITIONS = {("PENDING", "APPROVED")}
+_GENOME_TRANSITIONS = {("PENDING", "APPROVED")}
+
+
+@event.listens_for(AccountDnaProfile, "before_update")
+def _reject_dna_profile_mutation(_mapper, _connection, target: AccountDnaProfile) -> None:
+    from sqlalchemy.orm.attributes import get_history
+
+    from creative_os.services.lifecycle import consume_lifecycle
+
+    status = get_history(target, "approval_state")
+    if status.has_changes():
+        old = status.deleted[0] if status.deleted else None
+        new = status.added[0] if status.added else None
+        if (old, new) not in _PROFILE_TRANSITIONS or not consume_lifecycle(target):
+            raise ImmutableVersionError(f"account DNA profile {target.id} cannot move from {old} to {new}")
+        return
+    if target.approval_state == "APPROVED":
+        for attr in ("account_id", "version_number", "origin", "supersedes_profile_id"):
+            if get_history(target, attr).has_changes():
+                raise ImmutableVersionError(f"approved account DNA profile {target.id} cannot change {attr}")
+
+
+@event.listens_for(AccountDnaObservation, "before_insert")
+@event.listens_for(AccountDnaObservation, "before_update")
+@event.listens_for(AccountDnaObservation, "before_delete")
+def _reject_approved_observation_mutation(_mapper, connection, target: AccountDnaObservation) -> None:
+    _reject_if_approved(
+        connection,
+        "account_dna_profiles",
+        target.profile_id,
+        "approved account DNA observations cannot change in place",
+    )
+
+
+@event.listens_for(CreativeGenome, "before_update")
+def _reject_genome_mutation(_mapper, _connection, target: CreativeGenome) -> None:
+    from sqlalchemy.orm.attributes import get_history
+
+    from creative_os.services.lifecycle import consume_lifecycle
+
+    status = get_history(target, "approval_state")
+    if status.has_changes():
+        old = status.deleted[0] if status.deleted else None
+        new = status.added[0] if status.added else None
+        if (old, new) not in _GENOME_TRANSITIONS or not consume_lifecycle(target):
+            raise ImmutableVersionError(f"creative genome {target.id} cannot move from {old} to {new}")
+        return
+    if target.approval_state == "APPROVED":
+        for attr in ("creative_id", "source_story_lock_version_id", "version_label", "origin"):
+            if get_history(target, attr).has_changes():
+                raise ImmutableVersionError(f"approved creative genome {target.id} cannot change {attr}")
 
 
 class Experiment(Base):

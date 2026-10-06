@@ -61,6 +61,15 @@ Provider execution still returns `NOT_IMPLEMENTED`.
 - 19 regression cases
 - Supplemental visual hashes, dimensions, and only the relationships the notes state
 
-Creative values come from the current approved story lock. A human correction appends a version and records approval. Only deliverables whose declared field dependencies intersect the change go stale. Reusable bases and ingredients stay current. See `docs/V0_2_INTEGRITY_HARDENING.md` and `docs/V0_2_1_TRUST_CONTEXT.md`.
+Creative values come from the current approved story lock. A human correction appends a version and records approval. Only deliverables whose declared field dependencies intersect the change go stale. Reusable bases and ingredients stay current. See `docs/V0_2_INTEGRITY_HARDENING.md`, `docs/V0_2_1_TRUST_CONTEXT.md`, and `docs/V0_3_CONTEXT_FIDELITY.md`.
+
+A context bundle freezes a creative task plus the authoritative context. Export the provider packet without calling a model:
+
+```bash
+creative-os export-context-bundle <bundle_id> --format markdown
+creative-os export-context-bundle <bundle_id> --format json
+```
+
+The manual evaluation packets are in `evaluation/model_transfer_v1/`. `REVIEWER_RUBRIC.md` stays out of those packets.
 
 Provider execution is stubbed and returns `NOT_IMPLEMENTED`.

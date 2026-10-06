@@ -5,6 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from creative_os.models import Creative, PolicyRule
+from creative_os.services.scope import ContextScope, scope_from_creative
 from creative_os.util import ensure_utc, utcnow
 
 SCOPE_RANK = {"GLOBAL": 0, "PROGRAM": 1, "ACCOUNT": 2, "CAMPAIGN": 3, "CREATIVE": 4}
@@ -14,17 +15,18 @@ class PolicyIntegrityError(RuntimeError):
     pass
 
 
-def applicable(rule: PolicyRule, creative: Creative) -> bool:
+def applicable(rule: PolicyRule, scope: ContextScope | Creative) -> bool:
+    resolved = scope if isinstance(scope, ContextScope) else scope_from_creative(scope)
     if rule.scope_level == "GLOBAL":
         return True
     if rule.scope_level == "PROGRAM":
-        return rule.scope_id == creative.program_id
+        return resolved.program_id is not None and rule.scope_id == resolved.program_id
     if rule.scope_level == "ACCOUNT":
-        return creative.account_id is not None and rule.scope_id == creative.account_id
+        return resolved.account_id is not None and rule.scope_id == resolved.account_id
     if rule.scope_level == "CAMPAIGN":
-        return creative.campaign_id is not None and rule.scope_id == creative.campaign_id
+        return resolved.campaign_id is not None and rule.scope_id == resolved.campaign_id
     if rule.scope_level == "CREATIVE":
-        return rule.scope_id == creative.id
+        return resolved.creative_id is not None and rule.scope_id == resolved.creative_id
     return False
 
 
@@ -43,7 +45,7 @@ def eligible(rule: PolicyRule, as_of: datetime) -> bool:
 
 def resolve_policy(
     session: Session,
-    creative: Creative,
+    creative: Creative | ContextScope,
     as_of: datetime | None = None,
 ) -> list[PolicyRule]:
     included, _excluded = resolve_policy_detail(session, creative, as_of)
@@ -52,14 +54,15 @@ def resolve_policy(
 
 def resolve_policy_detail(
     session: Session,
-    creative: Creative,
+    creative: Creative | ContextScope,
     as_of: datetime | None = None,
 ) -> tuple[list[PolicyRule], list[tuple[PolicyRule, str]]]:
     moment = ensure_utc(as_of or utcnow())
+    scope = creative if isinstance(creative, ContextScope) else scope_from_creative(creative)
     rows = session.scalars(select(PolicyRule).order_by(PolicyRule.code, PolicyRule.id)).all()
     grouped: dict[tuple[str, str], list[PolicyRule]] = defaultdict(list)
     for rule in rows:
-        if eligible(rule, moment) and applicable(rule, creative):
+        if eligible(rule, moment) and applicable(rule, scope):
             grouped[(rule.code, rule.rule_kind)].append(rule)
     included: list[PolicyRule] = []
     excluded: list[tuple[PolicyRule, str]] = []

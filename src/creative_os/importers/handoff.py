@@ -34,6 +34,7 @@ from creative_os.models import (
 )
 from creative_os.services.canonical import document_hash
 from creative_os.services.dependencies import seed_known_lock_dependencies
+from creative_os.services.lifecycle import mark_lifecycle
 from creative_os.services.projections import replace_version_projections
 from creative_os.util import sha256_bytes, sha256_text, utcnow
 from creative_os.validation.regression import evaluation_mode_for
@@ -546,7 +547,7 @@ def _genome(session: Session, creative: Creative, version: StoryLockVersion, doc
         source_story_lock_version_id=version.id,
         version_label="import-2026-10-05",
         origin="HUMAN_SET",
-        approval_state="APPROVED",
+        approval_state="PENDING",
         confidence=None,
         source_run_id=None,
         created_at=utcnow(),
@@ -584,6 +585,10 @@ def _genome(session: Session, creative: Creative, version: StoryLockVersion, doc
                 created_at=utcnow(),
             )
         )
+    session.flush()
+    mark_lifecycle(genome)
+    genome.approval_state = "APPROVED"
+    session.flush()
     creative.current_genome_id = genome.id
     report.add(False)
     return genome
@@ -913,7 +918,7 @@ def _dna(session: Session, accounts: dict[str, Account], report: ImportReport) -
             account_id=account.id,
             version_number=1,
             supersedes_profile_id=None,
-            approval_state="APPROVED",
+            approval_state="PENDING",
             origin="HUMAN_SET",
             created_at=utcnow(),
         )
@@ -936,4 +941,8 @@ def _dna(session: Session, accounts: dict[str, Account], report: ImportReport) -
                     created_at=utcnow(),
                 )
             )
+        session.flush()
+        mark_lifecycle(profile)
+        profile.approval_state = "APPROVED"
+        session.flush()
         report.add(False)

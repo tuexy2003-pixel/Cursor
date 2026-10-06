@@ -2,7 +2,7 @@
 
 ## Current phase
 
-Trust and context bundles v0.2.1. Tags `v0.1.0-preservation-baseline` and `v0.2.0-core-integrity` are unchanged. Provider execution still returns `NOT_IMPLEMENTED`. See `docs/V0_2_1_TRUST_CONTEXT.md`.
+Context fidelity v0.3.0. Tags `v0.1.0-preservation-baseline`, `v0.2.0-core-integrity`, and `v0.2.1-trust-context` are unchanged. Provider execution still returns `NOT_IMPLEMENTED`. See `docs/V0_3_CONTEXT_FIDELITY.md`.
 
 ## Completed
 
@@ -11,8 +11,11 @@ Trust and context bundles v0.2.1. Tags `v0.1.0-preservation-baseline` and `v0.2.
 - Alembic `76f00d0e35cb` initial schema and `b7c1a9e0d4f2` preservation baseline
 - Alembic `c8d4e1a07b33` core integrity: canonical story-lock hash, source snapshots, selective staleness, policy provenance, post/genome/DNA bindings, indexes, and foreign keys
 - Alembic `e1f6a2c39d55` trust and context: proposal lifecycle, exact snapshot trees, policy eligibility, context bundles, post campaign binding
+- Alembic `f7b2d4e81a90` context fidelity: creative tasks, concept candidates, nullable bundle creative, selected concept
 - Dry-run context compiler at `GET /api/creatives/{id}/context-preview`
 - Persisted context bundles at `POST /api/creatives/{id}/context-bundles`
+- Provider packet export: `creative-os export-context-bundle <bundle_id> --format markdown|json`
+- Manual packets in `evaluation/model_transfer_v1/`
 - Portable review marker `pytest -m core`
 
 ## Checks
@@ -41,4 +44,4 @@ On this branch, after the integrity migration:
 
 ## Next work
 
-External review of the v0.2 architecture. Do not enable provider execution until that review.
+Manual model-transfer review of the v0.3 packets. Do not enable provider execution.

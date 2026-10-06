@@ -112,6 +112,33 @@ def _run_session(label: str, operation: Callable[[Session], object]) -> None:
     print(f"{label} {result}")
 
 
+def export_context_bundle(bundle_id: str, export_format: str, output: str | None) -> None:
+    import json
+
+    from creative_os.models import ContextBundle
+    from creative_os.services.provider_packet import packet_document
+
+    engine = make_engine()
+    factory = make_session_factory(engine)
+    session = factory()
+    try:
+        bundle = session.get(ContextBundle, bundle_id)
+        if bundle is None:
+            raise SystemExit(f"context bundle {bundle_id} was not found")
+        if export_format == "markdown":
+            text = bundle.compiled_text
+        elif export_format == "json":
+            text = json.dumps(packet_document(bundle), indent=2, ensure_ascii=False) + "\n"
+        else:
+            raise SystemExit("format must be markdown or json")
+    finally:
+        session.close()
+    if output:
+        Path(output).write_text(text, encoding="utf-8")
+    else:
+        print(text, end="" if text.endswith("\n") else "\n")
+
+
 def serve() -> None:
     import uvicorn
 
@@ -138,6 +165,10 @@ def main(argv: list[str] | None = None) -> None:
     reset = sub.add_parser("reset-db", help="Delete the local SQLite database and migrate")
     reset.add_argument("--seed", action="store_true", help="Import the handoff after reset")
     sub.add_parser("serve", help="Run the API")
+    export = sub.add_parser("export-context-bundle", help="Export a frozen provider packet")
+    export.add_argument("bundle_id")
+    export.add_argument("--format", required=True, choices=("markdown", "json"))
+    export.add_argument("--output")
     args = parser.parse_args(argv)
     if args.command == "migrate":
         migrate()
@@ -151,6 +182,8 @@ def main(argv: list[str] | None = None) -> None:
         reset_db(seed=args.seed)
     elif args.command == "serve":
         serve()
+    elif args.command == "export-context-bundle":
+        export_context_bundle(args.bundle_id, args.format, args.output)
 
 
 if __name__ == "__main__":

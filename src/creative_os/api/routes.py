@@ -3,6 +3,7 @@ from decimal import Decimal, InvalidOperation
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
@@ -68,6 +69,7 @@ from creative_os.services.context_compiler import compile_context
 from creative_os.services.diff import deep_diff
 from creative_os.services.experiments import validate_experiment_isolation
 from creative_os.services.mechanics import mechanic_report
+from creative_os.services.provider_packet import packet_document
 from creative_os.services.story_lock_render import render_canonical_markdown
 from creative_os.services.story_locks import (
     StoryLockDecisionError,
@@ -76,6 +78,7 @@ from creative_os.services.story_locks import (
     propose_story_lock_change,
     version_belongs_to_creative,
 )
+from creative_os.services.tasks import create_creative_task
 from creative_os.services.validate_creative import validate_creative
 from creative_os.util import post_age_hours, utcnow
 from creative_os.validation.regression import run_regression_case
@@ -126,6 +129,8 @@ class ContextBundleIn(BaseModel):
     stage: str = "STORY_DEVELOPMENT"
     as_of: datetime | None = None
     heuristic_budget: int = 24
+    instruction: str | None = None
+    expected_output_type: str | None = None
 
 
 class SnapshotIn(BaseModel):
@@ -565,16 +570,45 @@ def compile_bundle(
 ) -> dict[str, object]:
     creative = _creative_or_404(session, creative_id)
     try:
+        task = create_creative_task(
+            session,
+            program_id=creative.program_id,
+            account_id=creative.account_id,
+            campaign_id=creative.campaign_id,
+            creative_id=creative.id,
+            ecosystem_id=creative.ecosystem_id,
+            stage=body.stage,
+            instruction=body.instruction or f"Compile {body.stage} context for {creative.slug}.",
+            created_by=get_settings().operator_identity,
+            expected_output_type=body.expected_output_type,
+        )
         bundle = create_context_bundle(
             session,
             creative,
             stage=body.stage,
             as_of=body.as_of,
             heuristic_budget=body.heuristic_budget,
+            task=task,
         )
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     return _bundle_view(bundle)
+
+
+@router.get("/context-bundles/{bundle_id}/packet")
+def export_bundle_packet(
+    bundle_id: str,
+    format: str = "markdown",
+    session: Session = Depends(session_dep),
+) -> object:
+    bundle = session.get(ContextBundle, bundle_id)
+    if bundle is None:
+        raise HTTPException(status_code=404, detail="context bundle not found")
+    if format == "json":
+        return packet_document(bundle)
+    if format == "markdown":
+        return PlainTextResponse(bundle.compiled_text)
+    raise HTTPException(status_code=400, detail="format must be markdown or json")
 
 
 @router.get("/creatives/{creative_id}/context-bundles/{bundle_id}")
@@ -603,6 +637,14 @@ def _bundle_view(bundle: ContextBundle) -> dict[str, object]:
         "creative_genome_id": bundle.creative_genome_id,
         "size_estimate": bundle.size_estimate,
         "token_estimate": bundle.token_estimate,
+        "creative_task_id": bundle.creative_task_id,
+        "task": payload.get("task"),
+        "genome_state": payload.get("genome_state"),
+        "section_sizes": payload.get("section_sizes"),
+        "story_lock_floating_hook": (
+            ((payload.get("current_story_lock_version") or {}).get("document") or {}).get("floating_hook")
+        ),
+        "output_contract": (payload.get("output_contract") or {}).get("name"),
         "provider_execution": "NOT_IMPLEMENTED",
         "global_invariants": payload.get("global_invariants", []),
         "program_policies": payload.get("program_policies", []),

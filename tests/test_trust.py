@@ -41,6 +41,7 @@ from creative_os.services.story_locks import (
     decide_story_lock_version,
     propose_story_lock_change,
 )
+from creative_os.services.tasks import create_creative_task
 from creative_os.util import post_age_hours, sha256_text, utcnow
 from creative_os.validation.checks import line_items_subtotal_status
 
@@ -326,8 +327,19 @@ def test_context_bundle_freezes_skill_content_and_as_of(session) -> None:
         )
     )
     session.flush()
-    first = create_context_bundle(session, creative, stage="STORY_DEVELOPMENT", as_of=AS_OF)
-    second = create_context_bundle(session, creative, stage="STORY_DEVELOPMENT", as_of=AS_OF)
+    task = create_creative_task(
+        session,
+        program_id=creative.program_id,
+        account_id=creative.account_id,
+        campaign_id=creative.campaign_id,
+        creative_id=creative.id,
+        ecosystem_id=creative.ecosystem_id,
+        stage="STORY_DEVELOPMENT",
+        instruction="Audit the current story.",
+        created_by="operator",
+    )
+    first = create_context_bundle(session, creative, task=task, as_of=AS_OF)
+    second = create_context_bundle(session, creative, task=task, as_of=AS_OF)
     assert first.payload_hash == second.payload_hash
     assert first.story_lock_version_id == creative.current_approved_story_lock_version_id
     assert first.account_dna_profile_id == maria.current_approved_dna_profile_id
@@ -344,7 +356,7 @@ def test_context_bundle_freezes_skill_content_and_as_of(session) -> None:
     apply_story_lock_correction(
         session, creative, {"floating_hook": "bundle changes"}, actor="operator", reason="new truth"
     )
-    changed = create_context_bundle(session, creative, stage="STORY_DEVELOPMENT", as_of=AS_OF)
+    changed = create_context_bundle(session, creative, task=task, as_of=AS_OF)
     assert changed.payload_hash != first.payload_hash
     first.compiled_text = "mutated"
     with pytest.raises(ImmutableVersionError):
