@@ -7,6 +7,7 @@ from sqlalchemy import (
     Boolean,
     DateTime,
     ForeignKey,
+    Index,
     Integer,
     Numeric,
     String,
@@ -64,6 +65,14 @@ class Account(Base):
     slug: Mapped[str] = mapped_column(String(120))
     name: Mapped[str] = mapped_column(String(240))
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    current_approved_dna_profile_id: Mapped[str | None] = mapped_column(
+        ForeignKey(
+            "account_dna_profiles.id",
+            use_alter=True,
+            name="fk_account_current_dna",
+        ),
+        nullable=True,
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
 
@@ -101,6 +110,14 @@ class Creative(Base):
         ),
         nullable=True,
     )
+    current_genome_id: Mapped[str | None] = mapped_column(
+        ForeignKey(
+            "creative_genomes.id",
+            use_alter=True,
+            name="fk_creative_current_genome",
+        ),
+        nullable=True,
+    )
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
@@ -126,10 +143,14 @@ class StoryLockVersion(Base):
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     story_lock_id: Mapped[str] = mapped_column(ForeignKey("story_locks.id"))
     version_number: Mapped[int] = mapped_column(Integer)
-    supersedes_version_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    supersedes_version_id: Mapped[str | None] = mapped_column(
+        ForeignKey("story_lock_versions.id"), nullable=True
+    )
     content_json: Mapped[dict[str, Any]] = mapped_column(JSON)
     content_markdown: Mapped[str] = mapped_column(Text)
     content_hash: Mapped[str] = mapped_column(String(64))
+    document_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    approval_state: Mapped[str] = mapped_column(String(40), default="APPROVED")
     change_reason: Mapped[str] = mapped_column(Text)
     approved_by: Mapped[str | None] = mapped_column(String(160), nullable=True)
     source_path: Mapped[str | None] = mapped_column(Text, nullable=True)
@@ -143,7 +164,21 @@ class StoryLockVersion(Base):
 def _reject_story_lock_mutation(_mapper, _connection, target: StoryLockVersion) -> None:
     from sqlalchemy.orm.attributes import get_history
 
-    for attr in ("content_json", "content_markdown", "content_hash"):
+    protected = (
+        "content_json",
+        "content_markdown",
+        "content_hash",
+        "document_hash",
+        "change_reason",
+        "approved_by",
+        "supersedes_version_id",
+        "source_path",
+        "source_hash",
+        "version_number",
+        "story_lock_id",
+        "approval_state",
+    )
+    for attr in protected:
         if get_history(target, attr).has_changes():
             raise ImmutableVersionError(
                 f"story lock version {target.id} is immutable; field {attr} cannot change"
@@ -190,7 +225,7 @@ class SkillVersion(Base):
     content_hash: Mapped[str] = mapped_column(String(64))
     source_path: Mapped[str] = mapped_column(Text)
     effective_from: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
-    supersedes_version_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    supersedes_version_id: Mapped[str | None] = mapped_column(ForeignKey("skill_versions.id"), nullable=True)
     approval_state: Mapped[str] = mapped_column(String(40))
     dependencies: Mapped[list[Any]] = mapped_column(JSON)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
@@ -211,14 +246,33 @@ class PolicyRule(Base):
     source_path: Mapped[str | None] = mapped_column(Text, nullable=True)
     content_hash: Mapped[str] = mapped_column(String(64))
     effective_from: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    effective_to: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    supersedes_rule_id: Mapped[str | None] = mapped_column(ForeignKey("policy_rules.id"), nullable=True)
+    source_skill_version_id: Mapped[str | None] = mapped_column(ForeignKey("skill_versions.id"), nullable=True)
+    source_artifact_id: Mapped[str | None] = mapped_column(ForeignKey("source_artifacts.id"), nullable=True)
+    approval_state: Mapped[str] = mapped_column(String(40), default="APPROVED")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class SourceSnapshot(Base):
+    __tablename__ = "source_snapshots"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    label: Mapped[str] = mapped_column(String(160), unique=True)
+    captured_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    root_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    source_description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    immutable: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
 
 class SourceArtifact(Base):
     __tablename__ = "source_artifacts"
+    __table_args__ = (UniqueConstraint("snapshot_id", "relative_path"),)
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
-    relative_path: Mapped[str] = mapped_column(Text, unique=True)
+    snapshot_id: Mapped[str] = mapped_column(ForeignKey("source_snapshots.id"))
+    relative_path: Mapped[str] = mapped_column(Text)
     sha256: Mapped[str] = mapped_column(String(64))
     size_bytes: Mapped[int] = mapped_column(Integer)
     kind: Mapped[str] = mapped_column(String(40))
@@ -237,6 +291,10 @@ class ReferenceBank(Base):
 
 class Asset(Base):
     __tablename__ = "assets"
+    __table_args__ = (
+        Index("ix_assets_creative_id", "creative_id"),
+        Index("ix_assets_bound_story_lock_version_id", "bound_story_lock_version_id"),
+    )
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     creative_id: Mapped[str | None] = mapped_column(ForeignKey("creatives.id"), nullable=True)
@@ -258,6 +316,7 @@ class Asset(Base):
     source_exists_claim: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
     approved: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
     stale: Mapped[bool] = mapped_column(Boolean, default=False)
+    staleness_state: Mapped[str] = mapped_column(String(40), default="CURRENT")
     ecosystem_code: Mapped[str | None] = mapped_column(String(80), nullable=True)
     story_key: Mapped[str | None] = mapped_column(String(160), nullable=True)
     editing_method: Mapped[str | None] = mapped_column(String(120), nullable=True)
@@ -292,6 +351,20 @@ class ExampleLink(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
 
+class AssetLockDependency(Base):
+    __tablename__ = "asset_lock_dependencies"
+    __table_args__ = (UniqueConstraint("asset_id", "field_path"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    asset_id: Mapped[str] = mapped_column(ForeignKey("assets.id"))
+    creative_id: Mapped[str | None] = mapped_column(ForeignKey("creatives.id"), nullable=True)
+    field_path: Mapped[str] = mapped_column(String(240))
+    slide_index: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    dependency_kind: Mapped[str] = mapped_column(String(40))
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    explicit: Mapped[bool] = mapped_column(Boolean, default=True)
+
+
 class StaleArtifactRecord(Base):
     __tablename__ = "stale_artifact_records"
 
@@ -300,7 +373,10 @@ class StaleArtifactRecord(Base):
     story_lock_version_id: Mapped[str | None] = mapped_column(
         ForeignKey("story_lock_versions.id"), nullable=True
     )
-    superseded_by_version_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    superseded_by_version_id: Mapped[str | None] = mapped_column(
+        ForeignKey("story_lock_versions.id"), nullable=True
+    )
+    staleness_state: Mapped[str] = mapped_column(String(40), default="STALE")
     reason: Mapped[str] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
@@ -396,12 +472,20 @@ class CreativeGenome(Base):
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     creative_id: Mapped[str] = mapped_column(ForeignKey("creatives.id"))
+    source_story_lock_version_id: Mapped[str | None] = mapped_column(
+        ForeignKey("story_lock_versions.id"), nullable=True
+    )
     version_label: Mapped[str] = mapped_column(String(80))
+    origin: Mapped[str] = mapped_column(String(40), default="HUMAN_SET")
+    approval_state: Mapped[str] = mapped_column(String(40), default="APPROVED")
+    confidence: Mapped[float | None] = mapped_column(Numeric(4, 3), nullable=True)
+    source_run_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
 
 class GenomeFacet(Base):
     __tablename__ = "genome_facets"
+    __table_args__ = (Index("ix_genome_facets_genome_dimension", "genome_id", "dimension"),)
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     genome_id: Mapped[str] = mapped_column(ForeignKey("creative_genomes.id"))
@@ -420,12 +504,17 @@ class AccountDnaProfile(Base):
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     account_id: Mapped[str] = mapped_column(ForeignKey("accounts.id"))
     version_number: Mapped[int] = mapped_column(Integer)
-    supersedes_profile_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    supersedes_profile_id: Mapped[str | None] = mapped_column(
+        ForeignKey("account_dna_profiles.id"), nullable=True
+    )
+    approval_state: Mapped[str] = mapped_column(String(40), default="APPROVED")
+    origin: Mapped[str] = mapped_column(String(40), default="HUMAN_SET")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
 
 class AccountDnaObservation(Base):
     __tablename__ = "account_dna_observations"
+    __table_args__ = (Index("ix_account_dna_observations_profile", "profile_id"),)
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     profile_id: Mapped[str] = mapped_column(ForeignKey("account_dna_profiles.id"))
@@ -451,6 +540,8 @@ class Experiment(Base):
     campaign_id: Mapped[str | None] = mapped_column(ForeignKey("campaigns.id"), nullable=True)
     creative_id: Mapped[str | None] = mapped_column(ForeignKey("creatives.id"), nullable=True)
     variable_dimension: Mapped[str] = mapped_column(String(80))
+    mode: Mapped[str] = mapped_column(String(40), default="SINGLE_VARIABLE")
+    changed_dimensions: Mapped[list[Any]] = mapped_column(JSON, default=list)
     fixed_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     primary_metric: Mapped[str | None] = mapped_column(String(80), nullable=True)
     secondary_metrics: Mapped[list[Any]] = mapped_column(JSON)
@@ -472,25 +563,60 @@ class ExperimentVariant(Base):
     is_control: Mapped[bool] = mapped_column(Boolean, default=False)
     changes: Mapped[dict[str, Any]] = mapped_column(JSON)
     fixed: Mapped[dict[str, Any]] = mapped_column(JSON)
-    post_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    post_id: Mapped[str | None] = mapped_column(ForeignKey("posts.id"), nullable=True)
+
+
+class ExperimentVariantPost(Base):
+    __tablename__ = "experiment_variant_posts"
+    __table_args__ = (UniqueConstraint("variant_id", "post_id"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    variant_id: Mapped[str] = mapped_column(ForeignKey("experiment_variants.id"))
+    post_id: Mapped[str] = mapped_column(ForeignKey("posts.id"))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
 
 class Post(Base):
     __tablename__ = "posts"
+    __table_args__ = (
+        Index("ix_posts_account_published", "account_id", "published_at"),
+        Index("ix_posts_creative_id", "creative_id"),
+    )
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     creative_id: Mapped[str | None] = mapped_column(ForeignKey("creatives.id"), nullable=True)
     account_id: Mapped[str | None] = mapped_column(ForeignKey("accounts.id"), nullable=True)
     external_id: Mapped[str | None] = mapped_column(String(160), nullable=True)
     platform: Mapped[str] = mapped_column(String(40))
+    story_lock_version_id: Mapped[str | None] = mapped_column(
+        ForeignKey("story_lock_versions.id"), nullable=True
+    )
+    creative_genome_id: Mapped[str | None] = mapped_column(ForeignKey("creative_genomes.id"), nullable=True)
+    experiment_variant_id: Mapped[str | None] = mapped_column(
+        ForeignKey("experiment_variants.id", use_alter=True, name="fk_post_experiment_variant"),
+        nullable=True,
+    )
     url: Mapped[str | None] = mapped_column(Text, nullable=True)
     published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
 
+class PostAsset(Base):
+    __tablename__ = "post_assets"
+    __table_args__ = (UniqueConstraint("post_id", "asset_id", "slide_index"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    post_id: Mapped[str] = mapped_column(ForeignKey("posts.id"))
+    asset_id: Mapped[str] = mapped_column(ForeignKey("assets.id"))
+    slide_index: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    sort_order: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    role: Mapped[str | None] = mapped_column(String(40), nullable=True)
+
+
 class PerformanceSnapshot(Base):
     __tablename__ = "performance_snapshots"
+    __table_args__ = (Index("ix_performance_post_captured", "post_id", "captured_at"),)
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     post_id: Mapped[str] = mapped_column(ForeignKey("posts.id"))
@@ -507,6 +633,8 @@ class PerformanceSnapshot(Base):
     link_clicks: Mapped[int | None] = mapped_column(Integer, nullable=True)
     conversions: Mapped[int | None] = mapped_column(Integer, nullable=True)
     revenue: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    revenue_amount: Mapped[float | None] = mapped_column(Numeric(12, 2), nullable=True)
+    revenue_currency: Mapped[str | None] = mapped_column(String(8), nullable=True)
     watch_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     slide_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     raw_payload: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
@@ -514,6 +642,7 @@ class PerformanceSnapshot(Base):
 
 class CommentDoor(Base):
     __tablename__ = "comment_doors"
+    __table_args__ = (Index("ix_comment_doors_creative_lock", "creative_id", "story_lock_version_id"),)
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     creative_id: Mapped[str] = mapped_column(ForeignKey("creatives.id"))
@@ -527,6 +656,7 @@ class CommentDoor(Base):
 
 class Comment(Base):
     __tablename__ = "comments"
+    __table_args__ = (Index("ix_comments_post_id", "post_id"),)
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     post_id: Mapped[str] = mapped_column(ForeignKey("posts.id"))
@@ -551,6 +681,19 @@ class CommentCluster(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
 
+class CommentClusterMember(Base):
+    __tablename__ = "comment_cluster_members"
+    __table_args__ = (UniqueConstraint("cluster_id", "comment_id"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    cluster_id: Mapped[str] = mapped_column(ForeignKey("comment_clusters.id"))
+    comment_id: Mapped[str] = mapped_column(ForeignKey("comments.id"))
+    confidence: Mapped[float | None] = mapped_column(Numeric(4, 3), nullable=True)
+    assigned_by: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    human_override: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
 class CommentDoorMapping(Base):
     __tablename__ = "comment_door_mappings"
 
@@ -564,7 +707,10 @@ class CommentDoorMapping(Base):
 
 class StoryLineItem(Base):
     __tablename__ = "story_line_items"
-    __table_args__ = (UniqueConstraint("story_lock_version_id", "position"),)
+    __table_args__ = (
+        UniqueConstraint("story_lock_version_id", "position"),
+        Index("ix_story_line_items_version", "story_lock_version_id"),
+    )
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     story_lock_version_id: Mapped[str] = mapped_column(ForeignKey("story_lock_versions.id"))
@@ -582,7 +728,10 @@ class StoryLineItem(Base):
 
 class SlideProjection(Base):
     __tablename__ = "slide_projections"
-    __table_args__ = (UniqueConstraint("story_lock_version_id", "slide_index"),)
+    __table_args__ = (
+        UniqueConstraint("story_lock_version_id", "slide_index"),
+        Index("ix_slide_projections_version", "story_lock_version_id"),
+    )
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     story_lock_version_id: Mapped[str] = mapped_column(ForeignKey("story_lock_versions.id"))
@@ -619,9 +768,16 @@ class ViralTextureDetail(Base):
 
 class MechanicObservation(Base):
     __tablename__ = "mechanic_observations"
+    __table_args__ = (Index("ix_mechanics_account_dimension_time", "account_id", "dimension", "observed_at"),)
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     creative_id: Mapped[str] = mapped_column(ForeignKey("creatives.id"))
+    account_id: Mapped[str | None] = mapped_column(ForeignKey("accounts.id"), nullable=True)
+    post_id: Mapped[str | None] = mapped_column(ForeignKey("posts.id"), nullable=True)
+    story_lock_version_id: Mapped[str | None] = mapped_column(
+        ForeignKey("story_lock_versions.id"), nullable=True
+    )
+    genome_id: Mapped[str | None] = mapped_column(ForeignKey("creative_genomes.id"), nullable=True)
     dimension: Mapped[str] = mapped_column(String(80))
     value: Mapped[str] = mapped_column(Text)
     observed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))

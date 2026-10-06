@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from creative_os.config import repo_root
 from creative_os.importers.story_lock_parser import parse_story_lock_markdown
 from creative_os.validation.checks import (
@@ -9,6 +11,8 @@ from creative_os.validation.checks import (
     weekday_status,
 )
 from creative_os.validation.regression import MODEL_CODES, run_regression_case
+
+pytestmark = pytest.mark.core
 
 
 def test_current_lock_parser_uses_approved_values() -> None:

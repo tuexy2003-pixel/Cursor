@@ -1,3 +1,4 @@
+import pytest
 from sqlalchemy import func, select
 
 from creative_os.config import repo_root
@@ -16,6 +17,8 @@ from creative_os.models import (
 from creative_os.models.entities import ImmutableVersionError
 from creative_os.services.diff import document_diff
 from creative_os.services.story_locks import apply_story_lock_correction
+
+pytestmark = pytest.mark.core
 
 
 def test_import_is_idempotent_and_counts_contracts(session) -> None:
@@ -84,7 +87,14 @@ def test_human_correction_versions_lock_and_marks_assets_stale(session) -> None:
     assert approval.actor == "Tyrel"
     stale = session.scalars(select(StaleArtifactRecord)).all()
     assert stale
-    assert all(asset.stale for asset in bound)
+    by_name = {asset.name: asset for asset in bound}
+    assert by_name["Target S1 final"].staleness_state == "STALE"
+    assert by_name["Target S2 final"].stale is False
+    assert by_name["Target S3 final"].stale is False
+    assert by_name["Tyrel's AirPods 5 Target screenshot"].stale is False
+    assert by_name["S2 product images"].stale is False
+    assert by_name["AirPods 5 box photo"].stale is False
+    assert updated.document_hash != original.document_hash
     try:
         original.content_markdown = "mutated"
         session.flush()

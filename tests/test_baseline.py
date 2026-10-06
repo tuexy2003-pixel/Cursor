@@ -1,3 +1,4 @@
+import pytest
 from sqlalchemy import func, select
 
 from creative_os.config import repo_root
@@ -16,6 +17,8 @@ from creative_os.models import (
 )
 from creative_os.services.baseline import EXAMPLE_AFTER, EXAMPLE_BEFORE, apply_preservation_baseline
 from creative_os.services.validate_creative import validate_creative
+
+pytestmark = pytest.mark.full_assets
 
 
 def _seed(session):

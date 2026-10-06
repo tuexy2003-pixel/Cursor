@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "creative-os"
-version = "0.1.0"
+version = "0.2.0"
 description = "Versioned creative operating system around the existing MyDashPerks skill layer."
 requires-python = ">=3.12"
 dependencies = [
@@ -56,3 +56,7 @@ warn_unused_ignores = false
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+markers = [
+  "core: portable source-review checks that do not need visual binaries",
+  "full_assets: supplemental visual binaries from the example archives",
+]

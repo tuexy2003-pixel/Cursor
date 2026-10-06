@@ -1,60 +1,26 @@
-from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from creative_os.models import (
-    BenchmarkCreative,
-    Creative,
-    MechanicObservation,
-    PolicyRule,
-    SkillArtifact,
-    SkillVersion,
-    StoryLockVersion,
-)
+from creative_os.models import Creative
+from creative_os.services.context_compiler import compile_context
 
 
-def assemble_context(session: Session, creative: Creative, limit: int = 8) -> dict[str, object]:
-    """Select the context a future creative provider would receive. Does not dump the database."""
-    global_rules = session.scalars(
-        select(PolicyRule).where(PolicyRule.scope_level == "GLOBAL", PolicyRule.status == "active").limit(limit)
-    ).all()
-    program_rules = session.scalars(
-        select(PolicyRule)
-        .where(
-            PolicyRule.scope_level == "PROGRAM",
-            PolicyRule.scope_id == creative.program_id,
-            PolicyRule.status == "active",
-        )
-        .limit(limit)
-    ).all()
-    current_ids = [
-        row.current_version_id for row in session.scalars(select(SkillArtifact)).all() if row.current_version_id
-    ]
-    if current_ids:
-        skills = session.scalars(
-            select(SkillVersion).where(SkillVersion.id.in_(current_ids), SkillVersion.status.like("ACTIVE%"))
-        ).all()
-    else:
-        skills = session.scalars(
-            select(SkillVersion).where(SkillVersion.status.like("ACTIVE%")).limit(limit)
-        ).all()
-    lock = None
-    if creative.current_approved_story_lock_version_id:
-        lock = session.get(StoryLockVersion, creative.current_approved_story_lock_version_id)
-    benchmarks = session.scalars(
-        select(BenchmarkCreative).where(BenchmarkCreative.holdout.is_(False)).limit(limit)
-    ).all()
-    mechanics = session.execute(
-        select(MechanicObservation.dimension, MechanicObservation.value, func.count())
-        .group_by(MechanicObservation.dimension, MechanicObservation.value)
-        .limit(limit)
-    ).all()
+def assemble_context(session: Session, creative: Creative, limit: int = 24) -> dict[str, object]:
+    """Compatibility summary. The dry-run package is compile_context, not this dict."""
+    package = compile_context(session, creative, stage="full", heuristic_budget=max(limit, 1))
     return {
         "creative_id": creative.id,
-        "global_policy_codes": [rule.code for rule in global_rules],
-        "program_policy_codes": [rule.code for rule in program_rules],
-        "active_skill_ids": [skill.id for skill in skills],
-        "story_lock_version_id": lock.id if lock else None,
-        "benchmark_names": [row.name for row in benchmarks],
+        "global_policy_codes": [item["code"] for item in package["global_invariants"]],
+        "program_policy_codes": [item["code"] for item in package["program_policies"]],
+        "account_policy_codes": [item["code"] for item in package["account_policies"]],
+        "campaign_policy_codes": [item["code"] for item in package["campaign_policies"]],
+        "creative_policy_codes": [item["code"] for item in package["creative_locks"]],
+        "active_skill_ids": [item["version_id"] for item in package["skill_versions"]],
+        "story_lock_version_id": None
+        if package["current_story_lock_version"] is None
+        else package["current_story_lock_version"]["id"],
+        "benchmark_names": [item["name"] for item in package["benchmarks"]],
         "holdouts_excluded": True,
-        "mechanic_counts": [{"dimension": row[0], "value": row[1], "count": row[2]} for row in mechanics],
+        "mechanic_counts": package["mechanic_context"]["windows"]["lifetime"],
+        "compiler": "context-compiler-v1",
+        "provider_execution": "NOT_IMPLEMENTED",
     }

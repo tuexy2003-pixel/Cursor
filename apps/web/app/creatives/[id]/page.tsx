@@ -12,10 +12,24 @@ type Detail = {
   versions: { id: string; version_number: number; change_reason: string; approved_by: string | null; content_hash: string }[];
   line_items: { position: number; title: string; unit_price: string | null; model: string | null }[];
   comment_doors: { kind: string; text: string }[];
-  assets: { name: string; role: string; rights_status: string; stale: boolean }[];
+  assets: { name: string; role: string; rights_status: string; stale: boolean; staleness_state?: string }[];
   approvals: { status: string; actor: string; notes: string | null }[];
   genome: { dimension: string; value: string; assignment: string }[];
-  diff_from_previous: Record<string, { from: unknown; to: unknown }> | null;
+  diff_from_previous: { path: string; from: unknown; to: unknown }[] | null;
+  context_preview: {
+    provider_execution: string;
+    requested_stage: string;
+    global_invariants: { code: string; reason_included: string; authority: string; scope: string; version: string }[];
+    program_policies: unknown[];
+    account_policies: unknown[];
+    campaign_policies: unknown[];
+    creative_locks: unknown[];
+    skill_versions: unknown[];
+    excluded_for_token_budget: unknown[];
+    current_story_lock_version: { version_number: number; document_hash: string | null } | null;
+    account_dna: { version: string } | null;
+    creative_genome: { version: string } | null;
+  } | null;
 };
 
 export default function CreativeDetailPage() {
@@ -40,7 +54,7 @@ export default function CreativeDetailPage() {
         actor: "operator",
         reason,
       });
-      setMessage(`Approved version ${result.version_number}. Previous version kept. Bound assets marked stale.`);
+      setMessage(`Approved version ${result.version_number}. Previous version kept. Only affected deliverables were marked stale.`);
       setHook("");
       setReason("");
       load();
@@ -104,14 +118,38 @@ export default function CreativeDetailPage() {
         <table>
           <tbody>
             {detail.assets.map((asset) => (
-              <tr key={asset.name}><td>{asset.name}</td><td>{asset.role}</td><td>{asset.rights_status}</td><td>{asset.stale ? "stale" : "current"}</td></tr>
+              <tr key={asset.name}><td>{asset.name}</td><td>{asset.role}</td><td>{asset.rights_status}</td><td>{asset.staleness_state ?? (asset.stale ? "stale" : "current")}</td></tr>
             ))}
           </tbody>
         </table>
       </section>
       <section className="card">
+        <h2>Context preview</h2>
+        <p className="muted">Dry run only. Provider execution is {detail.context_preview?.provider_execution ?? "NOT_IMPLEMENTED"}.</p>
+        {detail.context_preview && (
+          <ul>
+            <li>Stage: {detail.context_preview.requested_stage}</li>
+            <li>Story lock v{detail.context_preview.current_story_lock_version?.version_number ?? "—"}</li>
+            <li>Global invariants: {detail.context_preview.global_invariants.length}</li>
+            <li>Program policies: {detail.context_preview.program_policies.length}</li>
+            <li>Account policies: {detail.context_preview.account_policies.length}</li>
+            <li>Campaign policies: {detail.context_preview.campaign_policies.length}</li>
+            <li>Creative locks: {detail.context_preview.creative_locks.length}</li>
+            <li>Skill versions: {detail.context_preview.skill_versions.length}</li>
+            <li>Account DNA: {detail.context_preview.account_dna?.version ?? "none"}</li>
+            <li>Genome: {detail.context_preview.creative_genome?.version ?? "none"}</li>
+            <li>Excluded for token budget: {detail.context_preview.excluded_for_token_budget.length}</li>
+          </ul>
+        )}
+        {detail.context_preview?.global_invariants[0] && (
+          <p>
+            Example invariant {detail.context_preview.global_invariants[0].code}: {detail.context_preview.global_invariants[0].reason_included}. Scope {detail.context_preview.global_invariants[0].scope}. Authority {detail.context_preview.global_invariants[0].authority}.
+          </p>
+        )}
+      </section>
+      <section className="card">
         <h2>Human correction</h2>
-        <p className="muted">Creates a new approved version. It does not edit the previous version.</p>
+        <p className="muted">The server records the configured operator. A provider proposal cannot approve itself. Only affected deliverables go stale.</p>
         <form onSubmit={submit}>
           <label>New floating hook<input value={hook} onChange={(event) => setHook(event.target.value)} required /></label>
           <label>Reason<textarea value={reason} onChange={(event) => setReason(event.target.value)} required /></label>

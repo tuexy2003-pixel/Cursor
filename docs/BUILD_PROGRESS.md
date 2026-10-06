@@ -2,58 +2,41 @@
 
 ## Current phase
 
-Preservation baseline v0.1. Phases 0–5 are in the repository. Phase 6 still returns `NOT_IMPLEMENTED`. The seeded database is the imported snapshot plus supplemental visuals and the working production-spec-qa example correction. See `docs/PRESERVATION_BASELINE.md`.
+Core integrity v0.2. The preservation baseline tag `v0.1.0-preservation-baseline` is unchanged. Provider execution still returns `NOT_IMPLEMENTED`. See `docs/V0_2_INTEGRITY_HARDENING.md`.
 
 ## Completed
 
-- Immutable snapshot at `source_snapshots/2026-10-05/` (111 files, mode `a-w`) with `source_snapshots/2026-10-05.SHA256SUMS`
-- `docs/HANDOFF_INGESTION_REPORT.md` and `docs/IMPLEMENTATION_BLUEPRINT.md`
-- Alembic revision `76f00d0e35cb_initial_schema` (circular story-lock foreign key added after both tables exist)
-- Idempotent handoff importer
-- Immutable story-lock versions, approval events, and stale-asset records
-- Deterministic validators and regression classifications
-- Creative genome facets, account DNA, comment doors, experiments, posts, comments, and mechanic counts
-- Operator UI, including a field diff from the previous approved story lock
-- Provider stub
+- Immutable snapshot at `source_snapshots/2026-10-05/` with checksums, plus supplemental visuals beside it
+- Versioned skills, story locks, assets, approvals, genome, DNA, experiments, posts, and comments
+- Alembic `76f00d0e35cb` initial schema and `b7c1a9e0d4f2` preservation baseline
+- Alembic `c8d4e1a07b33` core integrity: canonical story-lock hash, source snapshots, selective staleness, policy provenance, post/genome/DNA bindings, indexes, and foreign keys
+- Dry-run context compiler at `GET /api/creatives/{id}/context-preview`
+- Portable review marker `pytest -m core`
 
-## Tests
+## Checks
 
-Local run on this branch:
+On this branch, after the integrity migration:
 
-- `ruff check src tests` passed
-- `ruff format --check src tests` passed
-- `mypy src` passed
-- `pytest`: 10 passed, including a clean Alembic upgrade plus a second import with `inserted=0`
-- `apps/web`: `tsc --noEmit` and `next build` passed
-- Browser walkthrough: human correction created story-lock v2, kept v1, marked bound assets stale, and showed a `floating_hook` diff. The imported `production-spec-qa` skill still contains “tomorrow”. Benchmarks show `UNKNOWN` where the handoff has no number. A stub run returns `NOT_IMPLEMENTED`.
-
-Clean import counts from `GET /api/summary` before that operator correction:
-
-- programs 1, accounts 3, campaigns 1, creatives 2
-- story lock versions 1, skills 15, skill versions 16 (15 skills plus the live-heat query-hygiene playbook)
-- policy rules 21, assets 25, regression tests 19, benchmarks 11, source artifacts 111
-- importer: `inserted=239 skipped=0`
-
-The running local database also contains the browser verification correction (story lock v2), one experiment, and one stub model run. `creative-os reset-db --seed` restores the imported snapshot only.
+- `ruff check`, `ruff format --check`, `mypy`, and `pytest`
+- `apps/web`: `tsc --noEmit` and `next build`
+- `PYTHONPATH=src pytest -m core` is the command for a source-review zip that keeps the core checksum tree (including the contact-sheet jpg) and omits supplemental visual binaries
 
 ## Decisions
 
-- One Python package, `creative_os`
-- 9:19.6 is a program preference with absolute ratio tolerance 0.008
-- Judgment regression cases return `MODEL_REVIEW_REQUIRED` and never `PASS`
-- The transaction math spec’s $5.33 basket is stored only as source prose. The story lock’s $19.23 document is the creative pointer
-- The production-spec-qa “tomorrow” example is preserved verbatim in the snapshot and in the imported skill
-- SQLite cannot `ALTER` a foreign key, so the current-lock constraint is added with Alembic batch mode after `story_lock_versions` exists
+- `document_hash` is new. Imported `content_hash` and `source_hash` stay historical.
+- Human corrections use the server operator identity. Proposals cannot move the approved pointer.
+- Staleness follows declared JSON paths. Bases and ingredients are not stale just because a hook changed.
+- 9:19.6 remains a program preference. Hard invariants are not dropped to fit a context budget.
+- Remote non-loopback deployment is refused until authentication exists.
 
 ## Known issues
 
-- 18 supplemental files are hashed. 17 indexed rows still have no binary
-- Most asset rights are `UNKNOWN`. The operator’s Messages keyboard base is `USER_OWNED`
-- Asset relations for parent/base/ingredient chains are not populated, so recursive-edit validation stays `HUMAN_REVIEW_REQUIRED` unless a caller supplies the chain
-- No live performance, comment, or experiment history was in the handoff. The experiment and stub run in the local database came from operator verification
-- ChatGPT and Grok model versions are `UNKNOWN`
-- Phase 6 does not execute providers
+- 17 indexed assets still have no binary
+- Most rights remain `UNKNOWN`
+- S3 has no stated visual parent
+- No live performance or provider execution
+- Authentication is a loopback guard plus `COS_OPERATOR_IDENTITY`, not a user directory
 
 ## Next work
 
-Import supplemental visual archives when they are available, then attach hashes and rights reviews. Human-approve a new production-spec-qa skill version if the floating-hook example should say “today”. Add real provider adapters only after that policy version exists.
+External review of the v0.2 architecture. Do not enable provider execution until that review.

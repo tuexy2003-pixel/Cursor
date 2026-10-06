@@ -28,14 +28,21 @@ from creative_os.models import (
     SkillArtifact,
     SkillVersion,
     SourceArtifact,
+    SourceSnapshot,
     StoryLock,
     StoryLockVersion,
 )
+from creative_os.services.canonical import document_hash
+from creative_os.services.dependencies import seed_known_lock_dependencies
 from creative_os.services.projections import replace_version_projections
 from creative_os.util import sha256_bytes, sha256_text, utcnow
 from creative_os.validation.regression import evaluation_mode_for
 
 SNAPSHOT_EFFECTIVE = "2026-10-05T21:50:00-04:00"
+
+
+class SnapshotIntegrityError(RuntimeError):
+    pass
 
 
 class ImportReport:
@@ -54,11 +61,16 @@ class ImportReport:
         return {"inserted": self.inserted, "skipped": self.skipped, "notes": self.notes}
 
 
-def import_handoff(session: Session, snapshot_root: Path) -> ImportReport:
+def import_handoff(
+    session: Session,
+    snapshot_root: Path,
+    snapshot_label: str | None = None,
+) -> ImportReport:
     report = ImportReport()
     if not snapshot_root.is_dir():
         raise FileNotFoundError(f"snapshot root does not exist: {snapshot_root}")
-    _import_files(session, snapshot_root, report)
+    label = snapshot_label or snapshot_root.name
+    _import_files(session, snapshot_root, label, report)
     manifest = json.loads((snapshot_root / "SYSTEM_MANIFEST.json").read_text(encoding="utf-8"))
     program = _program(session, report)
     ecosystems = _ecosystems(session, program, report)
@@ -84,23 +96,43 @@ def import_handoff(session: Session, snapshot_root: Path) -> ImportReport:
     return report
 
 
-def _import_files(session: Session, root: Path, report: ImportReport) -> None:
+def _import_files(session: Session, root: Path, label: str, report: ImportReport) -> None:
     now = utcnow()
+    snapshot = session.scalar(select(SourceSnapshot).where(SourceSnapshot.label == label))
+    if snapshot is None:
+        snapshot = SourceSnapshot(
+            label=label,
+            captured_at=now,
+            root_hash=None,
+            source_description=f"Imported from {root}",
+            immutable=True,
+            created_at=now,
+        )
+        session.add(snapshot)
+        session.flush()
+    manifest_lines: list[str] = []
     for path in sorted(item for item in root.rglob("*") if item.is_file()):
         relative = path.relative_to(root).as_posix()
         data = path.read_bytes()
         digest = sha256_bytes(data)
-        existing = session.scalar(select(SourceArtifact).where(SourceArtifact.relative_path == relative))
+        manifest_lines.append(f"{digest}  {relative}")
+        existing = session.scalar(
+            select(SourceArtifact).where(
+                SourceArtifact.snapshot_id == snapshot.id,
+                SourceArtifact.relative_path == relative,
+            )
+        )
         if existing and existing.sha256 == digest:
             report.add(True)
             continue
         if existing:
-            existing.sha256 = digest
-            existing.size_bytes = len(data)
-            report.add(False)
-            continue
+            raise SnapshotIntegrityError(
+                f"snapshot {label} already has {relative} with hash {existing.sha256}; "
+                f"new bytes hash to {digest}"
+            )
         session.add(
             SourceArtifact(
+                snapshot_id=snapshot.id,
                 relative_path=relative,
                 sha256=digest,
                 size_bytes=len(data),
@@ -109,6 +141,7 @@ def _import_files(session: Session, root: Path, report: ImportReport) -> None:
             )
         )
         report.add(False)
+    snapshot.root_hash = sha256_text("\n".join(manifest_lines))
 
 
 def _kind(relative: str) -> str:
@@ -308,6 +341,15 @@ def _skill_name(text: str, slug: str) -> str:
 
 def _policies(session: Session, root: Path, program: Program, report: ImportReport) -> None:
     text = (root / "PRINCIPLES_VS_HEURISTICS.md").read_text(encoding="utf-8")
+    source = session.scalar(
+        select(SourceArtifact)
+        .join(SourceSnapshot, SourceArtifact.snapshot_id == SourceSnapshot.id)
+        .where(
+            SourceSnapshot.label == root.name,
+            SourceArtifact.relative_path == "PRINCIPLES_VS_HEURISTICS.md",
+        )
+    )
+    source_artifact_id = source.id if source else None
     section = ""
     index = 0
     now = utcnow()
@@ -361,6 +403,8 @@ def _policies(session: Session, root: Path, program: Program, report: ImportRepo
                 status="active",
                 source_path="PRINCIPLES_VS_HEURISTICS.md",
                 content_hash=digest,
+                source_artifact_id=source_artifact_id,
+                approval_state="APPROVED",
                 effective_from=now,
                 created_at=now,
             )
@@ -418,6 +462,8 @@ def _target_creative(
             content_json=payload,
             content_markdown=raw,
             content_hash=digest,
+            document_hash=document_hash(document),
+            approval_state="APPROVED",
             change_reason="Imported current approved story lock from the 2026-10-05 handoff.",
             approved_by="Tyrel",
             source_path="story_locks/TARGET_chore_stuff_STORY_LOCK_current.md",
@@ -440,8 +486,8 @@ def _target_creative(
             )
         )
         replace_version_projections(session, version, document, creative.id)
-        _genome(session, creative, document, report)
-        _mechanics(session, creative, document)
+        genome = _genome(session, creative, version, document, report)
+        _mechanics(session, creative, document, version.id, genome.id if genome else None)
         _creative_policy(session, creative, root, report)
         report.add(False)
     else:
@@ -451,7 +497,7 @@ def _target_creative(
     return creative
 
 
-def _genome(session: Session, creative: Creative, document, report: ImportReport) -> None:
+def _genome(session: Session, creative: Creative, version: StoryLockVersion, document, report: ImportReport):
     existing = session.scalar(
         select(CreativeGenome).where(
             CreativeGenome.creative_id == creative.id,
@@ -459,11 +505,18 @@ def _genome(session: Session, creative: Creative, document, report: ImportReport
         )
     )
     if existing:
+        if creative.current_genome_id is None:
+            creative.current_genome_id = existing.id
         report.add(True)
-        return
+        return existing
     genome = CreativeGenome(
         creative_id=creative.id,
+        source_story_lock_version_id=version.id,
         version_label="import-2026-10-05",
+        origin="HUMAN_SET",
+        approval_state="APPROVED",
+        confidence=None,
+        source_run_id=None,
         created_at=utcnow(),
     )
     session.add(genome)
@@ -499,10 +552,18 @@ def _genome(session: Session, creative: Creative, document, report: ImportReport
                 created_at=utcnow(),
             )
         )
+    creative.current_genome_id = genome.id
     report.add(False)
+    return genome
 
 
-def _mechanics(session: Session, creative: Creative, document) -> None:
+def _mechanics(
+    session: Session,
+    creative: Creative,
+    document,
+    story_lock_version_id: str,
+    genome_id: str | None,
+) -> None:
     observed = utcnow()
     rows = [
         ("hook_pattern", document.floating_hook or ""),
@@ -516,6 +577,10 @@ def _mechanics(session: Session, creative: Creative, document) -> None:
         session.add(
             MechanicObservation(
                 creative_id=creative.id,
+                account_id=creative.account_id,
+                post_id=None,
+                story_lock_version_id=story_lock_version_id,
+                genome_id=genome_id,
                 dimension=dimension,
                 value=value,
                 observed_at=observed,
@@ -660,6 +725,7 @@ def _assets(
             )
         )
         report.add(False)
+    seed_known_lock_dependencies(session, creative)
 
 
 def _rights(path: str, name: str) -> str:
@@ -815,10 +881,13 @@ def _dna(session: Session, accounts: dict[str, Account], report: ImportReport) -
             account_id=account.id,
             version_number=1,
             supersedes_profile_id=None,
+            approval_state="APPROVED",
+            origin="HUMAN_SET",
             created_at=utcnow(),
         )
         session.add(profile)
         session.flush()
+        account.current_approved_dna_profile_id = profile.id
         for field_name, value, kind, sample, notes in observations:
             session.add(
                 AccountDnaObservation(

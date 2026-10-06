@@ -33,11 +33,25 @@ The UI expects the API at `http://127.0.0.1:8000`. Override with `NEXT_PUBLIC_AP
 ## Checks
 
 ```bash
-ruff check src tests
-ruff format --check src tests
-mypy src
+ruff check
+ruff format --check
+mypy
 pytest
 ```
+
+A source-review archive omits the large visual binaries. Its documented check is:
+
+```bash
+PYTHONPATH=src pytest -m core
+```
+
+`pytest -m full_assets` needs the supplemental image archives. If those files are absent, those tests skip.
+
+## Local operator only
+
+The API binds to loopback by default and has no authentication. `COS_API_HOST` must stay `127.0.0.1`, `localhost`, or `::1`. Any other host refuses to start. Remote mutation routes are not supported until operator authentication exists. Provider code cannot approve a story lock. Human approval uses `COS_OPERATOR_IDENTITY`, not an `actor` string from request JSON.
+
+Provider execution still returns `NOT_IMPLEMENTED`.
 
 ## What the import preserves
 
@@ -47,6 +61,6 @@ pytest
 - 19 regression cases
 - Supplemental visual hashes, dimensions, and only the relationships the notes state
 
-Creative values come from the current approved story lock. A human correction appends a version, records approval, and marks assets bound to the previous version stale. It does not rewrite the old version.
+Creative values come from the current approved story lock. A human correction appends a version and records approval. Only deliverables whose declared field dependencies intersect the change go stale. Reusable bases and ingredients stay current. See `docs/V0_2_INTEGRITY_HARDENING.md`.
 
 Provider execution is stubbed and returns `NOT_IMPLEMENTED`.

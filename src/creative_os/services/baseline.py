@@ -150,6 +150,9 @@ def _ensure_program_copy(session: Session, source: PolicyRule, program_id: str) 
             status="active",
             source_path=source.source_path,
             content_hash=source.content_hash,
+            supersedes_rule_id=source.id,
+            source_artifact_id=source.source_artifact_id,
+            approval_state="APPROVED",
             effective_from=utcnow(),
             created_at=utcnow(),
         )

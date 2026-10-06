@@ -85,7 +85,25 @@ class StoryLockDocument(BaseModel):
     extra: dict[str, str] = Field(default_factory=dict)
 
 
+class FieldPatch(BaseModel):
+    path: str
+    value: object
+
+
 class StoryLockCorrection(BaseModel):
-    changes: dict[str, str | bool | None]
-    actor: str
+    changes: dict[str, str | bool | None] = Field(default_factory=dict)
+    patches: list[FieldPatch] = Field(default_factory=list)
+    actor: str = ""
     reason: str
+
+
+class StoryLockProposal(BaseModel):
+    changes: dict[str, str | bool | None] = Field(default_factory=dict)
+    patches: list[FieldPatch] = Field(default_factory=list)
+    proposer: str
+    reason: str
+
+
+class StoryLockDecision(BaseModel):
+    decision: str
+    notes: str | None = None

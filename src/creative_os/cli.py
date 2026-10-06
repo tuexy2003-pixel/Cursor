@@ -115,7 +115,10 @@ def _run_session(label: str, operation: Callable[[Session], object]) -> None:
 def serve() -> None:
     import uvicorn
 
+    from creative_os.services.deployment import assert_local_operator_deployment
+
     settings = get_settings()
+    assert_local_operator_deployment(settings.api_host)
     uvicorn.run(
         "creative_os.api.main:app",
         host=settings.api_host,

@@ -1,3 +1,5 @@
+from datetime import datetime
+from decimal import Decimal, InvalidOperation
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -18,18 +20,21 @@ from creative_os.models import (
     Campaign,
     Comment,
     CommentCluster,
+    CommentClusterMember,
     CommentDoor,
     CommentDoorMapping,
     Creative,
+    CreativeGenome,
     Experiment,
     ExperimentVariant,
+    ExperimentVariantPost,
     GenomeFacet,
-    MechanicObservation,
     ModelProvider,
     ModelRun,
     PerformanceSnapshot,
     PolicyRule,
     Post,
+    PostAsset,
     Program,
     ReferenceBank,
     RegressionTest,
@@ -44,11 +49,28 @@ from creative_os.models import (
     ValidationRun,
 )
 from creative_os.providers.stub import StubProvider
-from creative_os.schemas.story_lock import StoryLockCorrection, StoryLockDocument
-from creative_os.services.context import assemble_context
-from creative_os.services.diff import document_diff
-from creative_os.services.story_lock_render import render_story_lock_markdown
-from creative_os.services.story_locks import apply_story_lock_correction
+from creative_os.schemas.story_lock import (
+    StoryLockCorrection,
+    StoryLockDecision,
+    StoryLockDocument,
+    StoryLockProposal,
+)
+from creative_os.services.consistency import (
+    ConsistencyError,
+    validate_cluster_comments,
+    validate_door_mapping,
+    validate_post,
+)
+from creative_os.services.context_compiler import compile_context
+from creative_os.services.diff import deep_diff
+from creative_os.services.experiments import validate_experiment_isolation
+from creative_os.services.mechanics import mechanic_report
+from creative_os.services.story_lock_render import render_canonical_markdown
+from creative_os.services.story_locks import (
+    apply_story_lock_correction,
+    decide_story_lock_version,
+    propose_story_lock_change,
+)
 from creative_os.services.validate_creative import validate_creative
 from creative_os.util import utcnow
 from creative_os.validation.regression import run_regression_case
@@ -69,14 +91,29 @@ class ExperimentIn(BaseModel):
     variant_name: str = "variant"
     control_changes: dict[str, str] = Field(default_factory=dict)
     variant_changes: dict[str, str] = Field(default_factory=dict)
+    mode: str = "SINGLE_VARIABLE"
+
+
+class PostAssetIn(BaseModel):
+    asset_id: str
+    slide_index: int | None = None
+    role: str | None = None
+    sort_order: int | None = None
 
 
 class PostIn(BaseModel):
     platform: str = "tiktok"
     creative_id: str | None = None
     account_id: str | None = None
+    campaign_id: str | None = None
     url: str | None = None
     notes: str | None = None
+    external_id: str | None = None
+    published_at: datetime | None = None
+    story_lock_version_id: str | None = None
+    creative_genome_id: str | None = None
+    experiment_variant_id: str | None = None
+    assets: list[PostAssetIn] = Field(default_factory=list)
 
 
 class SnapshotIn(BaseModel):
@@ -90,6 +127,8 @@ class SnapshotIn(BaseModel):
     link_clicks: int | None = None
     conversions: int | None = None
     revenue: str | None = None
+    revenue_amount: str | None = None
+    revenue_currency: str | None = None
     measurement_window: str | None = None
     raw_payload: dict[str, str] | None = None
 
@@ -107,6 +146,8 @@ class ClusterIn(BaseModel):
     unexpected: bool = False
     door_id: str | None = None
     relationship: str = "unmatched"
+    comment_ids: list[str] = Field(default_factory=list)
+    assigned_by: str | None = None
 
 
 def session_dep(session: Session = Depends(get_session)) -> Session:
@@ -157,11 +198,11 @@ def accounts(session: Session = Depends(session_dep)) -> list[dict[str, Any]]:
     rows = session.scalars(select(Account).order_by(Account.name)).all()
     payload: list[dict[str, Any]] = []
     for row in rows:
-        profile = session.scalar(
-            select(AccountDnaProfile)
-            .where(AccountDnaProfile.account_id == row.id)
-            .order_by(AccountDnaProfile.version_number.desc())
-        )
+        profile = None
+        if row.current_approved_dna_profile_id:
+            profile = session.get(AccountDnaProfile, row.current_approved_dna_profile_id)
+            if profile is not None and profile.approval_state != "APPROVED":
+                profile = None
         observations: list[dict[str, Any]] = []
         if profile:
             observations = [
@@ -256,7 +297,7 @@ def creative_detail(creative_id: str, session: Session = Depends(session_dep)) -
     if current is not None and current.supersedes_version_id:
         previous = session.get(StoryLockVersion, current.supersedes_version_id)
     diff_from_previous = (
-        document_diff(previous.content_json, current.content_json)
+        deep_diff(previous.content_json, current.content_json)
         if current is not None and previous is not None
         else None
     )
@@ -304,6 +345,7 @@ def creative_detail(creative_id: str, session: Session = Depends(session_dep)) -
                 "role": asset.role,
                 "rights_status": asset.rights_status,
                 "stale": asset.stale,
+                "staleness_state": asset.staleness_state,
                 "original_path": asset.original_path,
                 "present_in_snapshot": asset.present_in_snapshot,
                 "product_model": asset.product_model,
@@ -322,7 +364,7 @@ def creative_detail(creative_id: str, session: Session = Depends(session_dep)) -
         ],
         "genome": genome_facets,
         "diff_from_previous": diff_from_previous,
-        "context_preview": assemble_context(session, creative),
+        "context_preview": compile_context(session, creative, stage="full"),
     }
 
 
@@ -344,13 +386,10 @@ def _lock_version(session: Session, creative_id: str, token: str) -> StoryLockVe
 
 
 def _facets(session: Session, creative_id: str) -> list[dict[str, object]]:
-    from creative_os.models import CreativeGenome
-
-    genome = session.scalar(
-        select(CreativeGenome)
-        .where(CreativeGenome.creative_id == creative_id)
-        .order_by(CreativeGenome.created_at.desc())
-    )
+    creative = session.get(Creative, creative_id)
+    genome = None
+    if creative and creative.current_genome_id:
+        genome = session.get(CreativeGenome, creative.current_genome_id)
     if genome is None:
         return []
     rows = session.scalars(select(GenomeFacet).where(GenomeFacet.genome_id == genome.id)).all()
@@ -371,7 +410,7 @@ def export_lock(creative_id: str, session: Session = Depends(session_dep)) -> di
     creative = _creative_or_404(session, creative_id)
     version = _current_version(session, creative)
     document = StoryLockDocument.model_validate(version.content_json)
-    return {"markdown": render_story_lock_markdown(document), "version_id": version.id}
+    return {"markdown": render_canonical_markdown(document), "version_id": version.id}
 
 
 @router.get("/creatives/{creative_id}/story-lock/diff")
@@ -386,7 +425,7 @@ def lock_diff(
     newer = _lock_version(session, creative_id, right)
     if older is None or newer is None:
         raise HTTPException(status_code=404, detail="story lock version not found")
-    return {"changes": document_diff(older.content_json, newer.content_json)}
+    return {"paths": deep_diff(older.content_json, newer.content_json)}
 
 
 @router.post("/creatives/{creative_id}/story-lock/corrections")
@@ -396,8 +435,16 @@ def correct_lock(
     session: Session = Depends(session_dep),
 ) -> dict[str, object]:
     creative = _creative_or_404(session, creative_id)
+    operator = get_settings().operator_identity
     try:
-        version = apply_story_lock_correction(session, creative, body.changes, body.actor, body.reason)
+        version = apply_story_lock_correction(
+            session,
+            creative,
+            body.changes,
+            operator,
+            body.reason,
+            patches=body.patches,
+        )
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     return {
@@ -405,7 +452,70 @@ def correct_lock(
         "version_number": version.version_number,
         "supersedes_version_id": version.supersedes_version_id,
         "content_hash": version.content_hash,
+        "document_hash": version.document_hash,
+        "approved_by": operator,
     }
+
+
+@router.post("/creatives/{creative_id}/story-lock/proposals")
+def propose_lock(
+    creative_id: str,
+    body: StoryLockProposal,
+    session: Session = Depends(session_dep),
+) -> dict[str, object]:
+    creative = _creative_or_404(session, creative_id)
+    try:
+        version = propose_story_lock_change(
+            session,
+            creative,
+            body.changes,
+            body.proposer,
+            body.reason,
+            patches=body.patches,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return {
+        "version_id": version.id,
+        "version_number": version.version_number,
+        "approval_state": version.approval_state,
+        "current_approved_story_lock_version_id": creative.current_approved_story_lock_version_id,
+    }
+
+
+@router.post("/creatives/{creative_id}/story-lock/versions/{version_id}/decision")
+def decide_lock(
+    creative_id: str,
+    version_id: str,
+    body: StoryLockDecision,
+    session: Session = Depends(session_dep),
+) -> dict[str, object]:
+    creative = _creative_or_404(session, creative_id)
+    version = _lock_version(session, creative_id, version_id)
+    if version is None:
+        raise HTTPException(status_code=404, detail="story lock version not found")
+    operator = get_settings().operator_identity
+    try:
+        decide_story_lock_version(session, creative, version, body.decision, operator, body.notes)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return {
+        "version_id": version.id,
+        "decision": body.decision,
+        "actor": operator,
+        "current_approved_story_lock_version_id": creative.current_approved_story_lock_version_id,
+    }
+
+
+@router.get("/creatives/{creative_id}/context-preview")
+def context_preview(
+    creative_id: str,
+    stage: str = "full",
+    heuristic_budget: int = 24,
+    session: Session = Depends(session_dep),
+) -> dict[str, object]:
+    creative = _creative_or_404(session, creative_id)
+    return compile_context(session, creative, stage=stage, heuristic_budget=heuristic_budget)
 
 
 @router.post("/creatives/{creative_id}/validation")
@@ -618,14 +728,15 @@ def experiments(session: Session = Depends(session_dep)) -> list[dict[str, Any]]
 
 @router.post("/experiments")
 def create_experiment(body: ExperimentIn, session: Session = Depends(session_dep)) -> dict[str, str]:
-    if body.control_changes.keys() & body.variant_changes.keys() and set(body.control_changes) == set(
-        body.variant_changes
-    ):
-        if body.control_changes == body.variant_changes:
-            raise HTTPException(
-                status_code=400,
-                detail="control and variant change the same values; isolate one dimension",
-            )
+    try:
+        changed = validate_experiment_isolation(
+            mode=body.mode,
+            variable_dimension=body.variable_dimension,
+            control=dict(body.control_changes),
+            variant=dict(body.variant_changes),
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
     experiment = Experiment(
         name=body.name,
         hypothesis=body.hypothesis,
@@ -633,6 +744,8 @@ def create_experiment(body: ExperimentIn, session: Session = Depends(session_dep
         campaign_id=body.campaign_id,
         creative_id=body.creative_id,
         variable_dimension=body.variable_dimension,
+        mode=body.mode,
+        changed_dimensions=changed,
         fixed_notes=body.fixed_notes,
         primary_metric=body.primary_metric,
         secondary_metrics=[],
@@ -693,18 +806,71 @@ def posts(session: Session = Depends(session_dep)) -> list[dict[str, Any]]:
 
 @router.post("/posts")
 def create_post(body: PostIn, session: Session = Depends(session_dep)) -> dict[str, str]:
+    creative = session.get(Creative, body.creative_id) if body.creative_id else None
+    if body.creative_id and creative is None:
+        raise HTTPException(status_code=400, detail="creative was not found")
+    account = session.get(Account, body.account_id) if body.account_id else None
+    if body.account_id and account is None:
+        raise HTTPException(status_code=400, detail="account was not found")
+    campaign = session.get(Campaign, body.campaign_id) if body.campaign_id else None
+    if body.campaign_id and campaign is None:
+        raise HTTPException(status_code=400, detail="campaign was not found")
+    lock_id = body.story_lock_version_id
+    if lock_id is None and creative is not None:
+        lock_id = creative.current_approved_story_lock_version_id
+    story_lock = session.get(StoryLockVersion, lock_id) if lock_id else None
+    genome_id = body.creative_genome_id
+    if genome_id is None and creative is not None:
+        genome_id = creative.current_genome_id
+    variant = session.get(ExperimentVariant, body.experiment_variant_id) if body.experiment_variant_id else None
+    if body.experiment_variant_id and variant is None:
+        raise HTTPException(status_code=400, detail="experiment variant was not found")
+    assets = []
+    for spec in body.assets:
+        asset = session.get(Asset, spec.asset_id)
+        if asset is None:
+            raise HTTPException(status_code=400, detail=f"asset {spec.asset_id} was not found")
+        assets.append(asset)
+    try:
+        validate_post(
+            session,
+            creative=creative,
+            account=account,
+            campaign=campaign,
+            story_lock=story_lock,
+            variant=variant,
+            assets=assets,
+        )
+    except ConsistencyError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
     post = Post(
         creative_id=body.creative_id,
         account_id=body.account_id,
         platform=body.platform,
         url=body.url,
         notes=body.notes,
-        published_at=None,
+        external_id=body.external_id,
+        published_at=body.published_at,
+        story_lock_version_id=lock_id,
+        creative_genome_id=genome_id,
+        experiment_variant_id=body.experiment_variant_id,
         created_at=utcnow(),
     )
     session.add(post)
     session.flush()
-    return {"id": post.id}
+    for spec, asset in zip(body.assets, assets, strict=True):
+        session.add(
+            PostAsset(
+                post_id=post.id,
+                asset_id=asset.id,
+                slide_index=spec.slide_index,
+                sort_order=spec.sort_order,
+                role=spec.role or asset.role,
+            )
+        )
+    if variant is not None:
+        session.add(ExperimentVariantPost(variant_id=variant.id, post_id=post.id, created_at=utcnow()))
+    return {"id": post.id, "story_lock_version_id": lock_id or ""}
 
 
 @router.post("/posts/{post_id}/snapshots")
@@ -712,10 +878,16 @@ def add_snapshot(post_id: str, body: SnapshotIn, session: Session = Depends(sess
     post = session.get(Post, post_id)
     if post is None:
         raise HTTPException(status_code=404, detail="post not found")
+    captured_at = utcnow()
+    age = None
+    if post.published_at is not None:
+        age = (captured_at - post.published_at).total_seconds() / 3600
+    amount = _money(body.revenue_amount)
     snap = PerformanceSnapshot(
         post_id=post.id,
         source=body.source,
-        captured_at=utcnow(),
+        captured_at=captured_at,
+        post_age_hours=age,
         measurement_window=body.measurement_window,
         views=body.views,
         likes=body.likes,
@@ -726,6 +898,8 @@ def add_snapshot(post_id: str, body: SnapshotIn, session: Session = Depends(sess
         link_clicks=body.link_clicks,
         conversions=body.conversions,
         revenue=body.revenue,
+        revenue_amount=amount,
+        revenue_currency=body.revenue_currency,
         raw_payload=body.raw_payload,
     )
     session.add(snap)
@@ -785,10 +959,14 @@ def add_comment(post_id: str, body: CommentIn, session: Session = Depends(sessio
 def add_cluster(post_id: str, body: ClusterIn, session: Session = Depends(session_dep)) -> dict[str, str]:
     if session.get(Post, post_id) is None:
         raise HTTPException(status_code=404, detail="post not found")
+    try:
+        comments = validate_cluster_comments(session, post_id, body.comment_ids)
+    except ConsistencyError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
     cluster = CommentCluster(
         post_id=post_id,
         label=body.label,
-        size=body.size,
+        size=body.size if not comments else len(comments),
         example_comments=body.example_comments,
         sentiment=None,
         confidence=None,
@@ -797,9 +975,27 @@ def add_cluster(post_id: str, body: ClusterIn, session: Session = Depends(sessio
     )
     session.add(cluster)
     session.flush()
+    for comment in comments:
+        session.add(
+            CommentClusterMember(
+                cluster_id=cluster.id,
+                comment_id=comment.id,
+                confidence=None,
+                assigned_by=body.assigned_by,
+                human_override=False,
+                created_at=utcnow(),
+            )
+        )
     relationship = body.relationship
     if body.door_id is None and body.unexpected:
         relationship = "unexpected"
+    door = session.get(CommentDoor, body.door_id) if body.door_id else None
+    if body.door_id and door is None:
+        raise HTTPException(status_code=400, detail="comment door was not found")
+    try:
+        validate_door_mapping(session, door, cluster)
+    except ConsistencyError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
     session.add(
         CommentDoorMapping(
             door_id=body.door_id,
@@ -813,24 +1009,17 @@ def add_cluster(post_id: str, body: ClusterIn, session: Session = Depends(sessio
 
 
 @router.get("/novelty")
-def novelty(session: Session = Depends(session_dep)) -> list[dict[str, object]]:
-    rows = session.execute(
-        select(
-            MechanicObservation.dimension,
-            MechanicObservation.value,
-            func.count(),
-            func.max(MechanicObservation.observed_at),
-        ).group_by(MechanicObservation.dimension, MechanicObservation.value)
-    ).all()
-    return [
-        {
-            "dimension": row[0],
-            "value": row[1],
-            "count": row[2],
-            "latest": row[3].isoformat() if row[3] is not None else None,
-        }
-        for row in rows
-    ]
+def novelty(account_id: str | None = None, session: Session = Depends(session_dep)) -> dict[str, object]:
+    return mechanic_report(session, account_id)
+
+
+def _money(value: str | None) -> Decimal | None:
+    if value is None or value == "":
+        return None
+    try:
+        return Decimal(value)
+    except InvalidOperation as exc:
+        raise HTTPException(status_code=400, detail="revenue_amount must be a decimal") from exc
 
 
 @router.get("/runs")
