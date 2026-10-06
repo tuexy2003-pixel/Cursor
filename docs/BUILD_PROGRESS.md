@@ -2,7 +2,7 @@
 
 ## Current phase
 
-Creative selection v0.3.1. Tags `v0.1.0-preservation-baseline`, `v0.2.0-core-integrity`, `v0.2.1-trust-context`, and `v0.3.0-context-fidelity` are unchanged. Text reasoning is limited to concept generation and story-development audit, and stays `NOT_IMPLEMENTED` without a provider key. See `docs/V0_3_1_CREATIVE_SELECTION.md`.
+Safe execution v0.3.2. Tags through `v0.3.1-creative-selection` are unchanged. Text reasoning can be configured and still stay disabled. A live call needs `COS_LIVE_TEXT_REASONING_ENABLED=true` and a human `RunAuthorization` for the exact context bundle. See `docs/V0_3_2_SAFE_EXECUTION.md`.
 
 ## Completed
 
@@ -13,6 +13,7 @@ Creative selection v0.3.1. Tags `v0.1.0-preservation-baseline`, `v0.2.0-core-int
 - Alembic `e1f6a2c39d55` trust and context: proposal lifecycle, exact snapshot trees, policy eligibility, context bundles, post campaign binding
 - Alembic `f7b2d4e81a90` context fidelity: creative tasks, concept candidates, nullable bundle creative, selected concept
 - Alembic `b3d8f1a64c20` creative selection: concept batches, manual evaluations, story-audit records, model-run binding
+- Alembic `c5a1e8d42f06` safe execution: run authorizations, provider invocations, and deterministic fingerprint provenance
 - Dry-run context compiler at `GET /api/creatives/{id}/context-preview`
 - Persisted context bundles at `POST /api/creatives/{id}/context-bundles`
 - Provider packet export: `creative-os export-context-bundle <bundle_id> --format markdown|json`
@@ -40,9 +41,9 @@ On this branch, after the integrity migration:
 - 17 indexed assets still have no binary
 - Most rights remain `UNKNOWN`
 - S3 has no stated visual parent
-- No live performance or provider execution
+- No live research, image, posting, or purchasing execution. Text reasoning stays gated.
 - Authentication is a loopback guard plus `COS_OPERATOR_IDENTITY`, not a user directory
 
 ## Next work
 
-Manual model-transfer review of the v0.3 packets. Do not enable provider execution.
+A human can configure one provider and authorize the prepared Maria / DoorDash concept smoke test. Do not run comparison or the Target audit until that single run is reviewed.

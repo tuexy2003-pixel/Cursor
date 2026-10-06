@@ -154,7 +154,11 @@ def test_distinct_skeletons_are_not_low() -> None:
     assert report["repair_plan"] is None
     social = fingerprint_concept(concepts[1])
     assert "proof_mechanism" not in social
-    assert social["primary_attention_engine"]["assignment"] == "model_extracted"
+    assert social["primary_attention_engine"]["assignment"] == "DETERMINISTIC_INFERRED"
+    assert social["primary_attention_engine"]["source"] == "deterministic skeleton phrases"
+    assert report["assessment_method"] == "DETERMINISTIC_HEURISTIC"
+    assert report["certainty"] == "HEURISTIC"
+    assert report["coverage"] == {"known_count": 5, "total_count": 5}
 
 
 def test_variant_request_allows_a_repeated_skeleton() -> None:
@@ -347,7 +351,15 @@ def test_text_reasoning_stays_inside_its_boundary(session, monkeypatch) -> None:
     parent = session.get(ModelRun, child.parent_run_id)
     assert parent is not None and parent.raw_response == fenced
 
-    for name in ("web_research", "image_generation", "posting", "pinterest", "visual_search"):
+    for name in (
+        "web_research",
+        "image_generation",
+        "image_editing",
+        "posting",
+        "pinterest",
+        "visual_search",
+        "purchasing",
+    ):
         assert name in DISABLED_CAPABILITIES
         with pytest.raises(ReasoningBoundaryError):
             assert_capability_disabled(name)
@@ -372,6 +384,6 @@ def test_text_reasoning_stays_inside_its_boundary(session, monkeypatch) -> None:
     monkeypatch.delenv("COS_XAI_API_KEY", raising=False)
     monkeypatch.delenv("XAI_API_KEY", raising=False)
     missing = execute_text_reasoning(session, bundle, GrokReasoningProvider())
-    assert missing.status == "NOT_IMPLEMENTED"
+    assert missing.status == "NOT_CONFIGURED"
     assert missing.execution_origin == "LIVE_TEXT_REASONING"
     assert missing.context_bundle_hash == bundle.payload_hash

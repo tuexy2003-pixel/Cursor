@@ -27,3 +27,8 @@ button { background: #6b3f1d; color: white; border: 0; width: fit-content; curso
 .columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.8rem; }
 pre.output { white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.78rem; max-height: 24rem; overflow: auto; background: #fbf8f2; padding: 0.6rem; }
 label.choice { display: flex; gap: 0.45rem; align-items: center; font-family: ui-sans-serif, sans-serif; }
+.warning { background: #fff4e5; border: 1px solid #d8a15a; padding: 0.8rem 1rem; }
+.confirm { margin: 0.4rem 0 0; }
+.confirm dt { font-family: ui-sans-serif, sans-serif; font-size: 0.75rem; letter-spacing: 0.04em; color: #5e564c; }
+.confirm dd { margin: 0 0 0.4rem; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.86rem; word-break: break-all; }
+fieldset { border: 1px solid #e4dccb; padding: 0.6rem 0.8rem; }

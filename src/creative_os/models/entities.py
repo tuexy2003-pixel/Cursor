@@ -581,6 +581,60 @@ class ModelRun(Base):
     cost_currency: Mapped[str | None] = mapped_column(String(12), nullable=True)
     usage_metadata: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
     execution_origin: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    run_authorization_id: Mapped[str | None] = mapped_column(ForeignKey("run_authorizations.id"), nullable=True)
+    provider_request_id: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    execution_state: Mapped[str | None] = mapped_column(String(40), nullable=True)
+
+
+class RunAuthorization(Base):
+    """Human permission for one paid text-reasoning execution. A model cannot create this."""
+
+    __tablename__ = "run_authorizations"
+    __table_args__ = (UniqueConstraint("idempotency_key", name="uq_run_authorization_key"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    context_bundle_id: Mapped[str] = mapped_column(ForeignKey("context_bundles.id"))
+    context_bundle_hash: Mapped[str] = mapped_column(String(64))
+    provider_name: Mapped[str] = mapped_column(String(80))
+    model_name: Mapped[str] = mapped_column(String(160))
+    stage: Mapped[str] = mapped_column(String(80))
+    created_by: Mapped[str] = mapped_column(String(160))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    status: Mapped[str] = mapped_column(String(40), default="AUTHORIZED")
+    max_attempts: Mapped[int] = mapped_column(Integer, default=1)
+    attempts_used: Mapped[int] = mapped_column(Integer, default=0)
+    max_output_tokens: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    max_input_tokens: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    max_providers: Mapped[int] = mapped_column(Integer, default=1)
+    allowed_providers: Mapped[list[Any]] = mapped_column(JSON)
+    max_cost: Mapped[float | None] = mapped_column(Numeric(12, 4), nullable=True)
+    currency: Mapped[str | None] = mapped_column(String(12), nullable=True)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    idempotency_key: Mapped[str | None] = mapped_column(String(160), nullable=True)
+
+
+class ProviderInvocation(Base):
+    """One claimed provider attempt. The idempotency key blocks a second paid call."""
+
+    __tablename__ = "provider_invocations"
+    __table_args__ = (UniqueConstraint("idempotency_key", name="uq_provider_invocation_key"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    idempotency_key: Mapped[str] = mapped_column(String(160))
+    authorization_id: Mapped[str] = mapped_column(ForeignKey("run_authorizations.id"))
+    provider_name: Mapped[str] = mapped_column(String(80))
+    model_name: Mapped[str] = mapped_column(String(160))
+    context_bundle_id: Mapped[str] = mapped_column(ForeignKey("context_bundles.id"))
+    context_bundle_hash: Mapped[str] = mapped_column(String(64))
+    status: Mapped[str] = mapped_column(String(40))
+    model_run_id: Mapped[str | None] = mapped_column(ForeignKey("model_runs.id"), nullable=True)
+    provider_request_id: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    network_attempts: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    error: Mapped[str | None] = mapped_column(Text, nullable=True)
 
 
 class CreativeTask(Base):

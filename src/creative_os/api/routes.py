@@ -42,6 +42,7 @@ from creative_os.models import (
     Program,
     ReferenceBank,
     RegressionTest,
+    RunAuthorization,
     SkillArtifact,
     SkillVersion,
     SourceArtifact,
@@ -77,6 +78,12 @@ from creative_os.services.consistency import (
 from creative_os.services.context_bundles import create_context_bundle
 from creative_os.services.context_compiler import compile_context
 from creative_os.services.diff import deep_diff
+from creative_os.services.execution_gate import (
+    AuthorizationError,
+    execution_gate_view,
+    preflight,
+    usage_summary,
+)
 from creative_os.services.experiments import validate_experiment_isolation
 from creative_os.services.mechanics import mechanic_report
 from creative_os.services.provider_packet import packet_document
@@ -91,6 +98,7 @@ from creative_os.services.story_locks import (
 from creative_os.services.tasks import create_creative_task
 from creative_os.services.text_reasoning import (
     ReasoningBoundaryError,
+    authorize_and_run_once,
     compare_providers,
     execute_text_reasoning,
 )
@@ -1199,6 +1207,13 @@ class TextRunIn(BaseModel):
 class CompareRunsIn(BaseModel):
     context_bundle_id: str
     providers: list[str] = Field(min_length=1)
+    authorization_id: str | None = None
+
+
+class AuthorizeOnceIn(BaseModel):
+    context_bundle_id: str
+    provider: str
+    idempotency_key: str
 
 
 @router.get("/runs")
@@ -1220,11 +1235,14 @@ def runs(session: Session = Depends(session_dep)) -> dict[str, object]:
             }
             for row in providers
         ],
+        "execution_gate": execution_gate_view(session),
+        "usage": usage_summary(session),
         "text_reasoning_providers": [
             {
                 "name": provider.name,
                 "available": provider.available(),
-                "status": "READY" if provider.available() else "NOT_IMPLEMENTED",
+                "explicit_model": provider.explicit_model(),
+                "status": provider.readiness(),
             }
             for provider in configured_reasoning_providers()
         ],
@@ -1240,27 +1258,76 @@ def runs(session: Session = Depends(session_dep)) -> dict[str, object]:
     }
 
 
+@router.get("/runs/preflight")
+def runs_preflight(
+    context_bundle_id: str,
+    provider: str,
+    session: Session = Depends(session_dep),
+) -> dict[str, object]:
+    bundle = _bundle_or_404(session, context_bundle_id)
+    return preflight(session, bundle, _provider_or_400(provider))
+
+
+@router.get("/runs/usage")
+def runs_usage(session: Session = Depends(session_dep)) -> dict[str, object]:
+    return usage_summary(session)
+
+
+@router.post("/runs/authorize-once")
+def authorize_once(body: AuthorizeOnceIn, session: Session = Depends(session_dep)) -> dict[str, object]:
+    bundle = _bundle_or_404(session, body.context_bundle_id)
+    provider = _provider_or_400(body.provider)
+    try:
+        run = authorize_and_run_once(
+            session,
+            bundle,
+            provider,
+            actor=get_settings().operator_identity,
+            idempotency_key=body.idempotency_key,
+        )
+    except AuthorizationError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return {"run": _run_view(session, run)}
+
+
 @router.post("/runs/text-reasoning")
 def text_reasoning(body: TextRunIn, session: Session = Depends(session_dep)) -> dict[str, object]:
     bundle = _bundle_or_404(session, body.context_bundle_id)
-    try:
-        provider = reasoning_provider(body.provider)
-    except KeyError as exc:
-        raise HTTPException(status_code=400, detail="unknown text reasoning provider") from exc
+    provider = _provider_or_400(body.provider)
+    if provider.uses_paid_transport:
+        view = preflight(session, bundle, provider)
+        if view["execution_status"] == "READY":
+            view = {**view, "execution_status": "AUTHORIZATION_REQUIRED"}
+        return {"run": None, "preflight": view}
     return {"run": _execute_bundle(session, bundle, provider)}
 
 
 @router.post("/runs/compare")
 def compare_runs(body: CompareRunsIn, session: Session = Depends(session_dep)) -> dict[str, object]:
+    if len(body.providers) > 2:
+        raise HTTPException(status_code=400, detail="this phase allows at most 2 providers")
     bundle = _bundle_or_404(session, body.context_bundle_id)
-    providers = []
-    for name in body.providers:
-        try:
-            providers.append(reasoning_provider(name))
-        except KeyError as exc:
-            raise HTTPException(status_code=400, detail=f"unknown text reasoning provider: {name}") from exc
+    providers = [_provider_or_400(name) for name in body.providers]
+    paid = [provider for provider in providers if provider.uses_paid_transport]
+    authorization = None
+    if paid:
+        if not body.authorization_id:
+            raise HTTPException(status_code=400, detail="AUTHORIZATION_REQUIRED")
+        authorization = session.get(RunAuthorization, body.authorization_id)
+        if authorization is None:
+            raise HTTPException(status_code=400, detail="AUTHORIZATION_REQUIRED")
+        allowed = set(authorization.allowed_providers or [])
+        names = {provider.name for provider in paid}
+        if not names <= allowed or len(names) > authorization.max_providers:
+            raise HTTPException(status_code=400, detail="AUTHORIZATION_MISMATCH")
     try:
-        created = compare_providers(session, bundle, providers)
+        created = compare_providers(
+            session,
+            bundle,
+            providers,
+            authorization=authorization,
+            idempotency_prefix=None if authorization is None else authorization.id,
+        )
     except ReasoningBoundaryError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     return {
@@ -1268,6 +1335,13 @@ def compare_runs(body: CompareRunsIn, session: Session = Depends(session_dep)) -
         "context_bundle_hash": bundle.payload_hash,
         "runs": [_run_view(session, row) for row in created],
     }
+
+
+def _provider_or_400(name: str) -> CreativeReasoningProvider:
+    try:
+        return reasoning_provider(name)
+    except KeyError as exc:
+        raise HTTPException(status_code=400, detail=f"unknown text reasoning provider: {name}") from exc
 
 
 def _bundle_or_404(session: Session, bundle_id: str) -> ContextBundle:
@@ -1341,6 +1415,9 @@ def _run_view(session: Session, run: ModelRun) -> dict[str, object]:
         "parse_error": run.parse_error,
         "parsed_output": run.parsed_output,
         "parent_run_id": run.parent_run_id,
+        "run_authorization_id": run.run_authorization_id,
+        "provider_request_id": run.provider_request_id,
+        "execution_state": run.execution_state,
         "raw_response_excerpt": raw[:500],
         "diversity": None
         if batch is None

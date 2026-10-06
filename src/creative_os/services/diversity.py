@@ -70,7 +70,7 @@ def fingerprint_concept(fields: dict[str, Any]) -> dict[str, Any]:
     return {
         dimension: {
             "value": value,
-            "assignment": "model_extracted",
+            "assignment": "DETERMINISTIC_INFERRED",
             "source": "deterministic skeleton phrases",
         }
         for dimension, value in mapping[skeleton].items()
@@ -118,8 +118,15 @@ def audit_batch(concepts: list[dict[str, Any]], constraints: dict[str, Any] | No
     if allowed and flagged == [] and largest >= 3:
         reason = "repeated skeleton is allowed because the task requested variants of that mechanism"
         level = "MEDIUM" if largest >= 3 else level
+    known_count = len(concepts) - len(unknown)
+    if level == "HIGH" and unknown and len(unknown) >= known_count:
+        level = "MEDIUM"
+        reason = "too many unknown skeletons for a high-certainty diversity claim"
     report: dict[str, Any] = {
         "level": level,
+        "assessment_method": "DETERMINISTIC_HEURISTIC",
+        "certainty": "HEURISTIC",
+        "coverage": {"known_count": known_count, "total_count": len(concepts)},
         "reason": reason,
         "skeletons": {key: titles for key, titles in sorted(grouped.items())},
         "unknown": unknown,

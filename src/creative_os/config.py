@@ -17,6 +17,11 @@ class Settings(BaseSettings):
     api_host: str = "127.0.0.1"
     api_port: int = 8000
     operator_identity: str = "operator"
+    live_text_reasoning_enabled: bool = False
+    text_reasoning_daily_run_limit: int = 10
+    text_reasoning_max_input_tokens: int = 100_000
+    text_reasoning_max_output_tokens: int = 4096
+    text_reasoning_max_providers: int = 2
 
     def resolved_snapshot_root(self) -> Path:
         path = self.snapshot_root

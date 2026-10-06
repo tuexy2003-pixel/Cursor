@@ -14,6 +14,7 @@ from creative_os.importers.handoff import import_handoff
 from creative_os.services.baseline import apply_preservation_baseline
 from creative_os.services.evaluations import import_manual_evaluations
 from creative_os.services.product_identity import clear_target_identifier_if_present
+from creative_os.services.smoke import prepare_smoke_tests
 
 
 def _alembic_config() -> Config:
@@ -117,6 +118,10 @@ def import_evaluations() -> None:
     _run_session("evaluations", import_manual_evaluations)
 
 
+def prepare_smoke() -> None:
+    _run_session("smoke", prepare_smoke_tests)
+
+
 def _run_session(label: str, operation: Callable[[Session], object]) -> None:
     engine = make_engine()
     factory = make_session_factory(engine)
@@ -183,6 +188,7 @@ def main(argv: list[str] | None = None) -> None:
     sub.add_parser("import-examples", help="Attach supplemental visual archives")
     sub.add_parser("apply-baseline", help="Apply the working policy, scope, and identifier corrections")
     sub.add_parser("import-evaluations", help="Import external manual model-transfer scores")
+    sub.add_parser("prepare-smoke-tests", help="Freeze the v0.3.2 smoke tasks without calling a provider")
     reset = sub.add_parser("reset-db", help="Delete the local SQLite database and migrate")
     reset.add_argument("--seed", action="store_true", help="Import the handoff after reset")
     sub.add_parser("serve", help="Run the API")
@@ -201,6 +207,8 @@ def main(argv: list[str] | None = None) -> None:
         apply_baseline()
     elif args.command == "import-evaluations":
         import_evaluations()
+    elif args.command == "prepare-smoke-tests":
+        prepare_smoke()
     elif args.command == "reset-db":
         reset_db(seed=args.seed)
     elif args.command == "serve":

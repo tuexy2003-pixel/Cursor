@@ -20,13 +20,23 @@ from creative_os.models import (
 from creative_os.providers.reasoning import (
     ALLOWED_OUTPUTS,
     DISABLED_CAPABILITIES,
+    MAX_PROVIDERS_PER_COMPARISON,
     CreativeReasoningProvider,
+    ProviderHTTPError,
+    ProviderModelMismatch,
+    ProviderTimeout,
     ProviderUnavailable,
     ReasoningResult,
 )
 from creative_os.schemas.contracts import ConceptGenerationResult, StoryDevelopmentAuditResult
 from creative_os.services.concepts import propose_concept
 from creative_os.services.diversity import audit_batch, fingerprint_concept
+from creative_os.services.execution_gate import (
+    authorization_block,
+    claim_invocation,
+    finish_authorization,
+    mark_requesting,
+)
 from creative_os.services.identity import assess_account_identity
 from creative_os.util import utcnow
 
@@ -44,10 +54,22 @@ def execute_text_reasoning(
     *,
     parent_run_id: str | None = None,
     allow_repair: bool = True,
+    authorization: Any = None,
+    idempotency_key: str | None = None,
 ) -> ModelRun:
     output_name = _output_name(bundle)
     if output_name not in ALLOWED_OUTPUTS:
         raise ReasoningBoundaryError(f"text reasoning is only enabled for {', '.join(sorted(ALLOWED_OUTPUTS))}")
+    if provider.uses_paid_transport:
+        return _execute_paid(
+            session,
+            bundle,
+            provider,
+            output_name,
+            authorization=authorization,
+            idempotency_key=idempotency_key,
+            allow_repair=allow_repair,
+        )
     started = utcnow()
     if not provider.available():
         return _store_run(
@@ -120,8 +142,25 @@ def compare_providers(
     session: Session,
     bundle: ContextBundle,
     providers: list[CreativeReasoningProvider],
+    *,
+    authorization: Any = None,
+    idempotency_prefix: str | None = None,
 ) -> list[ModelRun]:
-    return [execute_text_reasoning(session, bundle, provider) for provider in providers]
+    if len(providers) > MAX_PROVIDERS_PER_COMPARISON:
+        raise ReasoningBoundaryError("this phase allows at most 2 providers")
+    runs: list[ModelRun] = []
+    for provider in providers:
+        key = None if idempotency_prefix is None else f"{idempotency_prefix}:{provider.name}"
+        runs.append(
+            execute_text_reasoning(
+                session,
+                bundle,
+                provider,
+                authorization=authorization,
+                idempotency_key=key,
+            )
+        )
+    return runs
 
 
 def assert_capability_disabled(capability: str) -> None:
@@ -132,7 +171,7 @@ def assert_capability_disabled(capability: str) -> None:
 
 
 class _RepairProvider(CreativeReasoningProvider):
-    """One logged reformat. It does not call the network again."""
+    """RESPONSE SALVAGE of the same provider text. This is not a second network call."""
 
     def __init__(self, parent: CreativeReasoningProvider, text: str) -> None:
         self.name = parent.name
@@ -143,10 +182,225 @@ class _RepairProvider(CreativeReasoningProvider):
         return True
 
     def generate_concepts(self, packet_text: str) -> ReasoningResult:
-        return ReasoningResult(text=self._text, model_name=self.name, model_version="reformat")
+        return ReasoningResult(text=self._text, model_name=self.name, model_version="response-salvage")
 
     def audit_story_development(self, packet_text: str) -> ReasoningResult:
-        return ReasoningResult(text=self._text, model_name=self.name, model_version="reformat")
+        return ReasoningResult(text=self._text, model_name=self.name, model_version="response-salvage")
+
+
+def authorize_and_run_once(
+    session: Session,
+    bundle: ContextBundle,
+    provider: CreativeReasoningProvider,
+    *,
+    actor: str,
+    idempotency_key: str,
+) -> ModelRun:
+    from creative_os.config import get_settings
+    from creative_os.services.execution_gate import (
+        AuthorizationError,
+        create_authorization,
+        find_invocation,
+        preflight,
+    )
+
+    if actor != get_settings().operator_identity:
+        raise AuthorizationError("only the local operator can authorize a paid run")
+    if not idempotency_key.strip():
+        raise AuthorizationError("an idempotency key is required")
+    existing = find_invocation(session, idempotency_key)
+    if existing is not None and existing.model_run_id is not None:
+        found = session.get(ModelRun, existing.model_run_id)
+        if found is not None:
+            return found
+    view = preflight(session, bundle, provider)
+    if view["execution_status"] != "READY":
+        return _store_run(
+            session,
+            bundle,
+            provider,
+            started=utcnow(),
+            finished=utcnow(),
+            status=str(view["execution_status"]),
+            error=str(view["execution_status"]),
+            execution_state=str(view["execution_status"]),
+        )
+    authorization = create_authorization(
+        session,
+        bundle,
+        provider,
+        actor=actor,
+        idempotency_key=idempotency_key,
+        notes="single authorized text-reasoning attempt",
+    )
+    return execute_text_reasoning(
+        session,
+        bundle,
+        provider,
+        authorization=authorization,
+        idempotency_key=idempotency_key,
+    )
+
+
+def _execute_paid(
+    session: Session,
+    bundle: ContextBundle,
+    provider: CreativeReasoningProvider,
+    output_name: str,
+    *,
+    authorization: Any,
+    idempotency_key: str | None,
+    allow_repair: bool,
+) -> ModelRun:
+    started = utcnow()
+    readiness = provider.readiness()
+    if readiness != "READY":
+        return _blocked(session, bundle, provider, started, readiness, authorization)
+    block = authorization_block(session, authorization, bundle, provider, output_name)
+    if block is not None:
+        return _blocked(session, bundle, provider, started, block, authorization)
+    if not idempotency_key:
+        return _blocked(session, bundle, provider, started, "AUTHORIZATION_REQUIRED", authorization)
+    invocation, existing_run, created = claim_invocation(
+        session, authorization, provider, bundle, idempotency_key
+    )
+    if not created:
+        if existing_run is not None:
+            return existing_run
+        if invocation is not None:
+            invocation.status = "UNKNOWN_PROVIDER_OUTCOME"
+            invocation.error = "idempotent replay did not make another provider request"
+            session.flush()
+        return _blocked(session, bundle, provider, started, "UNKNOWN_PROVIDER_OUTCOME", authorization)
+    if invocation is None:
+        return _blocked(session, bundle, provider, started, "AUTHORIZATION_REQUIRED", authorization)
+    provider.max_output_tokens = authorization.max_output_tokens
+    mark_requesting(session, invocation, authorization)
+    try:
+        result = _call(provider, bundle.compiled_text, output_name)
+    except ProviderTimeout as exc:
+        return _paid_terminal(
+            session, bundle, provider, invocation, authorization, started, "UNKNOWN_PROVIDER_OUTCOME", str(exc)
+        )
+    except ProviderHTTPError as exc:
+        return _paid_terminal(
+            session,
+            bundle,
+            provider,
+            invocation,
+            authorization,
+            started,
+            "PROVIDER_ERROR",
+            str(exc),
+            raw_response=exc.body,
+        )
+    except ProviderModelMismatch as exc:
+        return _paid_terminal(
+            session, bundle, provider, invocation, authorization, started, "PROVIDER_ERROR", str(exc)
+        )
+    except Exception as exc:
+        return _paid_terminal(
+            session,
+            bundle,
+            provider,
+            invocation,
+            authorization,
+            started,
+            "UNKNOWN_PROVIDER_OUTCOME",
+            str(exc),
+        )
+    parsed, error = _parse(result.text, output_name)
+    status = "COMPLETED" if parsed is not None else "PARSE_FAILED"
+    run = _store_run(
+        session,
+        bundle,
+        provider,
+        started=started,
+        finished=utcnow(),
+        status=status,
+        raw_response=result.text,
+        parsed=parsed,
+        parse_error=error,
+        result=result,
+        error=error,
+        authorization_id=authorization.id,
+        execution_state=status,
+    )
+    invocation.model_run_id = run.id
+    invocation.provider_request_id = result.provider_request_id
+    invocation.status = "PARSE_FAILED" if parsed is None else "COMPLETED"
+    invocation.finished_at = utcnow()
+    invocation.error = error
+    finish_authorization(session, authorization)
+    session.flush()
+    if parsed is None:
+        if allow_repair and _fenced_json(result.text) is not None:
+            return execute_text_reasoning(
+                session,
+                bundle,
+                _RepairProvider(provider, _fenced_json(result.text) or ""),
+                parent_run_id=run.id,
+                allow_repair=False,
+            )
+        return run
+    if output_name == "CONCEPT_GENERATION":
+        _store_concepts(session, bundle, run, ConceptGenerationResult.model_validate(parsed))
+    else:
+        _store_audit(session, bundle, run, StoryDevelopmentAuditResult.model_validate(parsed))
+    return run
+
+
+def _blocked(
+    session: Session,
+    bundle: ContextBundle,
+    provider: CreativeReasoningProvider,
+    started: datetime,
+    status: str,
+    authorization: Any,
+) -> ModelRun:
+    return _store_run(
+        session,
+        bundle,
+        provider,
+        started=started,
+        finished=utcnow(),
+        status=status,
+        error=status,
+        authorization_id=None if authorization is None else authorization.id,
+        execution_state=status,
+    )
+
+
+def _paid_terminal(
+    session: Session,
+    bundle: ContextBundle,
+    provider: CreativeReasoningProvider,
+    invocation: Any,
+    authorization: Any,
+    started: datetime,
+    status: str,
+    error: str,
+    raw_response: str | None = None,
+) -> ModelRun:
+    run = _store_run(
+        session,
+        bundle,
+        provider,
+        started=started,
+        finished=utcnow(),
+        status=status,
+        error=error,
+        raw_response=raw_response,
+        authorization_id=authorization.id,
+        execution_state=status,
+    )
+    invocation.model_run_id = run.id
+    invocation.status = status
+    invocation.finished_at = utcnow()
+    invocation.error = error
+    finish_authorization(session, authorization)
+    session.flush()
+    return run
 
 
 def _call(provider: CreativeReasoningProvider, packet_text: str, output_name: str) -> ReasoningResult:
@@ -300,6 +554,9 @@ def _store_run(
     parse_error: str | None = None,
     result: ReasoningResult | None = None,
     parent_run_id: str | None = None,
+    authorization_id: str | None = None,
+    provider_request_id: str | None = None,
+    execution_state: str | None = None,
 ) -> ModelRun:
     provider_row = session.scalar(
         select(ModelProvider).where(
@@ -337,6 +594,9 @@ def _store_run(
         cost_currency=None if result is None else result.currency,
         usage_metadata=None if result is None else result.usage,
         execution_origin="LIVE_TEXT_REASONING",
+        run_authorization_id=authorization_id,
+        provider_request_id=provider_request_id if result is None else result.provider_request_id,
+        execution_state=execution_state or status,
     )
     session.add(run)
     session.flush()
