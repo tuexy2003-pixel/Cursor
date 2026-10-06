@@ -30,6 +30,7 @@ from creative_os.models import (
 )
 from creative_os.schemas.contracts import ConceptGenerationResult, StoryDevelopmentAuditResult
 from creative_os.schemas.story_lock import StoryLockDocument
+from creative_os.services.identity import identity_anchors
 from creative_os.services.mechanics import mechanic_report
 from creative_os.services.policy_resolver import resolve_policy_detail
 from creative_os.services.provider_packet import render_sections, section_sizes
@@ -37,7 +38,7 @@ from creative_os.services.scope import ContextScope, scope_from_creative
 from creative_os.services.tasks import task_scope
 from creative_os.util import ensure_utc, utcnow
 
-COMPILER_VERSION = "context-compiler-0.3.0"
+COMPILER_VERSION = "context-compiler-0.3.1"
 
 SCOPE_SPECIFICITY = {"CREATIVE": 0, "CAMPAIGN": 1, "ACCOUNT": 2, "PROGRAM": 3, "GLOBAL": 4}
 KIND_RANK = {"PREFERENCE": 0, "HEURISTIC": 1}
@@ -512,6 +513,7 @@ def _dna(session: Session, account_id: str | None) -> dict[str, Any] | None:
         .where(AccountDnaObservation.profile_id == profile.id)
         .order_by(AccountDnaObservation.field_name)
     ).all()
+    rows = [_observation(row) for row in observations]
     return {
         "profile_id": profile.id,
         "version_number": profile.version_number,
@@ -522,7 +524,8 @@ def _dna(session: Session, account_id: str | None) -> dict[str, Any] | None:
         "reason_included": "explicit current-approved DNA pointer",
         "authority": "approved account dna",
         "version": str(profile.version_number),
-        "observations": [_observation(row) for row in observations],
+        "observations": rows,
+        "identity_anchors": identity_anchors(rows),
     }
 
 

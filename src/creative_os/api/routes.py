@@ -24,6 +24,7 @@ from creative_os.models import (
     CommentClusterMember,
     CommentDoor,
     CommentDoorMapping,
+    ConceptBatch,
     ContextBundle,
     Creative,
     CreativeGenome,
@@ -31,6 +32,7 @@ from creative_os.models import (
     ExperimentVariant,
     ExperimentVariantPost,
     GenomeFacet,
+    ManualEvaluation,
     ModelProvider,
     ModelRun,
     PerformanceSnapshot,
@@ -44,11 +46,19 @@ from creative_os.models import (
     SkillVersion,
     SourceArtifact,
     StaleArtifactRecord,
+    StoryAuditRecord,
     StoryLineItem,
     StoryLock,
     StoryLockVersion,
     ValidationResult,
     ValidationRun,
+)
+from creative_os.providers.reasoning import (
+    ALLOWED_OUTPUTS,
+    DISABLED_CAPABILITIES,
+    CreativeReasoningProvider,
+    configured_reasoning_providers,
+    reasoning_provider,
 )
 from creative_os.providers.stub import StubProvider
 from creative_os.schemas.story_lock import (
@@ -79,6 +89,11 @@ from creative_os.services.story_locks import (
     version_belongs_to_creative,
 )
 from creative_os.services.tasks import create_creative_task
+from creative_os.services.text_reasoning import (
+    ReasoningBoundaryError,
+    compare_providers,
+    execute_text_reasoning,
+)
 from creative_os.services.validate_creative import validate_creative
 from creative_os.util import post_age_hours, utcnow
 from creative_os.validation.regression import run_regression_case
@@ -1176,11 +1191,25 @@ def _money(value: str | None) -> Decimal | None:
         raise HTTPException(status_code=400, detail="revenue_amount must be a decimal") from exc
 
 
+class TextRunIn(BaseModel):
+    context_bundle_id: str
+    provider: str
+
+
+class CompareRunsIn(BaseModel):
+    context_bundle_id: str
+    providers: list[str] = Field(min_length=1)
+
+
 @router.get("/runs")
 def runs(session: Session = Depends(session_dep)) -> dict[str, object]:
     providers = session.scalars(select(ModelProvider)).all()
     model_runs = session.scalars(select(ModelRun).order_by(ModelRun.started_at.desc())).all()
     validation_runs = session.scalars(select(ValidationRun).order_by(ValidationRun.created_at.desc())).all()
+    bundles = session.scalars(select(ContextBundle).order_by(ContextBundle.created_at.desc()).limit(30)).all()
+    evaluations = session.scalars(
+        select(ManualEvaluation).order_by(ManualEvaluation.run_timestamp.desc())
+    ).all()
     return {
         "providers": [
             {
@@ -1191,14 +1220,139 @@ def runs(session: Session = Depends(session_dep)) -> dict[str, object]:
             }
             for row in providers
         ],
-        "model_runs": [
-            {"id": row.id, "capability": row.capability, "status": row.status, "error": row.error}
-            for row in model_runs
+        "text_reasoning_providers": [
+            {
+                "name": provider.name,
+                "available": provider.available(),
+                "status": "READY" if provider.available() else "NOT_IMPLEMENTED",
+            }
+            for provider in configured_reasoning_providers()
         ],
+        "allowed_stages": sorted(ALLOWED_OUTPUTS),
+        "disabled_capabilities": sorted(DISABLED_CAPABILITIES),
+        "context_bundles": [_bundle_choice(row) for row in bundles],
+        "manual_evaluations": [_evaluation_view(row) for row in evaluations],
+        "model_runs": [_run_view(session, row) for row in model_runs],
         "validation_runs": [
             {"id": row.id, "subject_type": row.subject_type, "subject_id": row.subject_id}
             for row in validation_runs
         ],
+    }
+
+
+@router.post("/runs/text-reasoning")
+def text_reasoning(body: TextRunIn, session: Session = Depends(session_dep)) -> dict[str, object]:
+    bundle = _bundle_or_404(session, body.context_bundle_id)
+    try:
+        provider = reasoning_provider(body.provider)
+    except KeyError as exc:
+        raise HTTPException(status_code=400, detail="unknown text reasoning provider") from exc
+    return {"run": _execute_bundle(session, bundle, provider)}
+
+
+@router.post("/runs/compare")
+def compare_runs(body: CompareRunsIn, session: Session = Depends(session_dep)) -> dict[str, object]:
+    bundle = _bundle_or_404(session, body.context_bundle_id)
+    providers = []
+    for name in body.providers:
+        try:
+            providers.append(reasoning_provider(name))
+        except KeyError as exc:
+            raise HTTPException(status_code=400, detail=f"unknown text reasoning provider: {name}") from exc
+    try:
+        created = compare_providers(session, bundle, providers)
+    except ReasoningBoundaryError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return {
+        "context_bundle_id": bundle.id,
+        "context_bundle_hash": bundle.payload_hash,
+        "runs": [_run_view(session, row) for row in created],
+    }
+
+
+def _bundle_or_404(session: Session, bundle_id: str) -> ContextBundle:
+    bundle = session.get(ContextBundle, bundle_id)
+    if bundle is None:
+        raise HTTPException(status_code=404, detail="context bundle not found")
+    return bundle
+
+
+def _execute_bundle(
+    session: Session, bundle: ContextBundle, provider: CreativeReasoningProvider
+) -> dict[str, object]:
+    try:
+        run = execute_text_reasoning(session, bundle, provider)
+    except ReasoningBoundaryError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return _run_view(session, run)
+
+
+def _bundle_choice(bundle: ContextBundle) -> dict[str, object]:
+    task = (bundle.compiled_payload or {}).get("task") or {}
+    instruction = str(task.get("instruction") or "")
+    return {
+        "id": bundle.id,
+        "stage": bundle.requested_stage,
+        "payload_hash": bundle.payload_hash,
+        "expected_output_type": task.get("expected_output_type"),
+        "instruction": instruction[:180],
+    }
+
+
+def _evaluation_view(row: ManualEvaluation) -> dict[str, object]:
+    return {
+        "id": row.id,
+        "origin": row.origin,
+        "provider_name": row.provider_name,
+        "model_name": row.model_name,
+        "packet_hash": row.packet_hash,
+        "recorded_context_bundle_id": row.recorded_context_bundle_id,
+        "recorded_task_id": row.recorded_task_id,
+        "stage": row.stage,
+        "rubric_score": row.rubric_score,
+        "rubric_item_scores": row.rubric_item_scores,
+        "notes": row.notes,
+        "run_timestamp": row.run_timestamp.isoformat(),
+        "source_path": row.source_path,
+    }
+
+
+def _run_view(session: Session, run: ModelRun) -> dict[str, object]:
+    batch = session.scalar(select(ConceptBatch).where(ConceptBatch.source_model_run_id == run.id))
+    audit = session.scalar(select(StoryAuditRecord).where(StoryAuditRecord.model_run_id == run.id))
+    raw = run.raw_response or ""
+    return {
+        "id": run.id,
+        "capability": run.capability,
+        "status": run.status,
+        "error": run.error,
+        "context_bundle_id": run.context_bundle_id,
+        "context_bundle_hash": run.context_bundle_hash,
+        "creative_task_id": run.creative_task_id,
+        "provider_model_name": run.provider_model_name,
+        "provider_model_version": run.provider_model_version,
+        "latency_ms": run.latency_ms,
+        "input_tokens": run.input_tokens,
+        "output_tokens": run.output_tokens,
+        "cached_tokens": run.cached_tokens,
+        "cost": None if run.cost is None else str(run.cost),
+        "cost_currency": run.cost_currency,
+        "execution_origin": run.execution_origin,
+        "parse_error": run.parse_error,
+        "parsed_output": run.parsed_output,
+        "parent_run_id": run.parent_run_id,
+        "raw_response_excerpt": raw[:500],
+        "diversity": None
+        if batch is None
+        else {"level": batch.diversity_level, "report": batch.diversity_report, "status": batch.status},
+        "story_audit": None
+        if audit is None
+        else {
+            "id": audit.id,
+            "record_status": audit.record_status,
+            "overall_status": audit.overall_status,
+            "diagnosis": audit.diagnosis,
+        },
     }
 
 

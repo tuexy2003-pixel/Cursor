@@ -12,6 +12,8 @@ from creative_os.db import make_engine, make_session_factory, resolve_database_u
 from creative_os.importers.examples import import_visual_supplements
 from creative_os.importers.handoff import import_handoff
 from creative_os.services.baseline import apply_preservation_baseline
+from creative_os.services.evaluations import import_manual_evaluations
+from creative_os.services.product_identity import clear_target_identifier_if_present
 
 
 def _alembic_config() -> Config:
@@ -67,7 +69,16 @@ def import_examples() -> None:
 
 
 def apply_baseline() -> None:
-    _run_session("baseline", lambda session: apply_preservation_baseline(session))
+    def operation(session: Session) -> dict[str, object]:
+        baseline = apply_preservation_baseline(session)
+        return {
+            "policy": baseline["policy"],
+            "scope": baseline["scope"],
+            "identifier_cleanup": clear_target_identifier_if_present(session),
+            "manual_evaluations": import_manual_evaluations(session),
+        }
+
+    _run_session("baseline", operation)
 
 
 def seed_baseline() -> None:
@@ -79,6 +90,8 @@ def seed_baseline() -> None:
         report = import_handoff(session, settings.resolved_snapshot_root())
         visual = import_visual_supplements(session, supplement_root())
         baseline = apply_preservation_baseline(session)
+        identifier_cleanup = clear_target_identifier_if_present(session)
+        evaluations = import_manual_evaluations(session)
         session.commit()
     except Exception:
         session.rollback()
@@ -94,7 +107,14 @@ def seed_baseline() -> None:
         f"matched={visual['index_matches']} children={visual['child_assets']} "
         f"relations_added={visual['relations']} links_added={visual['example_links']}"
     )
-    print(f"baseline policy={baseline['policy']} scope={baseline['scope']}")
+    print(
+        f"baseline policy={baseline['policy']} scope={baseline['scope']} "
+        f"identifier_cleanup={identifier_cleanup} manual_evaluations={evaluations}"
+    )
+
+
+def import_evaluations() -> None:
+    _run_session("evaluations", import_manual_evaluations)
 
 
 def _run_session(label: str, operation: Callable[[Session], object]) -> None:
@@ -161,7 +181,8 @@ def main(argv: list[str] | None = None) -> None:
     sub.add_parser("migrate", help="Apply database migrations")
     sub.add_parser("import-handoff", help="Idempotently import the snapshot")
     sub.add_parser("import-examples", help="Attach supplemental visual archives")
-    sub.add_parser("apply-baseline", help="Apply the working policy and scope corrections")
+    sub.add_parser("apply-baseline", help="Apply the working policy, scope, and identifier corrections")
+    sub.add_parser("import-evaluations", help="Import external manual model-transfer scores")
     reset = sub.add_parser("reset-db", help="Delete the local SQLite database and migrate")
     reset.add_argument("--seed", action="store_true", help="Import the handoff after reset")
     sub.add_parser("serve", help="Run the API")
@@ -178,6 +199,8 @@ def main(argv: list[str] | None = None) -> None:
         import_examples()
     elif args.command == "apply-baseline":
         apply_baseline()
+    elif args.command == "import-evaluations":
+        import_evaluations()
     elif args.command == "reset-db":
         reset_db(seed=args.seed)
     elif args.command == "serve":

@@ -21,6 +21,9 @@ th { background: #efe7d8; }
 .muted { color: #5e564c; }
 .error { color: #8d2a2a; }
 form { display: grid; gap: 0.5rem; max-width: 36rem; margin: 1rem 0; }
-input, textarea, button { font: inherit; padding: 0.4rem 0.5rem; }
+input, textarea, select, button { font: inherit; padding: 0.4rem 0.5rem; }
 button { background: #6b3f1d; color: white; border: 0; width: fit-content; cursor: pointer; }
 .card { background: white; padding: 0.8rem 1rem; margin: 0.7rem 0; border: 1px solid #e4dccb; }
+.columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.8rem; }
+pre.output { white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.78rem; max-height: 24rem; overflow: auto; background: #fbf8f2; padding: 0.6rem; }
+label.choice { display: flex; gap: 0.45rem; align-items: center; font-family: ui-sans-serif, sans-serif; }

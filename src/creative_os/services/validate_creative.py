@@ -10,6 +10,7 @@ from creative_os.models import (
     StoryLockVersion,
 )
 from creative_os.schemas.story_lock import StoryLockDocument
+from creative_os.services.product_identity import product_identifier_findings
 from creative_os.validation.checks import (
     approval_status,
     arithmetic_status,
@@ -52,6 +53,26 @@ def validate_creative(session: Session, creative: Creative) -> list[tuple[str, s
         results.append(("line_item_subtotal", status, message))
     else:
         results.append(("arithmetic", "NOT_APPLICABLE", "no economics on the lock"))
+    findings = product_identifier_findings(document, version.content_markdown or "")
+    if not findings:
+        results.append(
+            (
+                "product_identifier",
+                "PASS",
+                "no line item keeps an identifier the lock text assigns to a superseded model",
+            )
+        )
+    for row in findings:
+        results.append(
+            (
+                f"product_identifier:{row['identifier']}",
+                row["status"],
+                (
+                    f"{row['identifier_kind']} {row['identifier']} is known to belong to "
+                    f"{row['known_owner']}, not {row['title']}"
+                ),
+            )
+        )
     if document.story_date and document.story_weekday:
         status, message = weekday_status(document.story_date, document.story_weekday)
         results.append(("story_weekday", status, message))

@@ -192,6 +192,23 @@ def _dna_section(dna: dict[str, Any] | None) -> str:
         )
         if row.get("notes"):
             lines.append(f"  notes: {row.get('notes')}")
+    anchors = dna.get("identity_anchors") or []
+    if anchors:
+        lines.append("### ACCOUNT IDENTITY ANCHORS")
+        lines.append(
+            "Established names are context. Use a name when it is naturally relevant. "
+            "Do not force every proper noun into every artifact."
+        )
+        for anchor in anchors:
+            lines.append(
+                f"- relationship {anchor.get('relationship_type')} "
+                f"canonical_name {anchor.get('canonical_name')} "
+                f"status {anchor.get('status')} "
+                f"usage_guidance: {anchor.get('usage_guidance')} "
+                f"source: {anchor.get('source')} "
+                f"confidence {anchor.get('confidence')} "
+                f"evidence {anchor.get('evidence_kind')}"
+            )
     return "\n".join(lines)
 
 

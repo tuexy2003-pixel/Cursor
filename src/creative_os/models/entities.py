@@ -567,6 +567,20 @@ class ModelRun(Base):
     latency_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
     error: Mapped[str | None] = mapped_column(Text, nullable=True)
     context_bundle_id: Mapped[str | None] = mapped_column(ForeignKey("context_bundles.id"), nullable=True)
+    creative_task_id: Mapped[str | None] = mapped_column(ForeignKey("creative_tasks.id"), nullable=True)
+    context_bundle_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    provider_model_name: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    provider_model_version: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    raw_response: Mapped[str | None] = mapped_column(Text, nullable=True)
+    parsed_output: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+    parse_error: Mapped[str | None] = mapped_column(Text, nullable=True)
+    parent_run_id: Mapped[str | None] = mapped_column(ForeignKey("model_runs.id"), nullable=True)
+    input_tokens: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    output_tokens: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    cached_tokens: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    cost_currency: Mapped[str | None] = mapped_column(String(12), nullable=True)
+    usage_metadata: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
+    execution_origin: Mapped[str | None] = mapped_column(String(80), nullable=True)
 
 
 class CreativeTask(Base):
@@ -626,6 +640,57 @@ def _reject_consumed_task_mutation(_mapper, _connection, target: CreativeTask) -
         raise ImmutableVersionError("creative task status can only move from OPEN to CONSUMED")
 
 
+class ConceptBatch(Base):
+    __tablename__ = "concept_batches"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    task_id: Mapped[str | None] = mapped_column(ForeignKey("creative_tasks.id"), nullable=True)
+    source_model_run_id: Mapped[str | None] = mapped_column(ForeignKey("model_runs.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    status: Mapped[str] = mapped_column(String(40), default="PROPOSED")
+    diversity_level: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    diversity_report: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+
+
+class ManualEvaluation(Base):
+    """An external packet test. This is not a ModelRun and did not call a provider."""
+
+    __tablename__ = "manual_evaluations"
+    __table_args__ = (
+        UniqueConstraint("provider_name", "model_name", "packet_hash", "stage", name="uq_manual_evaluation"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    origin: Mapped[str] = mapped_column(String(80), default="EXTERNAL_MANUAL_EVALUATION")
+    provider_name: Mapped[str] = mapped_column(String(80))
+    model_name: Mapped[str] = mapped_column(String(160))
+    packet_hash: Mapped[str] = mapped_column(String(64))
+    recorded_context_bundle_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    recorded_task_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    stage: Mapped[str] = mapped_column(String(80))
+    task_instruction: Mapped[str] = mapped_column(Text)
+    output_json: Mapped[dict[str, Any]] = mapped_column(JSON)
+    rubric_score: Mapped[str] = mapped_column(String(40))
+    rubric_item_scores: Mapped[dict[str, Any]] = mapped_column(JSON)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    run_timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    source_path: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+
+class StoryAuditRecord(Base):
+    __tablename__ = "story_audit_records"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    model_run_id: Mapped[str] = mapped_column(ForeignKey("model_runs.id"))
+    context_bundle_id: Mapped[str] = mapped_column(ForeignKey("context_bundles.id"))
+    creative_id: Mapped[str | None] = mapped_column(ForeignKey("creatives.id"), nullable=True)
+    overall_status: Mapped[str] = mapped_column(String(40))
+    diagnosis: Mapped[str] = mapped_column(Text)
+    result_json: Mapped[dict[str, Any]] = mapped_column(JSON)
+    record_status: Mapped[str] = mapped_column(String(40), default="MODEL_DIAGNOSIS")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
 class ConceptCandidate(Base):
     __tablename__ = "concept_candidates"
 
@@ -645,6 +710,8 @@ class ConceptCandidate(Base):
     status: Mapped[str] = mapped_column(String(40), default="PROPOSED")
     created_by: Mapped[str] = mapped_column(String(160))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    batch_id: Mapped[str | None] = mapped_column(ForeignKey("concept_batches.id"), nullable=True)
+    mechanism_fingerprint: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
 
 
 _CONCEPT_CONTENT = (

@@ -27,6 +27,8 @@ def propose_concept(
     commerce_relation: str | None = None,
     structured_payload: dict[str, Any] | None = None,
     source_model_run_id: str | None = None,
+    batch_id: str | None = None,
+    mechanism_fingerprint: dict[str, Any] | None = None,
 ) -> ConceptCandidate:
     if not title.strip():
         raise ConceptError("a concept requires a title")
@@ -47,6 +49,8 @@ def propose_concept(
         status="PROPOSED",
         created_by=created_by,
         created_at=utcnow(),
+        batch_id=batch_id,
+        mechanism_fingerprint=mechanism_fingerprint or {},
     )
     session.add(concept)
     session.flush()

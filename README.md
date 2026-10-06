@@ -51,7 +51,7 @@ PYTHONPATH=src pytest -m core
 
 The API binds to loopback by default and has no authentication. `COS_API_HOST` must stay `127.0.0.1`, `localhost`, or `::1`. Any other host refuses to start. Remote mutation routes are not supported until operator authentication exists. Provider code cannot approve a story lock. Human approval uses `COS_OPERATOR_IDENTITY`, not an `actor` string from request JSON.
 
-Provider execution still returns `NOT_IMPLEMENTED`.
+Text reasoning can run only for concept generation and story-development audit, and only against an already frozen context bundle. Without `COS_XAI_API_KEY` or `COS_OPENAI_API_KEY` those runs return `NOT_IMPLEMENTED`. Research, image, and posting execution stay disabled.
 
 ## What the import preserves
 
@@ -61,7 +61,7 @@ Provider execution still returns `NOT_IMPLEMENTED`.
 - 19 regression cases
 - Supplemental visual hashes, dimensions, and only the relationships the notes state
 
-Creative values come from the current approved story lock. A human correction appends a version and records approval. Only deliverables whose declared field dependencies intersect the change go stale. Reusable bases and ingredients stay current. See `docs/V0_2_INTEGRITY_HARDENING.md`, `docs/V0_2_1_TRUST_CONTEXT.md`, and `docs/V0_3_CONTEXT_FIDELITY.md`.
+Creative values come from the current approved story lock. A human correction appends a version and records approval. Only deliverables whose declared field dependencies intersect the change go stale. Reusable bases and ingredients stay current. See `docs/V0_2_INTEGRITY_HARDENING.md`, `docs/V0_2_1_TRUST_CONTEXT.md`, `docs/V0_3_CONTEXT_FIDELITY.md`, and `docs/V0_3_1_CREATIVE_SELECTION.md`.
 
 A context bundle freezes a creative task plus the authoritative context. Export the provider packet without calling a model:
 
@@ -70,6 +70,6 @@ creative-os export-context-bundle <bundle_id> --format markdown
 creative-os export-context-bundle <bundle_id> --format json
 ```
 
-The manual evaluation packets are in `evaluation/model_transfer_v1/`. `REVIEWER_RUBRIC.md` stays out of those packets.
+The manual evaluation packets are in `evaluation/model_transfer_v1/`. `REVIEWER_RUBRIC.md` stays out of those packets. Import the recorded scores with `creative-os import-evaluations`. Those rows are external evaluations, not provider executions.
 
-Provider execution is stubbed and returns `NOT_IMPLEMENTED`.
+`creative-os apply-baseline` also clears a product identifier when the current lock text says that identifier belongs to a superseded model. It does not invent a replacement id.
