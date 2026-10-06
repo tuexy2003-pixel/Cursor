@@ -345,13 +345,15 @@ export default function RunsPage() {
 
       <h2>Recorded usage</h2>
       <p className="muted">Counts come from stored model runs. This view does not call a billing API.</p>
-      {data ? (
+      {data?.usage ? (
         <>
-          {usageTable("Today", data.usage.today)}
-          {usageTable("Last 7 days", data.usage.last_7_days)}
-          {usageTable("Lifetime", data.usage.lifetime)}
+          {usageTable("Today", data.usage.today ?? [])}
+          {usageTable("Last 7 days", data.usage.last_7_days ?? [])}
+          {usageTable("Lifetime", data.usage.lifetime ?? [])}
         </>
-      ) : null}
+      ) : (
+        <p className="muted">Usage appears after the runs payload loads.</p>
+      )}
 
       <h2>Provider comparison</h2>
       <p className="muted">
