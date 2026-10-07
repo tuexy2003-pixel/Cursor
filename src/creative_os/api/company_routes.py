@@ -2,12 +2,13 @@
 
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Header, HTTPException
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from creative_os.api.deps import get_session
 from creative_os.config import get_settings
+from creative_os.mcp.auth import mcp_bearer_matches
 from creative_os.mcp.server import invoke, tool_names
 from creative_os.services.control_plane import (
     ControlPlaneError,
@@ -58,6 +59,11 @@ class McpBody(BaseModel):
     tool: str
     arguments: dict[str, Any] = Field(default_factory=dict)
     caller: str = "mcp"
+
+
+def require_mcp_token(authorization: str | None = Header(default=None)) -> None:
+    if not mcp_bearer_matches(authorization):
+        raise HTTPException(status_code=401, detail="MCP credential required")
 
 
 def _guard(exc: ControlPlaneError) -> HTTPException:
@@ -183,12 +189,13 @@ def post_decision(
     return {"id": request.id, "status": request.status}
 
 
-@router.get("/mcp/tools")
-def get_mcp_tools() -> dict[str, list[str]]:
-    return tool_names()
+@router.get("/mcp/tools", dependencies=[Depends(require_mcp_token)])
+def get_mcp_tools() -> dict[str, Any]:
+    """MCP registry / debug API. The streamable HTTP transport is /mcp."""
+    return {"role": "MCP_REGISTRY_DEBUG", **tool_names()}
 
 
-@router.post("/mcp")
+@router.post("/mcp", dependencies=[Depends(require_mcp_token)])
 def post_mcp(body: McpBody, session: Session = Depends(get_session)) -> dict[str, Any]:
     try:
         return invoke(session, body.tool, body.arguments, caller=body.caller)

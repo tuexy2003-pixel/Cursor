@@ -21,7 +21,6 @@ from creative_os.models import (
     ModelRun,
     Program,
     StoryAuditRecord,
-    StoryLock,
     StoryLockVersion,
 )
 from creative_os.models.company import (
@@ -39,13 +38,23 @@ from creative_os.models.company import (
     WorkflowRun,
     WorkOrder,
 )
-from creative_os.schemas.contracts import ConceptGenerationResult, StoryDevelopmentAuditResult
+from creative_os.schemas.contracts import (
+    ConceptGenerationResult,
+    StoryDevelopmentAuditResult,
+    StoryLockDraftResult,
+)
+from creative_os.schemas.story_lock import StoryLockDocument
 from creative_os.services.canonical import stable_digest
 from creative_os.services.concepts import decide_concept, link_selected_concept
 from creative_os.services.context_bundles import create_context_bundle
+from creative_os.services.diff import changed_paths
 from creative_os.services.provider_packet import packet_document
 from creative_os.services.scope import ContextScope, ScopeError, validate_scope
-from creative_os.services.story_locks import decide_story_lock_version
+from creative_os.services.story_locks import (
+    StoryLockDecisionError,
+    decide_story_lock_version,
+    propose_story_lock_document,
+)
 from creative_os.services.tasks import create_creative_task, creative_for_task
 from creative_os.services.text_reasoning import _store_audit, _store_concepts
 from creative_os.util import sha256_text, utcnow
@@ -132,20 +141,63 @@ NEW_CREATIVE_V1: list[dict[str, Any]] = [
         "kind": "HUMAN_CONCEPT_SELECTION",
         "config": {"approval_type": "SELECT_CONCEPT"},
     },
-    {"id": "story_development", "kind": "STORY_DEVELOPMENT", "config": {"stage": "STORY_DEVELOPMENT"}},
-    {"id": "compile_story_context", "kind": "COMPILE_CONTEXT", "config": {"stage": "STORY_DEVELOPMENT"}},
+    {
+        "id": "story_development",
+        "kind": "STORY_DEVELOPMENT",
+        "config": {"stage": "STORY_DEVELOPMENT", "expected_output": "STORY_DEVELOPMENT_DRAFT"},
+    },
+    {
+        "id": "compile_story_context",
+        "kind": "COMPILE_CONTEXT",
+        "config": {
+            "stage": "STORY_DEVELOPMENT",
+            "task_memory": "story_task_id",
+            "bundle_memory": "story_bundle_id",
+        },
+    },
     {
         "id": "story_director",
         "kind": "SPECIALIST_REASONING",
         "config": {
             "role": "CREATIVE_DIRECTOR",
             "transport": "MANUAL_SUBSCRIPTION",
-            "contract": "StoryDevelopmentAuditResult",
+            "contract": "StoryLockDraftResult",
             "capability": "STORY_DEVELOPMENT",
+            "assignment_memory": "story_assignment_id",
+        },
+    },
+    {"id": "import_story", "kind": "IMPORT_SPECIALIST_RESULT", "config": {"contract": "StoryLockDraftResult"}},
+    {
+        "id": "story_audit_task",
+        "kind": "CREATE_CREATIVE_TASK",
+        "config": {
+            "stage": "STORY_DEVELOPMENT",
+            "expected_output": "STORY_DEVELOPMENT_AUDIT",
+            "task_memory": "story_audit_task_id",
         },
     },
     {
-        "id": "import_story",
+        "id": "compile_story_audit_context",
+        "kind": "COMPILE_CONTEXT",
+        "config": {
+            "stage": "STORY_DEVELOPMENT",
+            "task_memory": "story_audit_task_id",
+            "bundle_memory": "story_audit_bundle_id",
+        },
+    },
+    {
+        "id": "story_qa_specialist",
+        "kind": "SPECIALIST_REASONING",
+        "config": {
+            "role": "CREATIVE_QA",
+            "transport": "MANUAL_SUBSCRIPTION",
+            "contract": "StoryDevelopmentAuditResult",
+            "capability": "STORY_QA",
+            "assignment_memory": "story_audit_assignment_id",
+        },
+    },
+    {
+        "id": "import_story_audit",
         "kind": "IMPORT_SPECIALIST_RESULT",
         "config": {"contract": "StoryDevelopmentAuditResult"},
     },
@@ -208,6 +260,7 @@ EXECUTION_STATES = (
 )
 CONTRACTS: dict[str, type[BaseModel]] = {
     "ConceptGenerationResult": ConceptGenerationResult,
+    "StoryLockDraftResult": StoryLockDraftResult,
     "StoryDevelopmentAuditResult": StoryDevelopmentAuditResult,
 }
 
@@ -306,14 +359,15 @@ def ensure_new_creative_v1(session: Session) -> WorkflowDefinitionVersion:
         .order_by(WorkflowDefinitionVersion.version_number.desc())
         .limit(1)
     )
-    if current is not None:
-        return current
     graph = [dict(node) for node in NEW_CREATIVE_V1]
+    digest = stable_digest({"nodes": graph})
+    if current is not None and current.graph_hash == digest:
+        return current
     version = WorkflowDefinitionVersion(
         definition_id=definition.id,
-        version_number=1,
+        version_number=1 if current is None else current.version_number + 1,
         graph=graph,
-        graph_hash=stable_digest({"nodes": graph}),
+        graph_hash=digest,
         created_at=utcnow(),
     )
     session.add(version)
@@ -451,6 +505,54 @@ def import_manual_response(
         assignment.result_refs = dict(model_run.output_refs or {})
         _remember(run, "concept_batch_id", batch_id)
         _remember(run, "concept_ids", (model_run.output_refs or {}).get("concept_ids") or [])
+    elif isinstance(model, StoryLockDraftResult):
+        creative = _creative_for_run(session, run)
+        if creative is None:
+            raise ControlPlaneError("CREATIVE_REQUIRED", "a story draft requires a creative")
+        document = StoryLockDocument.model_validate(model.model_dump(mode="json"))
+        provenance = {
+            "work_order_id": run.work_order_id,
+            "workflow_run_id": run.id,
+            "step_run_id": step.id,
+            "creative_task_id": bundle.creative_task_id,
+            "selected_concept_id": run.memory.get("selected_concept_id"),
+            "specialist_assignment_id": assignment.id,
+            "context_bundle_id": bundle.id,
+            "model_run_id": model_run.id,
+            "transport": assignment.transport,
+            "provider_name": assignment.provider_name,
+            "model_name": assignment.model_name,
+            "uncertainties": list(model.uncertainties),
+            "research_needed": list(model.research_needed),
+        }
+        version = propose_story_lock_document(
+            session,
+            creative,
+            document,
+            proposer=actor_name,
+            reason="manual story development draft",
+            provenance=provenance,
+        )
+        assignment.result_refs = {
+            "story_lock_version_id": version.id,
+            "document_hash": version.document_hash,
+            "approval_state": version.approval_state,
+        }
+        _remember(run, "pending_story_lock_version_id", version.id)
+        _remember(run, "story_uncertainties", list(model.uncertainties))
+        _remember(run, "research_needed", list(model.research_needed))
+        _evidence(
+            session,
+            run,
+            step,
+            evidence_type="STORY_LOCK_DRAFT",
+            source=f"{assignment.transport}:{provider_name}",
+            subject_type="story_lock_version",
+            subject_id=version.id,
+            content_hash=version.document_hash,
+            claims=["pending_story_lock"],
+            verification_state="UNVERIFIED",
+        )
     elif isinstance(model, StoryDevelopmentAuditResult):
         _store_audit(session, bundle, model_run, model)
         assignment.result_refs = dict(model_run.output_refs or {})
@@ -518,6 +620,10 @@ def decide_approval(
         _select_concept(session, request, concept_id, actor, notes)
     elif choice == "APPROVED" and request.approval_type == "APPROVE_STORYLOCK":
         _approve_story(session, request, actor, notes)
+    elif choice == "NEEDS_CHANGES" and request.approval_type == "APPROVE_STORYLOCK":
+        _request_story_changes(session, request, actor, notes)
+    elif choice == "REJECTED" and request.approval_type == "APPROVE_STORYLOCK":
+        _reject_story(session, request, actor, notes)
     elif choice == "APPROVED" and request.approval_type in {
         "APPROVE_PRODUCTION",
         "APPROVE_POST",
@@ -539,6 +645,14 @@ def decide_approval(
                 "subject_type": request.subject_type,
                 "subject_id": request.subject_id,
                 "subject_hash": request.subject_hash,
+            }
+            advance(session, run.id, actor=actor)
+        elif step is not None and choice == "NEEDS_CHANGES" and request.approval_type == "APPROVE_STORYLOCK":
+            _set_step(session, step, "SUCCEEDED", actor, "story lock needs changes")
+            step.output_refs = {
+                "approval_request_id": request.id,
+                "subject_id": request.subject_id,
+                "decision": "NEEDS_CHANGES",
             }
             advance(session, run.id, actor=actor)
         elif step is not None and choice in {"REJECTED", "CANCELLED"}:
@@ -614,6 +728,13 @@ def compile_context_for_step(session: Session, step_run_id: str) -> dict[str, An
 
 
 def assess_reference_readiness(session: Session, requirements: list[dict[str, Any]]) -> dict[str, Any]:
+    if not requirements:
+        return {
+            "status": "REFERENCE_REQUIREMENTS_NOT_GENERATED",
+            "gaps": [],
+            "matched": [],
+            "declared_count": 0,
+        }
     gaps: list[dict[str, Any]] = []
     matched: list[dict[str, str]] = []
     assets = list(session.scalars(select(Asset)))
@@ -661,8 +782,9 @@ def recheck_reference_readiness(
         _remember(run, "outcome", "READY_FOR_PRODUCTION")
         _sync(session, run, actor_name)
     else:
-        step.error_code = "BLOCKED_MISSING_REFERENCE"
-        step.error_detail = json.dumps(report["gaps"])
+        step.error_code = str(report["status"])
+        step.error_detail = json.dumps(report["gaps"]) if report["gaps"] else str(report["status"])
+        _remember(run, "outcome", str(report["status"]))
         session.flush()
     return run
 
@@ -850,11 +972,12 @@ def reference_gap_queue(session: Session) -> list[dict[str, Any]]:
     steps = session.scalars(select(StepRun).where(StepRun.node_kind == "REFERENCE_READINESS"))
     for step in steps:
         report = step.output_refs or {}
-        if report.get("status") == "BLOCKED_MISSING_REFERENCE":
+        if report.get("status") in {"BLOCKED_MISSING_REFERENCE", "REFERENCE_REQUIREMENTS_NOT_GENERATED"}:
             rows.append(
                 {
                     "step_run_id": step.id,
                     "workflow_run_id": step.workflow_run_id,
+                    "status": report.get("status"),
                     "gaps": report.get("gaps") or [],
                 }
             )
@@ -940,7 +1063,35 @@ def _execute(session: Session, run: WorkflowRun, step: StepRun, steps: list[Step
 
 
 def _create_task_step(session: Session, run: WorkflowRun, step: StepRun, order: WorkOrder, actor: str) -> None:
-    stage = str((step.input_refs.get("config") or {}).get("stage") or "CONCEPT_GENERATION")
+    config = dict(step.input_refs.get("config") or {})
+    stage = str(config.get("stage") or "CONCEPT_GENERATION")
+    expected = config.get("expected_output")
+    if config.get("task_memory"):
+        memory_key = str(config["task_memory"])
+    elif stage == "CONCEPT_GENERATION":
+        memory_key = "concept_task_id"
+    else:
+        memory_key = "story_task_id"
+    input_refs: dict[str, Any] = {"work_order_id": order.id}
+    instruction = order.goal
+    if expected == "STORY_DEVELOPMENT_AUDIT":
+        version = _pending_from_memory(session, run)
+        if version is None:
+            raise ControlPlaneError("LOCK_MISSING", "story QA requires the pending story lock candidate")
+        provenance = version.provenance or {}
+        input_refs.update(
+            {
+                "pending_story_lock_version_id": version.id,
+                "document_hash": version.document_hash,
+                "story_lock_document": version.content_json,
+                "uncertainties": list(provenance.get("uncertainties") or []),
+                "research_needed": list(provenance.get("research_needed") or []),
+            }
+        )
+        instruction = (
+            "Review the pending StoryLock candidate in input_refs. "
+            "Return a diagnosis only. Do not approve the story."
+        )
     task = create_creative_task(
         session,
         program_id=order.program_id,
@@ -948,20 +1099,24 @@ def _create_task_step(session: Session, run: WorkflowRun, step: StepRun, order: 
         campaign_id=order.campaign_id,
         creative_id=order.creative_id,
         stage=stage,
-        instruction=order.goal,
+        instruction=instruction,
         created_by=actor,
         constraints={"work_order_id": order.id},
-        input_refs={"work_order_id": order.id},
+        input_refs=input_refs,
+        expected_output_type=None if expected is None else str(expected),
     )
     order.task_ids = [*list(order.task_ids or []), task.id]
     flag_modified(order, "task_ids")
-    _remember(run, "concept_task_id", task.id)
-    _finish(session, step, actor, {"creative_task_id": task.id, "stage": stage})
+    _remember(run, memory_key, task.id)
+    _finish(session, step, actor, {"creative_task_id": task.id, "stage": stage, "expected_output": expected})
 
 
 def _compile_step(session: Session, run: WorkflowRun, step: StepRun, order: WorkOrder) -> None:
-    stage = str((step.input_refs.get("config") or {}).get("stage") or "")
-    if stage == "STORY_DEVELOPMENT":
+    config = dict(step.input_refs.get("config") or {})
+    stage = str(config.get("stage") or "")
+    if config.get("task_memory"):
+        task_id = run.memory.get(str(config["task_memory"]))
+    elif stage == "STORY_DEVELOPMENT":
         task_id = run.memory.get("story_task_id")
     else:
         task_id = run.memory.get("concept_task_id")
@@ -972,7 +1127,12 @@ def _compile_step(session: Session, run: WorkflowRun, step: StepRun, order: Work
     if creative is None and order.creative_id:
         creative = session.get(Creative, order.creative_id)
     bundle = create_context_bundle(session, creative, task=task)
-    key = "story_bundle_id" if stage == "STORY_DEVELOPMENT" else "concept_bundle_id"
+    if config.get("bundle_memory"):
+        key = str(config["bundle_memory"])
+    elif stage == "STORY_DEVELOPMENT":
+        key = "story_bundle_id"
+    else:
+        key = "concept_bundle_id"
     _remember(run, key, bundle.id)
     _evidence(
         session,
@@ -1024,7 +1184,9 @@ def _specialist_step(
     )
     session.add(assignment)
     session.flush()
-    if assignment.contract_name == "ConceptGenerationResult":
+    if config.get("assignment_memory"):
+        memory_key = str(config["assignment_memory"])
+    elif assignment.contract_name == "ConceptGenerationResult":
         memory_key = "concept_assignment_id"
     else:
         memory_key = "story_assignment_id"
@@ -1096,25 +1258,56 @@ def _concept_gate(session: Session, run: WorkflowRun, step: StepRun, order: Work
 
 
 def _story_task_step(session: Session, run: WorkflowRun, step: StepRun, order: WorkOrder, actor: str) -> None:
+    config = dict(step.input_refs.get("config") or {})
     concept_id = str(run.memory.get("selected_concept_id") or "")
     concept = session.get(ConceptCandidate, concept_id) if concept_id else None
     if concept is None or concept.status != "SELECTED":
         raise ControlPlaneError("CONCEPT_REQUIRED", "story development requires a human-selected concept")
+    creative = _ensure_creative(session, order, concept)
+    expected = str(config.get("expected_output") or "STORY_DEVELOPMENT_DRAFT")
+    memory_key = str(config.get("task_memory") or "story_task_id")
+    input_refs: dict[str, Any] = {
+        "concept_id": concept.id,
+        "selected_concept_id": concept.id,
+        "work_order_id": order.id,
+    }
+    instruction = f"Develop the selected concept into a StoryLock candidate: {concept.title}"
+    if config.get("revision"):
+        prior = _version_from_memory(session, run)
+        input_refs.update(
+            {
+                "prior_pending_story_lock_version_id": None if prior is None else prior.id,
+                "prior_document": None if prior is None else prior.content_json,
+                "qa_feedback": run.memory.get("qa_feedback"),
+                "human_notes": run.memory.get("human_notes"),
+                "story_audit_id": run.memory.get("story_audit_id"),
+            }
+        )
+        instruction = (
+            "Revise the pending StoryLock using the prior draft, QA feedback, and human notes. "
+            "Return a new StoryLockDraftResult. Do not edit the prior version."
+        )
     task = create_creative_task(
         session,
         program_id=order.program_id,
         account_id=order.account_id,
         campaign_id=order.campaign_id,
-        creative_id=order.creative_id,
+        creative_id=creative.id,
         stage="STORY_DEVELOPMENT",
-        instruction=f"Develop the selected concept: {concept.title}",
+        instruction=instruction,
         created_by=actor,
-        input_refs={"concept_id": concept.id, "work_order_id": order.id},
+        input_refs=input_refs,
+        expected_output_type=expected,
     )
     order.task_ids = [*list(order.task_ids or []), task.id]
     flag_modified(order, "task_ids")
-    _remember(run, "story_task_id", task.id)
-    _finish(session, step, actor, {"creative_task_id": task.id, "concept_id": concept.id})
+    _remember(run, memory_key, task.id)
+    _finish(
+        session,
+        step,
+        actor,
+        {"creative_task_id": task.id, "concept_id": concept.id, "creative_id": creative.id},
+    )
 
 
 def _story_qa_step(session: Session, run: WorkflowRun, step: StepRun) -> None:
@@ -1146,11 +1339,40 @@ def _story_gate(session: Session, run: WorkflowRun, step: StepRun, order: WorkOr
     if not order.creative_id:
         _block(session, step, "NO_PENDING_STORY_LOCK", "story approval requires a creative with a pending lock")
         return
-    pending = _pending_lock(session, order.creative_id)
+    pending = _pending_from_memory(session, run)
     if pending is None:
         _block(session, step, "NO_PENDING_STORY_LOCK", "no pending story lock version is waiting")
         return
+    creative = session.get(Creative, order.creative_id)
+    current = None
+    if creative is not None and creative.current_approved_story_lock_version_id:
+        current = session.get(StoryLockVersion, creative.current_approved_story_lock_version_id)
+    audit = session.get(StoryAuditRecord, run.memory.get("story_audit_id"))
+    provenance = dict(pending.provenance or {})
+    content = pending.content_json or {}
     subject_hash = pending.document_hash or pending.content_hash
+    payload = {
+        "creative_id": order.creative_id,
+        "version_number": pending.version_number,
+        "document_hash": pending.document_hash,
+        "supersedes_version_id": pending.supersedes_version_id,
+        "title": content.get("title"),
+        "hook": content.get("hook"),
+        "core_story": content.get("core_story"),
+        "floating_hook": content.get("floating_hook"),
+        "diff_paths": changed_paths(current.content_json, pending.content_json) if current is not None else [],
+        "qa": None
+        if audit is None
+        else {
+            "id": audit.id,
+            "overall_status": audit.overall_status,
+            "diagnosis": audit.diagnosis,
+            "record_status": audit.record_status,
+        },
+        "uncertainties": list(provenance.get("uncertainties") or []),
+        "research_needed": list(provenance.get("research_needed") or []),
+        "provenance": provenance,
+    }
     request = request_approval(
         session,
         approval_type="APPROVE_STORYLOCK",
@@ -1160,7 +1382,7 @@ def _story_gate(session: Session, run: WorkflowRun, step: StepRun, order: WorkOr
         requested_by="workflow:NEW_CREATIVE_V1",
         workflow_run_id=run.id,
         step_run_id=step.id,
-        payload={"creative_id": order.creative_id},
+        payload=payload,
     )
     step.output_refs = {"approval_request_id": request.id, "subject_hash": subject_hash}
     _set_step(
@@ -1173,6 +1395,15 @@ def _story_gate(session: Session, run: WorkflowRun, step: StepRun, order: WorkOr
 
 
 def _routing_step(session: Session, run: WorkflowRun, step: StepRun, order: WorkOrder) -> None:
+    if not run.memory.get("story_lock_approved"):
+        _block(
+            session,
+            step,
+            "STORY_LOCK_REQUIRED",
+            "production routing requires a human-approved story lock",
+        )
+        _remember(run, "outcome", "STORY_LOCK_REQUIRED")
+        return
     _finish(
         session,
         step,
@@ -1204,6 +1435,14 @@ def _readiness_step(session: Session, run: WorkflowRun, step: StepRun, order: Wo
     if report["status"] == "READY":
         _set_step(session, step, "SUCCEEDED", actor, "READY_FOR_PRODUCTION")
         _remember(run, "outcome", "READY_FOR_PRODUCTION")
+    elif report["status"] == "REFERENCE_REQUIREMENTS_NOT_GENERATED":
+        _block(
+            session,
+            step,
+            "REFERENCE_REQUIREMENTS_NOT_GENERATED",
+            "v0.5 production-routing gap: reference requirements were not generated",
+        )
+        _remember(run, "outcome", "REFERENCE_REQUIREMENTS_NOT_GENERATED")
     else:
         _block(session, step, "BLOCKED_MISSING_REFERENCE", json.dumps(report["gaps"]))
         _remember(run, "outcome", "BLOCKED_MISSING_REFERENCE")
@@ -1248,9 +1487,214 @@ def _approve_story(session: Session, request: ApprovalRequest, actor: str, notes
     if current_hash != request.subject_hash:
         raise ControlPlaneError("HASH_MISMATCH", "the story lock hash changed since the request was bound")
     before = creative.current_approved_story_lock_version_id
-    decide_story_lock_version(session, creative, version, "APPROVE", actor, notes)
+    _decide_lock(session, creative, version, "APPROVE", actor, notes)
     if creative.current_approved_story_lock_version_id == before:
         raise ControlPlaneError("POINTER_UNCHANGED", "story approval did not use the existing approval path")
+    if request.workflow_run_id:
+        workflow = _run(session, request.workflow_run_id)
+        _remember(workflow, "story_lock_approved", True)
+        _remember(workflow, "approved_story_lock_version_id", version.id)
+
+
+def _reject_story(session: Session, request: ApprovalRequest, actor: str, notes: str | None) -> None:
+    version, creative = _bound_lock(session, request)
+    _decide_lock(session, creative, version, "REJECT", actor, notes)
+
+
+def _request_story_changes(session: Session, request: ApprovalRequest, actor: str, notes: str | None) -> None:
+    version, creative = _bound_lock(session, request)
+    _decide_lock(session, creative, version, "NEEDS_CHANGES", actor, notes)
+    if not request.workflow_run_id or not request.step_run_id:
+        return
+    run = _run(session, request.workflow_run_id)
+    step = session.get(StepRun, request.step_run_id)
+    if step is None:
+        raise ControlPlaneError("STEP_NOT_FOUND", "story approval step does not exist")
+    audit = session.get(StoryAuditRecord, run.memory.get("story_audit_id"))
+    _remember(run, "human_notes", notes)
+    _remember(
+        run,
+        "qa_feedback",
+        None
+        if audit is None
+        else {
+            "id": audit.id,
+            "overall_status": audit.overall_status,
+            "diagnosis": audit.diagnosis,
+            "result_json": audit.result_json,
+        },
+    )
+    count = int(run.memory.get("revision_count") or 0) + 1
+    _remember(run, "revision_count", count)
+    _remember(run, "story_lock_approved", False)
+    _insert_revision_cycle(session, run, step, count)
+
+
+def _bound_lock(session: Session, request: ApprovalRequest) -> tuple[StoryLockVersion, Creative]:
+    version = session.get(StoryLockVersion, request.subject_id)
+    creative_id = (request.payload or {}).get("creative_id")
+    creative = session.get(Creative, creative_id) if creative_id else None
+    if version is None or creative is None:
+        raise ControlPlaneError("LOCK_MISSING", "story approval is bound to a pending story lock version")
+    current_hash = version.document_hash or version.content_hash
+    if current_hash != request.subject_hash:
+        raise ControlPlaneError("HASH_MISMATCH", "the story lock hash changed since the request was bound")
+    return version, creative
+
+
+def _decide_lock(
+    session: Session,
+    creative: Creative,
+    version: StoryLockVersion,
+    decision: str,
+    actor: str,
+    notes: str | None,
+) -> None:
+    try:
+        decide_story_lock_version(session, creative, version, decision, actor, notes)
+    except StoryLockDecisionError as exc:
+        raise ControlPlaneError(exc.code, str(exc)) from exc
+
+
+def _ensure_creative(session: Session, order: WorkOrder, concept: ConceptCandidate) -> Creative:
+    creative = session.get(Creative, order.creative_id) if order.creative_id else None
+    if creative is None:
+        creative = Creative(
+            program_id=order.program_id,
+            account_id=order.account_id,
+            campaign_id=order.campaign_id,
+            slug=f"wo-{order.id}",
+            name=(concept.title or order.goal)[:240],
+            status="DRAFT",
+            holdout=False,
+            created_at=utcnow(),
+        )
+        session.add(creative)
+        session.flush()
+        order.creative_id = creative.id
+    if creative.selected_concept_id is None:
+        link_selected_concept(creative, concept)
+    return creative
+
+
+def _creative_for_run(session: Session, run: WorkflowRun) -> Creative | None:
+    order = _order(session, run.work_order_id)
+    if not order.creative_id:
+        return None
+    return session.get(Creative, order.creative_id)
+
+
+def _revision_nodes(revision: int) -> list[dict[str, Any]]:
+    prefix = f"revision_{revision}"
+    return [
+        {
+            "id": f"{prefix}_story_development",
+            "kind": "STORY_DEVELOPMENT",
+            "config": {
+                "stage": "STORY_DEVELOPMENT",
+                "expected_output": "STORY_DEVELOPMENT_DRAFT",
+                "revision": True,
+                "task_memory": f"{prefix}_story_task_id",
+            },
+        },
+        {
+            "id": f"{prefix}_compile_story",
+            "kind": "COMPILE_CONTEXT",
+            "config": {
+                "stage": "STORY_DEVELOPMENT",
+                "task_memory": f"{prefix}_story_task_id",
+                "bundle_memory": f"{prefix}_story_bundle_id",
+            },
+        },
+        {
+            "id": f"{prefix}_story_director",
+            "kind": "SPECIALIST_REASONING",
+            "config": {
+                "role": "CREATIVE_DIRECTOR",
+                "transport": "MANUAL_SUBSCRIPTION",
+                "contract": "StoryLockDraftResult",
+                "capability": "STORY_DEVELOPMENT",
+                "assignment_memory": f"{prefix}_story_assignment_id",
+            },
+        },
+        {"id": f"{prefix}_import_story", "kind": "IMPORT_SPECIALIST_RESULT", "config": {}},
+        {
+            "id": f"{prefix}_audit_task",
+            "kind": "CREATE_CREATIVE_TASK",
+            "config": {
+                "stage": "STORY_DEVELOPMENT",
+                "expected_output": "STORY_DEVELOPMENT_AUDIT",
+                "task_memory": f"{prefix}_audit_task_id",
+            },
+        },
+        {
+            "id": f"{prefix}_compile_audit",
+            "kind": "COMPILE_CONTEXT",
+            "config": {
+                "stage": "STORY_DEVELOPMENT",
+                "task_memory": f"{prefix}_audit_task_id",
+                "bundle_memory": f"{prefix}_audit_bundle_id",
+            },
+        },
+        {
+            "id": f"{prefix}_qa_specialist",
+            "kind": "SPECIALIST_REASONING",
+            "config": {
+                "role": "CREATIVE_QA",
+                "transport": "MANUAL_SUBSCRIPTION",
+                "contract": "StoryDevelopmentAuditResult",
+                "capability": "STORY_QA",
+                "assignment_memory": f"{prefix}_audit_assignment_id",
+            },
+        },
+        {"id": f"{prefix}_import_audit", "kind": "IMPORT_SPECIALIST_RESULT", "config": {}},
+        {"id": f"{prefix}_story_qa", "kind": "STORY_QA", "config": {}},
+        {
+            "id": f"{prefix}_approve_story",
+            "kind": "HUMAN_STORY_APPROVAL",
+            "config": {"approval_type": "APPROVE_STORYLOCK"},
+        },
+    ]
+
+
+def _insert_revision_cycle(session: Session, run: WorkflowRun, anchor: StepRun, revision: int) -> None:
+    nodes = _revision_nodes(revision)
+    later = [step for step in _steps(session, run.id) if step.position > anchor.position]
+    for step in sorted(later, key=lambda item: item.position, reverse=True):
+        step.position += len(nodes)
+    session.flush()
+    for offset, node in enumerate(nodes, start=1):
+        config = dict(node.get("config") or {})
+        session.add(
+            StepRun(
+                workflow_run_id=run.id,
+                position=anchor.position + offset,
+                node_id=str(node["id"]),
+                node_kind=str(node["kind"]),
+                input_refs={"config": config},
+                output_refs={},
+                status="PENDING",
+                specialist_role=config.get("role"),
+                capability=config.get("capability"),
+                attempt=0,
+                evidence_ids=[],
+            )
+        )
+    session.flush()
+
+
+def _pending_from_memory(session: Session, run: WorkflowRun) -> StoryLockVersion | None:
+    version = _version_from_memory(session, run)
+    if version is None or version.approval_state != "PENDING":
+        return None
+    return version
+
+
+def _version_from_memory(session: Session, run: WorkflowRun) -> StoryLockVersion | None:
+    version_id = run.memory.get("pending_story_lock_version_id")
+    if not version_id:
+        return None
+    return session.get(StoryLockVersion, version_id)
 
 
 def _manual_run(
@@ -1320,21 +1764,6 @@ def _text_matches(expected: object, haystack: str) -> bool:
     if expected in (None, ""):
         return True
     return str(expected).casefold() in haystack
-
-
-def _pending_lock(session: Session, creative_id: str) -> StoryLockVersion | None:
-    lock = session.scalar(select(StoryLock).where(StoryLock.creative_id == creative_id))
-    if lock is None:
-        return None
-    return session.scalar(
-        select(StoryLockVersion)
-        .where(
-            StoryLockVersion.story_lock_id == lock.id,
-            StoryLockVersion.approval_state == "PENDING",
-        )
-        .order_by(StoryLockVersion.version_number.desc())
-        .limit(1)
-    )
 
 
 def _approved_pointer(session: Session, run: WorkflowRun) -> str | None:
@@ -1563,7 +1992,7 @@ def _order_view(order: WorkOrder) -> dict[str, Any]:
 
 
 def _approval_view(row: ApprovalRequest) -> dict[str, Any]:
-    return {
+    view: dict[str, Any] = {
         "id": row.id,
         "approval_type": row.approval_type,
         "subject_type": row.subject_type,
@@ -1573,6 +2002,24 @@ def _approval_view(row: ApprovalRequest) -> dict[str, Any]:
         "requested_by": row.requested_by,
         "workflow_run_id": row.workflow_run_id,
     }
+    if row.approval_type == "APPROVE_STORYLOCK":
+        payload = row.payload or {}
+        view["brief"] = {
+            "version_id": row.subject_id,
+            "version_number": payload.get("version_number"),
+            "document_hash": payload.get("document_hash") or row.subject_hash,
+            "supersedes_version_id": payload.get("supersedes_version_id"),
+            "title": payload.get("title"),
+            "hook": payload.get("hook"),
+            "core_story": payload.get("core_story"),
+            "floating_hook": payload.get("floating_hook"),
+            "diff_paths": payload.get("diff_paths") or [],
+            "qa": payload.get("qa"),
+            "uncertainties": payload.get("uncertainties") or [],
+            "research_needed": payload.get("research_needed") or [],
+            "provenance": payload.get("provenance") or {},
+        }
+    return view
 
 
 def _assignment_view(row: SpecialistAssignment) -> dict[str, Any]:

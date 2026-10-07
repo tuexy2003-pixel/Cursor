@@ -2,7 +2,19 @@
 
 MCP is another caller of the company services. It is not a second authority.
 
-The HTTP entry is `POST /api/mcp` with `{ "tool", "arguments", "caller" }`. `GET /api/mcp/tools` lists the registry.
+## Transport
+
+The MCP server is streamable HTTP at `/mcp`.
+
+It supports initialization, tool discovery, tool invocation, structured tool results, and protocol errors through the MCP SDK. An arbitrary REST body is not treated as MCP.
+
+Requests require `Authorization: Bearer <COS_MCP_TOKEN>`. The token comes from the environment or `.env`. `COS_OPERATOR_IDENTITY` is not accepted as that credential. A missing or wrong token is rejected. The token is not returned, logged, stored in plaintext metadata, or copied into tool descriptions.
+
+The default API bind stays loopback-only. Remote MCP is unsupported.
+
+## Registry / debug API
+
+`GET /api/mcp/tools` and `POST /api/mcp` are the MCP registry / debug API. They call the same tool registry and require the same bearer token. They are not the MCP transport.
 
 ## Reads
 
@@ -25,12 +37,12 @@ The HTTP entry is `POST /api/mcp` with `{ "tool", "arguments", "caller" }`. `GET
 - `create_manual_specialist_assignment`
 - `request_approval`
 
-`request_approval` always creates a `PENDING` request. Passing any other status is rejected. There is no MCP tool that approves, posts, or mutates a story lock.
+`request_approval` always creates a `PENDING` request. Passing any other status is rejected. There is no MCP tool that approves, selects a concept, decides a StoryLock, posts, or mutates Account DNA or Creative Genome.
 
 ## Prohibited
 
-These names are rejected and audited as prohibited: arbitrary SQL, shell, direct StoryLock mutation, direct Account DNA mutation, approval bypass, posting, GeeLark, device start, and purchasing.
+These names are not registered on the MCP server. The debug registry rejects and audits them: arbitrary SQL, shell, filesystem, direct StoryLock mutation, `decide_story_lock`, `select_concept`, direct Account DNA mutation, Creative Genome mutation, approval bypass, `approve_request`, posting, GeeLark, device start, purchasing, and image execution.
 
 ## Audit
 
-Every mutation, including a rejected mutation, writes `McpAuditLog` with the caller, interface `MCP`, operation, input, affected record ids, timestamp, and result. Human approval rules are the same for the UI, the API, and MCP: the server operator identity decides, and a specialist identity cannot.
+Every tool invocation writes `McpAuditLog` with the MCP client/interface, tool name, request id when the transport has one, a hash of the redacted input, the redacted input, affected record ids, result, and timestamp. Secret-like fields are redacted. Human approval rules are unchanged: the server operator identity decides, and a specialist identity cannot.

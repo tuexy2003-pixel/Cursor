@@ -3,12 +3,40 @@
 import { type FormEvent, useCallback, useEffect, useState } from "react";
 import { apiGet, apiSend } from "../../lib/api";
 
+type StoryBrief = {
+  version_id: string;
+  version_number: number | null;
+  document_hash: string;
+  supersedes_version_id: string | null;
+  title: string | null;
+  hook: string | null;
+  core_story: string | null;
+  floating_hook: string | null;
+  diff_paths: string[];
+  qa: { id: string; overall_status: string; diagnosis: string; record_status: string } | null;
+  uncertainties: string[];
+  research_needed: string[];
+  provenance: Record<string, unknown>;
+};
+
+type HumanWait = {
+  id: string;
+  approval_type: string;
+  subject_id: string;
+  status: string;
+  brief?: StoryBrief;
+};
+
 type Status = {
   running: Array<{ id: string; goal: string; status: string }>;
   blocked: Array<{ id: string; goal: string; status: string }>;
-  waiting_on_human: Array<{ id: string; approval_type: string; subject_id: string; status: string }>;
+  waiting_on_human: HumanWait[];
   waiting_on_specialist: Array<{ id: string; specialist_role: string; transport: string; status: string }>;
-  missing_references: Array<{ workflow_run_id: string; gaps: Array<Record<string, string | null>> }>;
+  missing_references: Array<{
+    workflow_run_id: string;
+    status?: string;
+    gaps: Array<Record<string, string | null>>;
+  }>;
   completed_recently: Array<{ id: string; goal: string; status: string }>;
   recommended_next_action: { action: string; subject_id: string; reason: string };
 };
@@ -53,6 +81,7 @@ export default function CompanyPage() {
   const [raw, setRaw] = useState("");
   const [approvalId, setApprovalId] = useState("");
   const [conceptId, setConceptId] = useState("");
+  const [notes, setNotes] = useState("");
   const [decision, setDecision] = useState("APPROVED");
 
   const load = useCallback(() => {
@@ -133,7 +162,9 @@ export default function CompanyPage() {
       await apiSend(`/company/approvals/${approvalId}/decide`, {
         decision,
         concept_id: conceptId || null,
+        notes: notes || null,
       });
+      setNotes("");
       load();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not record the decision");
@@ -287,6 +318,11 @@ export default function CompanyPage() {
             ))}
           </tbody>
         </table>
+        {(status?.waiting_on_human ?? [])
+          .filter((row) => row.brief)
+          .map((row) => (
+            <StoryBriefCard key={row.id} requestId={row.id} brief={row.brief as StoryBrief} />
+          ))}
         <form onSubmit={decide}>
           <label>
             Approval id
@@ -299,10 +335,14 @@ export default function CompanyPage() {
           <label>
             Decision
             <select value={decision} onChange={(event) => setDecision(event.target.value)}>
-              <option>APPROVED</option>
-              <option>REJECTED</option>
-              <option>NEEDS_CHANGES</option>
+              <option value="APPROVED">APPROVE</option>
+              <option value="REJECTED">REJECT</option>
+              <option value="NEEDS_CHANGES">NEEDS_CHANGES</option>
             </select>
+          </label>
+          <label>
+            Notes
+            <textarea value={notes} onChange={(event) => setNotes(event.target.value)} rows={3} />
           </label>
           <button type="submit">Record human decision</button>
         </form>
@@ -371,7 +411,13 @@ export default function CompanyPage() {
         {(status?.missing_references ?? []).length === 0 && <p className="muted">No declared reference gaps.</p>}
         {(status?.missing_references ?? []).map((row) => (
           <div className="card" key={row.workflow_run_id}>
-            <p>Run {row.workflow_run_id}</p>
+            <p>
+              Run {row.workflow_run_id}
+              {row.status ? ` · ${row.status}` : ""}
+            </p>
+            {row.gaps.length === 0 && row.status === "REFERENCE_REQUIREMENTS_NOT_GENERATED" && (
+              <p className="muted">Reference requirements have not been generated. This is not ready.</p>
+            )}
             <ul>
               {row.gaps.map((gap, index) => (
                 <li key={`${row.workflow_run_id}-${index}`}>
@@ -384,6 +430,35 @@ export default function CompanyPage() {
         ))}
       </section>
     </>
+  );
+}
+
+function StoryBriefCard({ requestId, brief }: { requestId: string; brief: StoryBrief }) {
+  const provenance = Object.entries(brief.provenance).filter(([, value]) => typeof value === "string");
+  return (
+    <div className="card">
+      <h3>Pending StoryLock v{brief.version_number ?? "?"}</h3>
+      <p>
+        {brief.title || "Untitled"} · {requestId}
+      </p>
+      <p>{brief.core_story}</p>
+      <p className="muted">
+        Hook: {brief.hook || "none"} · Floating hook: {brief.floating_hook || "none"}
+      </p>
+      <p>Hash {brief.document_hash}</p>
+      <p>
+        Diff:{" "}
+        {brief.supersedes_version_id
+          ? brief.diff_paths.join(", ") || "no field changes"
+          : "first StoryLock; no approved version to diff"}
+      </p>
+      <p>
+        QA: {brief.qa ? `${brief.qa.overall_status} — ${brief.qa.diagnosis} (${brief.qa.record_status})` : "none"}
+      </p>
+      <p>Uncertainties: {brief.uncertainties.join("; ") || "none"}</p>
+      <p>Research needed: {brief.research_needed.join("; ") || "none"}</p>
+      <p className="muted">Provenance: {provenance.map(([key, value]) => `${key}=${value}`).join(" · ") || "none"}</p>
+    </div>
   );
 }
 

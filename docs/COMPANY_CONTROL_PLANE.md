@@ -27,10 +27,16 @@ Creative OS remains the system of record. The control plane is a thin, inspectab
 
 ## Manual subscription
 
-The operator exports a frozen context bundle, runs it in Grok or ChatGPT, and pastes the raw JSON back. Creative OS validates it with the existing Pydantic contracts and stores it through the same concept-batch and story-audit path used by text reasoning.
+The operator exports a frozen context bundle, runs it in Grok or ChatGPT, and pastes the raw JSON back. Creative OS validates it with the existing Pydantic contracts. Concept batches and story audits use the same store path as text reasoning. A `StoryLockDraftResult` is validated and then written as a new pending StoryLock version through the story-lock service. No provider socket is opened.
 
-The assignment records `transport = MANUAL_SUBSCRIPTION`, the declared provider and model, `api_verified = false`, the bundle id and hash, the raw and parsed response, and the validation status. No socket is opened. Concept rows stay `PROPOSED`. Story audits stay `MODEL_DIAGNOSIS`. No approval pointer moves.
+The assignment records `transport = MANUAL_SUBSCRIPTION`, the declared provider and model, `api_verified = false`, the bundle id and hash, the raw and parsed response, and the validation status. Concept rows stay `PROPOSED`. Story audits stay `MODEL_DIAGNOSIS`. A draft StoryLock stays `PENDING`. No approval pointer moves until the operator approves through `decide_story_lock_version`.
+
+`STORY_DEVELOPMENT_DRAFT` proposes a new StoryLock candidate. `STORY_DEVELOPMENT_AUDIT` diagnoses an already developed candidate. They do not share one output schema.
 
 ## What stays disabled
 
 Posting, research execution, image generation, cloud-phone control, GeeLark, purchasing, and direct StoryLock or Account DNA mutation are not exposed by this layer. `MODEL_RUN` remains delegated to the existing text-reasoning gate. `POST_CONTENT`, `RUN_GEELARK_WORKFLOW`, and `START_DEVICE` can be named on an authorization and still cannot execute.
+
+Reference readiness still uses requirements declared on the work order. If production routing has not generated any, the status is `REFERENCE_REQUIREMENTS_NOT_GENERATED` rather than `READY`. Generating those requirements from the approved StoryLock is a v0.5 production-routing gap.
+
+The real MCP transport is documented in `docs/MCP_INTERFACE.md`. OpenClaw connection prerequisites are in `docs/OPENCLAW_CONNECTION.md`. OpenClaw is not installed.

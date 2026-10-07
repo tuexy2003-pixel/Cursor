@@ -8,7 +8,17 @@ from sqlalchemy.orm import Session
 from creative_os.config import repo_root
 from creative_os.importers.handoff import import_handoff
 from creative_os.mcp.server import MUTATION_TOOLS, PROHIBITED_TOOLS, READ_TOOLS, invoke
-from creative_os.models import Asset, ConceptCandidate, Creative, Program, ProviderInvocation, StoryAuditRecord
+from creative_os.models import (
+    Asset,
+    ConceptCandidate,
+    ContextBundle,
+    Creative,
+    CreativeTask,
+    Program,
+    ProviderInvocation,
+    StoryAuditRecord,
+    StoryLockVersion,
+)
 from creative_os.models.company import (
     ApprovalRequest,
     McpAuditLog,
@@ -16,6 +26,7 @@ from creative_os.models.company import (
     SpecialistAssignment,
     StepRun,
     VerificationResult,
+    WorkflowDefinition,
     WorkflowDefinitionVersion,
     WorkOrder,
 )
@@ -23,6 +34,7 @@ from creative_os.models.entities import ImmutableVersionError
 from creative_os.services.control_plane import (
     NEW_CREATIVE_V1,
     ControlPlaneError,
+    _routing_step,
     assess_reference_readiness,
     company_status,
     create_action_authorization,
@@ -42,7 +54,6 @@ from creative_os.services.control_plane import (
     workflow_history,
     workflow_run_view,
 )
-from creative_os.services.story_locks import propose_story_lock_change
 from creative_os.util import sha256_text, utcnow
 
 pytestmark = pytest.mark.core
@@ -99,6 +110,19 @@ def _concepts() -> str:
     )
 
 
+def _draft(title: str = "Birthday cart") -> str:
+    return json.dumps(
+        {
+            "title": title,
+            "core_story": "She sees the reward at checkout.",
+            "hook": "The total changed.",
+            "floating_hook": "wait",
+            "uncertainties": ["date"],
+            "research_needed": ["dashpass screen"],
+        }
+    )
+
+
 def _story() -> str:
     return json.dumps(
         {
@@ -149,13 +173,6 @@ def test_new_creative_workflow_stops_for_humans_and_references(session: Session,
     monkeypatch.setattr("http.client.HTTPConnection.request", explode)
     creative = _creative(session)
     pointer = creative.current_approved_story_lock_version_id
-    proposed = propose_story_lock_change(
-        session,
-        creative,
-        {"floating_hook": "a person still has to approve this"},
-        proposer="grok",
-        reason="needs a person",
-    )
     order = create_work_order(
         session,
         goal="Make one new creative and stop before production.",
@@ -214,9 +231,52 @@ def test_new_creative_workflow_stops_for_humans_and_references(session: Session,
     assert run.status == "WAITING_SPECIALIST"
     assert concepts[0].status == "SELECTED"
     story_assignment = _waiting_assignment(session)
+    assert story_assignment.contract_name == "StoryLockDraftResult"
+    versions_before = session.scalar(select(func.count()).select_from(StoryLockVersion))
+    invalid_draft = import_manual_response(
+        session,
+        story_assignment.id,
+        '{"core_story": "no title"}',
+        provider_name="openai",
+        model_name="gpt-5",
+    )
+    assert invalid_draft.validation_status == "INVALID"
+    assert invalid_draft.status == "WAITING_EXTERNAL_RESPONSE"
+    assert session.scalar(select(func.count()).select_from(StoryLockVersion)) == versions_before
+    draft_bundle = session.get(ContextBundle, story_assignment.context_bundle_id)
+    assert draft_bundle is not None
+    assert draft_bundle.compiled_payload["output_contract"]["name"] == "STORY_DEVELOPMENT_DRAFT"
     import_manual_response(
         session,
         story_assignment.id,
+        _draft(),
+        provider_name="openai",
+        model_name="gpt-5",
+    )
+    session.refresh(creative)
+    session.refresh(run)
+    assert creative.current_approved_story_lock_version_id == pointer
+    pending = session.get(StoryLockVersion, run.memory["pending_story_lock_version_id"])
+    assert pending is not None
+    assert pending.approval_state == "PENDING"
+    assert pending.supersedes_version_id == pointer
+    assert pending.provenance["selected_concept_id"] == concepts[0].id
+    assert pending.provenance["work_order_id"] == order.id
+    assert run.status == "WAITING_SPECIALIST"
+    qa_assignment = _waiting_assignment(session)
+    assert qa_assignment.contract_name == "StoryDevelopmentAuditResult"
+    assert qa_assignment.specialist_role == "CREATIVE_QA"
+    qa_task = session.get(CreativeTask, qa_assignment.creative_task_id)
+    assert qa_task is not None
+    assert qa_task.expected_output_type == "STORY_DEVELOPMENT_AUDIT"
+    assert qa_task.input_refs["pending_story_lock_version_id"] == pending.id
+    assert qa_task.input_refs["story_lock_document"]["title"] == "Birthday cart"
+    qa_bundle = session.get(ContextBundle, qa_assignment.context_bundle_id)
+    assert qa_bundle is not None
+    assert qa_bundle.compiled_payload["task"]["input_refs"]["pending_story_lock_version_id"] == pending.id
+    import_manual_response(
+        session,
+        qa_assignment.id,
         _story(),
         provider_name="openai",
         model_name="gpt-5",
@@ -225,17 +285,82 @@ def test_new_creative_workflow_stops_for_humans_and_references(session: Session,
     assert audit is not None
     assert audit.record_status == "MODEL_DIAGNOSIS"
     session.refresh(creative)
+    session.refresh(pending)
     assert creative.current_approved_story_lock_version_id == pointer
+    assert pending.approval_state == "PENDING"
+    routing = _step(session, run.id, "production_routing")
+    with pytest.raises(ControlPlaneError) as skipped_route:
+        resume_step(session, routing.id)
+    assert skipped_route.value.code == "SKIP_FORBIDDEN"
     session.refresh(run)
     assert run.status == "WAITING_HUMAN"
     story_request = session.scalar(
         select(ApprovalRequest).where(ApprovalRequest.approval_type == "APPROVE_STORYLOCK")
     )
     assert story_request is not None
-    assert story_request.subject_id == proposed.id
+    assert story_request.subject_id == pending.id
+    assert story_request.payload["qa"]["record_status"] == "MODEL_DIAGNOSIS"
+    assert "date" in story_request.payload["uncertainties"]
+    assert story_request.payload["diff_paths"]
+    prior_content = dict(pending.content_json)
+    decide_approval(session, story_request.id, "NEEDS_CHANGES", actor="operator", notes="tighten the hook")
+    session.refresh(pending)
+    session.refresh(creative)
+    assert pending.approval_state == "NEEDS_CHANGES"
+    assert pending.content_json == prior_content
+    assert creative.current_approved_story_lock_version_id == pointer
+    session.refresh(run)
+    assert run.status == "WAITING_SPECIALIST"
+    revised = _waiting_assignment(session)
+    assert revised.contract_name == "StoryLockDraftResult"
+    assert revised.id != story_assignment.id
+    revised_task = session.get(CreativeTask, revised.creative_task_id)
+    assert revised_task is not None
+    assert revised_task.input_refs["human_notes"] == "tighten the hook"
+    assert revised_task.input_refs["prior_document"]["title"] == "Birthday cart"
+    import_manual_response(
+        session,
+        revised.id,
+        _draft("Birthday cart revised"),
+        provider_name="openai",
+        model_name="gpt-5",
+    )
+    session.refresh(run)
+    session.refresh(pending)
+    revised_version = session.get(StoryLockVersion, run.memory["pending_story_lock_version_id"])
+    assert revised_version is not None
+    assert revised_version.id != pending.id
+    assert revised_version.approval_state == "PENDING"
+    assert revised_version.supersedes_version_id == pointer
+    assert revised_version.content_json["title"] == "Birthday cart revised"
+    assert pending.content_json == prior_content
+    assert pending.approval_state == "NEEDS_CHANGES"
+    qa_again = _waiting_assignment(session)
+    qa_task_again = session.get(CreativeTask, qa_again.creative_task_id)
+    assert qa_task_again is not None
+    assert qa_task_again.input_refs["pending_story_lock_version_id"] == revised_version.id
+    import_manual_response(
+        session,
+        qa_again.id,
+        _story(),
+        provider_name="openai",
+        model_name="gpt-5",
+    )
+    session.refresh(creative)
+    session.refresh(revised_version)
+    assert creative.current_approved_story_lock_version_id == pointer
+    assert revised_version.approval_state == "PENDING"
+    story_request = session.scalar(
+        select(ApprovalRequest).where(
+            ApprovalRequest.approval_type == "APPROVE_STORYLOCK",
+            ApprovalRequest.status == "PENDING",
+        )
+    )
+    assert story_request is not None
+    assert story_request.subject_id == revised_version.id
     decide_approval(session, story_request.id, "APPROVED", actor="operator", notes="human")
     session.refresh(creative)
-    assert creative.current_approved_story_lock_version_id == proposed.id
+    assert creative.current_approved_story_lock_version_id == revised_version.id
     session.refresh(run)
     assert run.status == "BLOCKED"
     view = workflow_run_view(session, run.id)
@@ -281,7 +406,7 @@ def test_new_creative_workflow_stops_for_humans_and_references(session: Session,
 
 
 def test_reference_readiness_does_not_invent_gaps(session: Session) -> None:
-    assert assess_reference_readiness(session, [])["status"] == "READY"
+    assert assess_reference_readiness(session, [])["status"] == "REFERENCE_REQUIREMENTS_NOT_GENERATED"
     report = assess_reference_readiness(session, [REQUIREMENT])
     assert report["status"] == "BLOCKED_MISSING_REFERENCE"
     assert report["gaps"] == [
@@ -341,15 +466,29 @@ def test_mcp_cannot_bypass_approval_or_expose_prohibited_tools(session: Session)
     created = invoke(
         session,
         "create_work_order",
-        {"goal": "Draft a creative", "program_id": program.id, "requested_by": "mcp"},
+        {
+            "goal": "Draft a creative",
+            "program_id": program.id,
+            "requested_by": "mcp",
+            "api_key": "super-secret",
+        },
         caller="mcp-test",
+        request_id="req-1",
     )
     assert created["status"] == "READY"
     audit = session.scalar(select(McpAuditLog).where(McpAuditLog.operation == "create_work_order"))
     assert audit is not None
     assert audit.caller == "mcp-test"
     assert audit.interface == "MCP"
+    assert audit.request_id == "req-1"
+    assert audit.input_hash
+    assert audit.input_json["api_key"] == "[redacted]"
+    assert "super-secret" not in json.dumps(audit.input_json)
     assert audit.affected_records[0]["id"] == created["id"]
+    invoke(session, "get_company_status", {}, caller="mcp-test", request_id="req-2")
+    read_audit = session.scalar(select(McpAuditLog).where(McpAuditLog.operation == "get_company_status"))
+    assert read_audit is not None
+    assert read_audit.request_id == "req-2"
     with pytest.raises(ControlPlaneError) as prohibited:
         invoke(session, "bypass_approval", {"work_order_id": created["id"]})
     assert prohibited.value.code == "PROHIBITED"
@@ -384,8 +523,24 @@ def test_mcp_cannot_bypass_approval_or_expose_prohibited_tools(session: Session)
         decide_approval(session, request.id, "APPROVED", actor="specialist:CREATIVE_DIRECTOR")
     exposed = READ_TOOLS | MUTATION_TOOLS
     assert exposed.isdisjoint(PROHIBITED_TOOLS)
-    for name in ("execute_sql", "shell", "mutate_story_lock", "geelark", "purchase", "post_content"):
+    for name in (
+        "execute_sql",
+        "shell",
+        "filesystem",
+        "mutate_story_lock",
+        "decide_story_lock",
+        "select_concept",
+        "mutate_creative_genome",
+        "approve_request",
+        "geelark",
+        "purchase",
+        "post_content",
+        "image_execution",
+    ):
         assert name not in exposed
+        with pytest.raises(ControlPlaneError) as blocked_tool:
+            invoke(session, name, {})
+        assert blocked_tool.value.code == "PROHIBITED"
     status = company_status(session)
     assert status["calculated_by"] == "control_plane"
     assert status["recommended_next_action"]["action"] == "DECIDE_APPROVAL"
@@ -393,7 +548,12 @@ def test_mcp_cannot_bypass_approval_or_expose_prohibited_tools(session: Session)
 
 def test_repo_has_no_openclaw_or_geelark_adapter() -> None:
     root = Path(repo_root())
-    names = [path.name.casefold() for path in root.rglob("*") if "node_modules" not in path.parts]
+    allowed_docs = {"openclaw_connection.md"}
+    names = [
+        path.name.casefold()
+        for path in root.rglob("*")
+        if "node_modules" not in path.parts and path.name.casefold() not in allowed_docs
+    ]
     assert not any("openclaw" in name for name in names)
     assert not any("geelark" in name for name in names)
     pyproject = (root / "pyproject.toml").read_text()
@@ -435,3 +595,96 @@ def test_definition_version_row_is_immutable_in_the_run(session: Session) -> Non
     with pytest.raises(ImmutableVersionError):
         session.flush()
     session.rollback()
+
+
+def test_changed_graph_publishes_a_new_version(session: Session) -> None:
+    definition = WorkflowDefinition(key="NEW_CREATIVE_V1", name="New creative", created_at=utcnow())
+    session.add(definition)
+    session.flush()
+    session.add(
+        WorkflowDefinitionVersion(
+            definition_id=definition.id,
+            version_number=1,
+            graph=[{"id": "old", "kind": "CREATE_CREATIVE_TASK", "config": {}}],
+            graph_hash="old-hash",
+            created_at=utcnow(),
+        )
+    )
+    session.flush()
+    published = ensure_new_creative_v1(session)
+    assert published.version_number == 2
+    assert published.graph_hash != "old-hash"
+    assert [node["kind"] for node in published.graph] == [node["kind"] for node in NEW_CREATIVE_V1]
+    stored = session.scalar(
+        select(WorkflowDefinitionVersion).where(WorkflowDefinitionVersion.version_number == 1)
+    )
+    assert stored is not None
+    assert stored.graph_hash == "old-hash"
+
+
+def test_first_story_lock_and_missing_reference_requirements(session: Session, monkeypatch) -> None:
+    def explode(*_args, **_kwargs):
+        raise AssertionError("manual transport made a network call")
+
+    monkeypatch.setattr("urllib.request.urlopen", explode)
+    monkeypatch.setattr("http.client.HTTPConnection.request", explode)
+    program = Program(slug="fresh", name="Fresh", created_at=utcnow())
+    session.add(program)
+    session.flush()
+    invocations = session.scalar(select(func.count()).select_from(ProviderInvocation))
+    order = create_work_order(session, goal="First story lock", program_id=program.id)
+    run = start_workflow(session, order.id)
+    assignment = _waiting_assignment(session)
+    import_manual_response(session, assignment.id, _concepts(), provider_name="grok", model_name="grok-4")
+    concept = session.scalar(select(ConceptCandidate))
+    assert concept is not None
+    request = session.scalar(select(ApprovalRequest).where(ApprovalRequest.approval_type == "SELECT_CONCEPT"))
+    assert request is not None
+    decide_approval(session, request.id, "APPROVED", actor="operator", concept_id=concept.id)
+    draft_assignment = _waiting_assignment(session)
+    import_manual_response(session, draft_assignment.id, _draft(), provider_name="grok", model_name="grok-4")
+    session.refresh(order)
+    creative = session.get(Creative, order.creative_id)
+    assert creative is not None
+    assert creative.current_approved_story_lock_version_id is None
+    session.refresh(run)
+    version = session.get(StoryLockVersion, run.memory["pending_story_lock_version_id"])
+    assert version is not None
+    assert version.version_number == 1
+    assert version.supersedes_version_id is None
+    assert version.approval_state == "PENDING"
+    qa_assignment = _waiting_assignment(session)
+    import_manual_response(session, qa_assignment.id, _story(), provider_name="grok", model_name="grok-4")
+    session.refresh(creative)
+    session.refresh(version)
+    assert creative.current_approved_story_lock_version_id is None
+    assert version.approval_state == "PENDING"
+    approval = session.scalar(
+        select(ApprovalRequest).where(ApprovalRequest.approval_type == "APPROVE_STORYLOCK")
+    )
+    assert approval is not None
+    assert approval.payload["supersedes_version_id"] is None
+    decide_approval(session, approval.id, "APPROVED", actor="operator", notes="first lock")
+    session.refresh(creative)
+    session.refresh(run)
+    assert creative.current_approved_story_lock_version_id == version.id
+    assert run.memory["story_lock_approved"] is True
+    assert run.status == "BLOCKED"
+    assert run.memory["outcome"] == "REFERENCE_REQUIREMENTS_NOT_GENERATED"
+    readiness = _step(session, run.id, "reference_readiness")
+    assert readiness.error_code == "REFERENCE_REQUIREMENTS_NOT_GENERATED"
+    assert session.scalar(select(func.count()).select_from(ProviderInvocation)) == invocations
+
+
+def test_production_routing_requires_an_approved_story_lock(session: Session) -> None:
+    program = Program(slug="route", name="Route", created_at=utcnow())
+    session.add(program)
+    session.flush()
+    order = create_work_order(session, goal="Do not route yet", program_id=program.id)
+    run = start_workflow(session, order.id)
+    step = _step(session, run.id, "production_routing")
+    _routing_step(session, run, step, order)
+    assert step.status == "BLOCKED"
+    assert step.error_code == "STORY_LOCK_REQUIRED"
+    assert run.memory["outcome"] == "STORY_LOCK_REQUIRED"
+    assert run.memory.get("story_lock_approved") is not True

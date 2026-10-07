@@ -231,6 +231,8 @@ class McpAuditLog(Base):
     interface: Mapped[str] = mapped_column(String(40), default="MCP")
     operation: Mapped[str] = mapped_column(String(120))
     input_json: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
+    input_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    request_id: Mapped[str | None] = mapped_column(String(80), nullable=True)
     affected_records: Mapped[list[Any]] = mapped_column(JSON, default=list)
     result_json: Mapped[dict[str, Any]] = mapped_column(JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))

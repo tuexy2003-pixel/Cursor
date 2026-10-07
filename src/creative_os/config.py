@@ -27,15 +27,23 @@ class Settings(BaseSettings):
     xai_model: str | None = None
     openai_api_key: SecretStr | None = None
     openai_model: str | None = None
+    mcp_token: SecretStr | None = None
 
-    @field_validator("xai_api_key", "openai_api_key", "xai_model", "openai_model", mode="before")
+    @field_validator(
+        "xai_api_key",
+        "openai_api_key",
+        "mcp_token",
+        "xai_model",
+        "openai_model",
+        mode="before",
+    )
     @classmethod
     def _blank_provider_value(cls, value: object) -> object:
         if isinstance(value, str) and not value.strip():
             return None
         return value
 
-    @field_serializer("xai_api_key", "openai_api_key")
+    @field_serializer("xai_api_key", "openai_api_key", "mcp_token")
     def _redact_provider_secret(self, value: SecretStr | None) -> str | None:
         if value is None or not value.get_secret_value().strip():
             return None

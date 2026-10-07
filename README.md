@@ -49,11 +49,13 @@ PYTHONPATH=src pytest -m core
 
 ## Local operator only
 
-The API binds to loopback by default and has no authentication. `COS_API_HOST` must stay `127.0.0.1`, `localhost`, or `::1`. Any other host refuses to start. Remote mutation routes are not supported until operator authentication exists. Provider code cannot approve a story lock. Human approval uses `COS_OPERATOR_IDENTITY`, not an `actor` string from request JSON.
+The API binds to loopback by default. Operator routes trust the server-side `COS_OPERATOR_IDENTITY`. `COS_API_HOST` must stay `127.0.0.1`, `localhost`, or `::1`. Any other host refuses to start. Remote mutation routes are not supported until operator authentication exists. Provider code cannot approve a story lock. Human approval uses `COS_OPERATOR_IDENTITY`, not an `actor` string from request JSON.
+
+`/mcp` is a streamable HTTP MCP server. It requires `Authorization: Bearer <COS_MCP_TOKEN>`. That token is separate from `COS_OPERATOR_IDENTITY`. See `docs/OPENCLAW_CONNECTION.md`.
 
 Text reasoning can run only for concept generation and story-development audit, and only against an already frozen context bundle. A configured API key is not permission to spend. `COS_LIVE_TEXT_REASONING_ENABLED` defaults to false. A paid call also needs a human `RunAuthorization` for that bundle id and hash, an explicit `COS_XAI_MODEL` or `COS_OPENAI_MODEL`, and one idempotency key. Those provider values are read from the process environment or from `.env`. A process variable overrides the file. Research, image, posting, and purchasing execution stay disabled. See `docs/V0_3_2_SAFE_EXECUTION.md`.
 
-The company queue at `/company` runs `NEW_CREATIVE_V1` through a manual specialist import and stops at human approval or a declared reference gap. See `docs/COMPANY_CONTROL_PLANE.md`, `docs/MCP_INTERFACE.md`, and `docs/WORKFLOW_NEW_CREATIVE_V1.md`.
+The company queue at `/company` runs `NEW_CREATIVE_V1` through a manual specialist import. A selected concept can become a pending StoryLock draft. QA reviews that draft and cannot approve it. The run reaches production routing only after a human approves the StoryLock, then stops on reference readiness. See `docs/COMPANY_CONTROL_PLANE.md`, `docs/MCP_INTERFACE.md`, and `docs/WORKFLOW_NEW_CREATIVE_V1.md`.
 
 ## What the import preserves
 

@@ -28,7 +28,11 @@ from creative_os.models import (
     SkillVersion,
     StoryLockVersion,
 )
-from creative_os.schemas.contracts import ConceptGenerationResult, StoryDevelopmentAuditResult
+from creative_os.schemas.contracts import (
+    ConceptGenerationResult,
+    StoryDevelopmentAuditResult,
+    StoryLockDraftResult,
+)
 from creative_os.schemas.story_lock import StoryLockDocument
 from creative_os.services.identity import identity_anchors
 from creative_os.services.mechanics import mechanic_report
@@ -215,18 +219,24 @@ def _output_contract(task: CreativeTask | None, stage: str) -> dict[str, Any] | 
         name = "CONCEPT_GENERATION"
     if name is None and stage == "STORY_DEVELOPMENT":
         name = "STORY_DEVELOPMENT_AUDIT"
-    model: type[ConceptGenerationResult] | type[StoryDevelopmentAuditResult]
+    model: type[ConceptGenerationResult] | type[StoryDevelopmentAuditResult] | type[StoryLockDraftResult]
     if name == "CONCEPT_GENERATION":
         model = ConceptGenerationResult
         instructions = (
             "Return ConceptGenerationResult JSON only. Each concept is a proposal for human review. "
             "It is not a StoryLock. Leave unknown fields null. Do not copy holdout or benchmark stories."
         )
+    elif name == "STORY_DEVELOPMENT_DRAFT":
+        model = StoryLockDraftResult
+        instructions = (
+            "Return StoryLockDraftResult JSON only. Develop the selected concept into a StoryLock candidate. "
+            "Do not approve it. Leave unknown story fields null. List uncertainties and research_needed."
+        )
     elif name == "STORY_DEVELOPMENT_AUDIT":
         model = StoryDevelopmentAuditResult
         instructions = (
-            "Return StoryDevelopmentAuditResult JSON only. This is a diagnosis and proposal. "
-            "Do not mutate the StoryLock. Preserve decisions that are already working."
+            "Return StoryDevelopmentAuditResult JSON only. This is a diagnosis of the pending StoryLock "
+            "candidate in the task input. Do not approve it and do not mutate the StoryLock."
         )
     else:
         return None

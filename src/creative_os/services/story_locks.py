@@ -28,6 +28,7 @@ __all__ = [
     "decide_story_lock_version",
     "document_diff",
     "propose_story_lock_change",
+    "propose_story_lock_document",
 ]
 
 _REUSABLE_ROLES = {"BASE", "INGREDIENT", "REFERENCE", "EVIDENCE"}
@@ -84,6 +85,71 @@ def propose_story_lock_change(
         move_pointer=False,
         expected_current_story_lock_version_id=expected_current_story_lock_version_id,
     )
+
+
+def propose_story_lock_document(
+    session: Session,
+    creative: Creative,
+    document: StoryLockDocument,
+    *,
+    proposer: str,
+    reason: str,
+    provenance: dict[str, Any] | None = None,
+) -> StoryLockVersion:
+    """Create a pending StoryLock version. This never moves the approved pointer."""
+    try:
+        validated = StoryLockDocument.model_validate(document.model_dump(mode="json"))
+    except ValidationError as exc:
+        raise ValueError(f"story lock validation failed: {exc}") from exc
+    story_lock = session.scalar(select(StoryLock).where(StoryLock.creative_id == creative.id))
+    if story_lock is None:
+        story_lock = StoryLock(
+            creative_id=creative.id,
+            name=(validated.title or creative.name)[:240],
+            created_at=utcnow(),
+        )
+        session.add(story_lock)
+        session.flush()
+    next_number = session.scalar(
+        select(func.max(StoryLockVersion.version_number)).where(StoryLockVersion.story_lock_id == story_lock.id)
+    )
+    markdown = render_canonical_markdown(validated)
+    payload = validated.model_dump(mode="json")
+    current_id = creative.current_approved_story_lock_version_id
+    version = StoryLockVersion(
+        story_lock_id=story_lock.id,
+        version_number=(next_number or 0) + 1,
+        supersedes_version_id=current_id,
+        content_json=payload,
+        content_markdown=markdown,
+        content_hash=sha256_text(markdown),
+        document_hash=document_hash(validated),
+        approval_state="PENDING",
+        change_reason=reason,
+        approved_by=None,
+        source_path=None,
+        source_hash=None,
+        provenance=dict(provenance or {}),
+        created_at=utcnow(),
+    )
+    session.add(version)
+    session.flush()
+    if creative.current_approved_story_lock_version_id != current_id:
+        raise StoryLockDecisionError("POINTER_MOVED", "a story draft must not move the approved pointer")
+    session.add(
+        ApprovalEvent(
+            object_type="story_lock_version",
+            object_id=story_lock.id,
+            version_id=version.id,
+            status="PENDING",
+            actor=proposer,
+            notes=reason,
+            previous_state=current_id,
+            created_at=utcnow(),
+        )
+    )
+    replace_version_projections(session, version, validated, creative.id)
+    return version
 
 
 def version_belongs_to_creative(session: Session, creative_id: str, version: StoryLockVersion) -> bool:

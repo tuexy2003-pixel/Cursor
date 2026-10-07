@@ -164,6 +164,7 @@ class StoryLockVersion(Base):
     approved_by: Mapped[str | None] = mapped_column(String(160), nullable=True)
     source_path: Mapped[str | None] = mapped_column(Text, nullable=True)
     source_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    provenance: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
     story_lock: Mapped[StoryLock] = relationship(back_populates="versions")
@@ -178,6 +179,7 @@ _STORY_LOCK_CONTENT = (
     "supersedes_version_id",
     "source_path",
     "source_hash",
+    "provenance",
     "version_number",
     "story_lock_id",
 )

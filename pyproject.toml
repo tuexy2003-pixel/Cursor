@@ -4,12 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "creative-os"
-version = "0.4.0"
+version = "0.4.1"
 description = "Versioned creative operating system around the existing MyDashPerks skill layer."
 requires-python = ">=3.12"
 dependencies = [
   "alembic>=1.14",
   "fastapi>=0.115",
+  "mcp>=2.3,<3",
   "pydantic>=2.10",
   "pydantic-settings>=2.6",
   "python-dotenv>=1.0",

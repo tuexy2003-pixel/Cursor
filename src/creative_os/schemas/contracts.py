@@ -4,6 +4,8 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
+from creative_os.schemas.story_lock import StoryLockDocument
+
 
 class StoryDevelopmentAuditResult(BaseModel):
     """Diagnosis only. The model must not mutate the StoryLock."""
@@ -46,3 +48,10 @@ class ConceptDraft(BaseModel):
 
 class ConceptGenerationResult(BaseModel):
     concepts: list[ConceptDraft]
+
+
+class StoryLockDraftResult(StoryLockDocument):
+    """A developed StoryLock candidate. The model does not approve it."""
+
+    uncertainties: list[str] = Field(default_factory=list)
+    research_needed: list[str] = Field(default_factory=list)

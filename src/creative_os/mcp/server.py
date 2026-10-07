@@ -1,5 +1,6 @@
 """Tool registry for the company control plane. MCP is an interface, not an authority."""
 
+import json
 from typing import Any
 
 from sqlalchemy.orm import Session
@@ -20,7 +21,9 @@ from creative_os.services.control_plane import (
     work_queue,
     workflow_run_view,
 )
-from creative_os.util import utcnow
+from creative_os.util import sha256_text, utcnow
+
+_SECRET_PARTS = ("token", "secret", "password", "api_key", "authorization", "credential")
 
 READ_TOOLS = frozenset(
     {
@@ -48,8 +51,12 @@ PROHIBITED_TOOLS = frozenset(
         "execute_sql",
         "sql",
         "shell",
+        "filesystem",
         "mutate_story_lock",
+        "decide_story_lock",
+        "select_concept",
         "mutate_account_dna",
+        "mutate_creative_genome",
         "bypass_approval",
         "approve_request",
         "post_content",
@@ -57,6 +64,8 @@ PROHIBITED_TOOLS = frozenset(
         "run_geelark_workflow",
         "start_device",
         "purchase",
+        "image",
+        "image_execution",
     }
 )
 
@@ -67,20 +76,28 @@ def invoke(
     arguments: dict[str, Any] | None = None,
     *,
     caller: str = "mcp",
+    request_id: str | None = None,
 ) -> dict[str, Any]:
-    payload = dict(arguments or {})
+    raw = dict(arguments or {})
+    safe = _safe_input(raw)
     if tool in PROHIBITED_TOOLS or tool not in READ_TOOLS | MUTATION_TOOLS:
         result = {"error": "PROHIBITED", "message": f"{tool} is not exposed"}
-        _audit(session, caller, tool, payload, [], result)
+        _audit(session, caller, tool, safe, [], result, request_id=request_id)
         raise ControlPlaneError("PROHIBITED", f"{tool} is not exposed")
     try:
-        result, affected = _dispatch(session, tool, payload)
+        result, affected = _dispatch(session, tool, raw)
     except ControlPlaneError as exc:
-        if tool in MUTATION_TOOLS:
-            _audit(session, caller, tool, payload, [], {"error": exc.code, "message": str(exc)})
+        _audit(
+            session,
+            caller,
+            tool,
+            safe,
+            [],
+            {"error": exc.code, "message": str(exc)},
+            request_id=request_id,
+        )
         raise
-    if tool in MUTATION_TOOLS:
-        _audit(session, caller, tool, payload, affected, result)
+    _audit(session, caller, tool, safe, affected, result, request_id=request_id)
     return result
 
 
@@ -163,19 +180,39 @@ def _audit(
     payload: dict[str, Any],
     affected: list[dict[str, str]],
     result: dict[str, Any],
+    *,
+    request_id: str | None = None,
 ) -> None:
+    safe = _safe_input(payload)
     session.add(
         McpAuditLog(
             caller=caller,
             interface="MCP",
             operation=operation,
-            input_json=payload,
+            input_json=safe,
+            input_hash=_input_hash(safe),
+            request_id=request_id,
             affected_records=affected,
-            result_json=result,
+            result_json=_safe_input(result),
             created_at=utcnow(),
         )
     )
     session.flush()
+
+
+def _safe_input(value: Any, key: str | None = None) -> Any:
+    if key and any(part in key.casefold() for part in _SECRET_PARTS):
+        return "[redacted]"
+    if isinstance(value, dict):
+        return {str(item_key): _safe_input(item_value, str(item_key)) for item_key, item_value in value.items()}
+    if isinstance(value, list):
+        return [_safe_input(item) for item in value]
+    return value
+
+
+def _input_hash(payload: dict[str, Any]) -> str:
+    text = json.dumps(payload, sort_keys=True, separators=(",", ":"), default=str)
+    return sha256_text(text)
 
 
 def tool_names() -> dict[str, list[str]]:
