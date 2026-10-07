@@ -36,6 +36,15 @@ creative-os prepare-smoke-tests
 
 The command prints the local task and context-bundle ids. It creates no `RunAuthorization` and no `ModelRun`.
 
+The current exported packet for that concept task is:
+
+- Bundle `7eab778c-1bfd-43fb-a775-fc7522dd1b8b`
+- Hash `e59d2f515a079983d1865d0c3fab990e6dcae9cb9f98c0f81d267cb845d36246`
+- Markdown: `evaluation/smoke_v0_3_2/maria_concept_generation_packet.md`
+- JSON: `evaluation/smoke_v0_3_2/maria_concept_generation_packet.json`
+
+Those files are the frozen packet. They are not a provider result.
+
 The first live call is one provider only. Provider comparison stays capped at 2 and is not this smoke test.
 
 For that first real provider call, set `COS_TEXT_REASONING_DAILY_RUN_LIMIT=1` in the local environment. The application default stays 10. After the single run is reviewed, raise the limit by editing the environment. Do not change it from model output.
