@@ -1,0 +1,20 @@
+{"out":"/workspace/creative-pipeline/outputs/cand01_final_916/slide1_chat_ios26_916.png",
+ "out_full":"/workspace/creative-pipeline/outputs/cand01_final_916/_w26/slide1_chat_ios26_full.png",
+ "status":{"time":"5:42","battery":0.18,"battery_color":"yellow","signal":3},
+ "contact":{"name":"Dre","initial":"D"},"unread":"4","service":"imessage",
+ "thread":[
+  {"ts":"Wed, Sep 23 at 9:14 PM"},
+  {"in":"ok no eating out until friday. we gotta chill"},
+  {"out":"fine"},
+  {"in":"say it"},
+  {"out":"no eating out until friday 🙄"},
+  {"ts":"Thu, Sep 24 at 5:36 PM"},
+  {"out":"just got off. im not cooking tonight"},
+  {"in":"so what we eating"},
+  {"in":"we got food in the house"},
+  {"in":"theres literally chicken in the freezer"},
+  {"out":"its frozen"},
+  {"in":"THAW IT"},
+  {"out":"alr relax i got dinner handled","delivered":true},
+  {"in":"what does that mean 🤨"}
+ ]}

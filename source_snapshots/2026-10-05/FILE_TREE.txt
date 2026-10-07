@@ -1,0 +1,444 @@
+## /home/box/agent-data/workflows
+/home/box/agent-data/workflows
+/home/box/agent-data/workflows/adaptation-blitz-match
+/home/box/agent-data/workflows/adaptation-blitz-match/SKILL.md
+/home/box/agent-data/workflows/chat-story-slideshow
+/home/box/agent-data/workflows/chat-story-slideshow/SKILL.md
+/home/box/agent-data/workflows/commerce-world-mapper
+/home/box/agent-data/workflows/commerce-world-mapper/SKILL.md
+/home/box/agent-data/workflows/commercial-aware-synthesis
+/home/box/agent-data/workflows/commercial-aware-synthesis/SKILL.md
+/home/box/agent-data/workflows/find-purchase-screens-on-pinterest
+/home/box/agent-data/workflows/find-purchase-screens-on-pinterest/SKILL.md
+/home/box/agent-data/workflows/getting-started
+/home/box/agent-data/workflows/getting-started/SKILL.md
+/home/box/agent-data/workflows/ios-26-production-normalization
+/home/box/agent-data/workflows/ios-26-production-normalization/SKILL.md
+/home/box/agent-data/workflows/live-heat-scout
+/home/box/agent-data/workflows/live-heat-scout/QUERY_HYGIENE_PLAYBOOK.md
+/home/box/agent-data/workflows/live-heat-scout/SKILL.md
+/home/box/agent-data/workflows/object-culture-scout
+/home/box/agent-data/workflows/object-culture-scout/SKILL.md
+/home/box/agent-data/workflows/production-spec-qa
+/home/box/agent-data/workflows/production-spec-qa/SKILL.md
+/home/box/agent-data/workflows/source-card
+/home/box/agent-data/workflows/source-card/SKILL.md
+/home/box/agent-data/workflows/story-conflict-scout
+/home/box/agent-data/workflows/story-conflict-scout/SKILL.md
+/home/box/agent-data/workflows/story-development
+/home/box/agent-data/workflows/story-development/SKILL.md
+/home/box/agent-data/workflows/synthetic-story-generator
+/home/box/agent-data/workflows/synthetic-story-generator/SKILL.md
+/home/box/agent-data/workflows/visual-surface-acquisition
+/home/box/agent-data/workflows/visual-surface-acquisition/SKILL.md
+
+## /workspace/creative-pipeline (depth 3, image files summarized)
+.
+./CATCHUP.md
+./CATCHUP.zip
+./CATCHUP_TREE.txt
+./CATCHUP_parts
+./CATCHUP_parts/CATCHUP.zip.part01of06
+./CATCHUP_parts/CATCHUP.zip.part02of06
+./CATCHUP_parts/CATCHUP.zip.part03of06
+./CATCHUP_parts/CATCHUP.zip.part04of06
+./CATCHUP_parts/CATCHUP.zip.part05of06
+./CATCHUP_parts/CATCHUP.zip.part06of06
+./CATCHUP_parts/JOIN.txt
+./CURSOR_CREATIVE_CHAT_SEED.md
+./HANDOFF_2026-09-26.md
+./HANDOFF_ASSETS
+./HANDOFF_ASSETS/01_dre_posted
+./HANDOFF_ASSETS/01_dre_posted/README.txt
+./HANDOFF_ASSETS/02_mcdonalds_broke_ready
+./HANDOFF_ASSETS/02_mcdonalds_broke_ready/README.txt
+./HANDOFF_ASSETS/03_jalen_wingstop_posted
+./HANDOFF_ASSETS/03_jalen_wingstop_posted/README.txt
+./HANDOFF_ASSETS/04_jalen_part2_ready
+./HANDOFF_ASSETS/04_jalen_part2_ready/README.txt
+./HANDOFF_ASSETS/05_terrence_superseded_pending_rebuild
+./HANDOFF_ASSETS/05_terrence_superseded_pending_rebuild/README.txt
+./HANDOFF_ASSETS/06_isaiah_chat_ready_order_on_hold
+./HANDOFF_ASSETS/06_isaiah_chat_ready_order_on_hold/README.txt
+./HANDOFF_ASSETS/07_dasher_nosy_posted
+./HANDOFF_ASSETS/07_dasher_nosy_posted/README.txt
+./HANDOFF_ASSETS/phone_plates
+./HANDOFF_ASSETS/phone_plates/README.txt
+./HANDOFF_LATEST.md
+./PC_DROP
+./PC_DROP/CATCHUP.md
+./PC_DROP/CATCHUP.zip
+./PC_DROP/CATCHUP.zip.part1
+./PC_DROP/CATCHUP.zip.part2
+./PC_DROP/CURSOR_CREATIVE_CHAT_SEED.md
+./PC_DROP/ENGINE.md
+./PC_DROP/EXAMPLES.zip
+./PC_DROP/EXAMPLES.zip.part1
+./PC_DROP/EXAMPLES.zip.part2
+./PC_DROP/HANDOFF_LATEST.md
+./PC_DROP/JOIN_EXAMPLES.bat
+./PC_DROP/JOIN_ON_PC.bat
+./PC_DROP/README_FIRST.txt
+./PC_DROP/SLIDESHOW_STRATEGIST.md
+./PC_DROP/ex_parts
+./PC_DROP/ex_parts/EXAMPLES.zip.part2.01of04
+./PC_DROP/ex_parts/EXAMPLES.zip.part2.02of04
+./PC_DROP/ex_parts/EXAMPLES.zip.part2.03of04
+./PC_DROP/ex_parts/EXAMPLES.zip.part2.04of04
+./SYSTEM_PLAYBOOK.md
+./_catchup_work
+./_catchup_work/BRIEF.md
+./_catchup_work/catchup_template.md
+./_catchup_work/gen.py
+./_catchup_work/mkzip.py
+./_catchup_work/patch.py
+./_catchup_work/playbook_before_0927_numbers.md
+./_catchup_work/requirements.txt
+./_catchup_work/sec_doordash.md
+./_catchup_work/sec_extras.md
+./_catchup_work/sec_open.md
+./_catchup_work/sec_order.md
+./_catchup_work/sec_package.md
+./_catchup_work/sec_plates.md
+./_catchup_work/sec_rules.md
+./_catchup_work/setup.sh
+./_catchup_work/smoke_test.sh
+./_catchup_work/stage
+./_catchup_work/stage.py
+./_catchup_work/stage/CATCHUP.md
+./_catchup_work/stage/HANDOFF_LATEST.md
+./_catchup_work/stage/SYSTEM_PLAYBOOK.md
+./_catchup_work/stage/assets
+./_catchup_work/stage/fonts
+./_catchup_work/stage/logs
+./_catchup_work/stage/outputs
+./_catchup_work/stage/prompts
+./_catchup_work/stage/requirements.txt
+./_catchup_work/stage/setup.sh
+./_catchup_work/stage/skills
+./_catchup_work/stage/smoke_test.sh
+./_examples_stage
+./_examples_stage/EXAMPLES
+./_examples_stage/EXAMPLES/INDEX.md
+./_examples_stage/EXAMPLES/our_posts
+./_examples_stage/EXAMPLES/our_posts_handoff_assets
+./_examples_stage/EXAMPLES/source_cards
+./_examples_stage/EXAMPLES/user_uploads_raw
+./_examples_stage/docs
+./_examples_stage/docs/CATCHUP.md
+./_examples_stage/docs/CURSOR_CREATIVE_CHAT_SEED.md
+./_examples_stage/docs/FIRST_HOUR.md
+./_examples_stage/docs/GOTCHAS.md
+./_examples_stage/docs/SLIDESHOW_STRATEGIST.md
+./_examples_stage/docs/VOICE.md
+./assets
+./assets/phone_plates
+./assets/phone_plates/_cache
+./assets/phone_plates/_models
+./assets/phone_plates/_w
+./assets/phone_plates/composite_on_plate.py
+./assets/phone_plates/quads.json
+./assets/phone_plates/sr_cache.py
+./assets/phone_plates/tests
+./logs
+./logs/creative-tests.jsonl
+./outputs
+./outputs/_account_review_assets
+./outputs/_tools
+./outputs/_tools/__pycache__
+./outputs/_tools/build_imessage_ios26.py
+./outputs/_tools/build_imessage_ios26_pre_image.py.bak
+./outputs/_tools/ios26_assets
+./outputs/account_review_20261002.md
+./outputs/cand01_final_916
+./outputs/cand01_final_916/_w26
+./outputs/cand01_sourcing
+./outputs/cand01_sourcing/sources.csv
+./outputs/cand02_broke
+./outputs/cand02_broke/_w
+./outputs/cand02_broke/cashcard.py
+./outputs/cand02_broke/cashcard_v2.py
+./outputs/cand03_dasher_receipt
+./outputs/cand03_dasher_receipt/_w
+./outputs/cand04_groceries_wingstop
+./outputs/cand04_groceries_wingstop/_w
+./outputs/cand04b_jalen_part2
+./outputs/cand04b_jalen_part2/_w
+./outputs/cand04b_jalen_part2/freezer_prompt.txt
+./outputs/cand05_terrence_cheesecake
+./outputs/cand05_terrence_cheesecake/_w
+./outputs/cand06_isaiah_chipotle
+./outputs/cand06_isaiah_chipotle/_w
+./outputs/carousel_banger_20261002
+./outputs/carousel_banger_20261002/SPEC.md
+./outputs/carousel_banger_20261002/_w
+./outputs/carousel_banger_20261002/carousel_banger_20261002.zip
+./outputs/carousel_banger_dre_maria_20261002
+./outputs/carousel_banger_dre_maria_20261002/SPEC.md
+./outputs/carousel_banger_dre_maria_20261002/_w
+./outputs/carousel_banger_dre_maria_20261002/carousel_banger_dre_maria_20261002.zip
+./outputs/chore_stuff_target_20261005
+./outputs/chore_stuff_target_20261005/PROVENANCE.md
+./outputs/chore_stuff_target_20261005/QA_CAROUSEL.md
+./outputs/chore_stuff_target_20261005/QA_SLIDE2.md
+./outputs/chore_stuff_target_20261005/_w
+./outputs/chore_stuff_target_20261005/thumbs
+./outputs/chore_stuff_target_20261005_v2
+./outputs/chore_stuff_target_20261005_v2/PROVENANCE.md
+./outputs/chore_stuff_target_20261005_v2/_inspect
+./outputs/chore_stuff_target_20261005_v2/_w
+./outputs/chore_stuff_target_20261005_v2/thumbs
+./outputs/chore_stuff_target_20261005_v3
+./outputs/chore_stuff_target_20261005_v3/s3_candidates
+./outputs/chore_stuff_target_20261005_v4
+./outputs/chore_stuff_target_20261005_v4/STORY_LOCK.md
+./outputs/chore_stuff_target_20261005_v4/s1_base_candidates
+./outputs/chore_stuff_target_20261005_v5
+./outputs/chore_stuff_target_20261005_v5/STALE_ASSETS.md
+./outputs/chore_stuff_target_20261005_v5/s2_ingredients
+./outputs/chore_stuff_target_20261005_v5/s3_candidates
+./outputs/dd_carousel_boards_20261002
+./outputs/dd_carousel_library_20261002
+./outputs/dd_carousel_library_20261002/AGENT_BRIEF.md
+./outputs/dd_carousel_library_20261002/LIBRARY.md
+./outputs/dd_carousel_library_20261002/PRODUCTION_HANDOFF.md
+./outputs/dd_carousel_library_20261002/SLIDE_EXEC_BRIEF.md
+./outputs/dd_carousel_library_20261002/_w
+./outputs/dd_carousel_library_20261002/board.html
+./outputs/dd_carousel_library_20261002/board_assets
+./outputs/dd_carousel_library_20261002/flowchart.svg
+./outputs/dd_carousel_library_20261002/our_lock_mcd
+./outputs/dd_carousel_library_20261002/render_flowchart.py
+./outputs/dd_step_refs_20261002
+./outputs/dd_step_refs_20261002.zip
+./outputs/dd_step_refs_20261002/README_sources.txt
+./outputs/dd_step_refs_round2_20261002
+./outputs/dd_step_refs_round2_20261002/README_sources.txt
+./outputs/dd_step_refs_round3_20261002
+./outputs/dd_step_refs_round3_20261002/README_sources.txt
+./outputs/dd_step_refs_round4_20261002
+./outputs/dd_step_refs_round4_20261002/README.md
+./outputs/our_versions_20261003
+./outputs/our_versions_20261003/chats
+./outputs/our_versions_20261003/refs
+./outputs/proof_cand01_s1
+./outputs/proof_cand01_s1/_w
+./outputs/proof_cand01_s2
+./outputs/proof_cand01_s2/_w2
+./outputs/proof_cand01_s2/_work
+./outputs/proof_cand01_s2/qa_slide2_v1.md
+./outputs/proof_cand01_s2/qa_slide2_v2.md
+./outputs/sarah_ipad_20261002
+./outputs/sarah_ipad_20261002/SPEC.md
+./outputs/sarah_ipad_20261002/_w
+./outputs/sarah_ipad_20261002/sarah_ipad_20261002.zip
+./outputs/sarah_ipad_notif_refs
+./outputs/sarah_ipad_pinterest_refs
+./outputs/sarah_ipad_pinterest_refs/README_sources.txt
+./outputs/the_cent
+./outputs/the_cent/SPEC.md
+./outputs/the_cent/_w
+./outputs/the_cent/the_cent.zip
+./outputs/tut_pinned_comments_20261004.json
+./outputs/tut_pinned_comments_20261004.txt
+./outputs/tut_pinned_comments_20261004_raw
+./outputs/tut_pinned_comments_20261004_raw/_batch_log.json
+./outputs/tut_pinned_comments_20261004_raw/aubreyvera4_7676472069483203870.json
+./outputs/tut_pinned_comments_20261004_raw/aubreyvera4_7676472069483203870_full.json
+./outputs/tut_pinned_comments_20261004_raw/claudiamar_tin_7690022665326742798.json
+./outputs/tut_pinned_comments_20261004_raw/claudiamar_tin_7690022665326742798_p2.json
+./outputs/tut_pinned_comments_20261004_raw/dailaaa68_7690276189469953311.json
+./outputs/tut_pinned_comments_20261004_raw/dailaaa68_7690276189469953311_p2.json
+./outputs/tut_pinned_comments_20261004_raw/donnam46z2_7689168508759903501.json
+./outputs/tut_pinned_comments_20261004_raw/donnam46z2_7689168508759903501_p2.json
+./outputs/tut_pinned_comments_20261004_raw/idamabwajui_7688312342991555870.json
+./outputs/tut_pinned_comments_20261004_raw/idamabwajui_7690920097979845919.json
+./outputs/tut_pinned_comments_20261004_raw/jesica64319_7690208601855560973.json
+./outputs/tut_pinned_comments_20261004_raw/justurfavour_7689771033942871326.json
+./outputs/tut_pinned_comments_20261004_raw/kim702926_7686799428316859678.json
+./outputs/tut_pinned_comments_20261004_raw/kissffkquk6_7677926632606158094.json
+./outputs/tut_pinned_comments_20261004_raw/kissffkquk6_7677926632606158094_p2.json
+./outputs/tut_pinned_comments_20261004_raw/margaretjkp9ky_7688773381813964046.json
+./outputs/tut_pinned_comments_20261004_raw/nanneayzolp_7691319298706443551.json
+./outputs/tut_pinned_comments_20261004_raw/sheissandra_7689775576890051870.json
+./outputs/tut_pinned_comments_20261004_raw/user44741142415635_7688956264369392910.json
+./outputs/tut_pinned_comments_20261004_raw/yasminaaa859_7689968686303612191.json
+./outputs/tut_pinned_comments_20261004_raw/yasminaaa859_7689968686303612191_p2.json
+./outputs/tut_pinned_comments_20261004_raw/yasminaaa859_7690705846958853406.json
+./outputs/tut_pinned_comments_20261004_raw/yasminaaa859_7690705846958853406_p2.json
+./outputs/tut_pinned_comments_20261004_raw/zita4807_7685717714618387743.json
+./outputs/tut_pinned_comments_20261004_raw/zita4807_7685717714618387743_p2.json
+./outputs/tut_pinned_pilot_20261002
+./outputs/tut_pinned_pilot_20261002.tar.gz
+./outputs/tut_pinned_pilot_20261002.zip
+./outputs/tut_pinned_pilot_20261002/NOTES.md
+./outputs/tut_pinned_pilot_20261002/m1_a.mp4
+./outputs/tut_pinned_pilot_20261002/m1_b.mp4
+./outputs/tut_pinned_pilot_20261002/m1_c.mp4
+./outputs/tut_pinned_pilot_20261002/m2_a.mp4
+./outputs/tut_pinned_pilot_20261002/m2_b.mp4
+./outputs/tut_pinned_pilot_20261002/m2_c.mp4
+./outputs/tut_pinned_pilot_20261002/propainter
+./outputs/tut_pinned_pilot_20261002/raw
+./outputs/tut_pinned_pilot_20261002/work
+./outputs/viral_comments_all_20261003.txt
+./persona-01
+./persona-01/identity
+./persona-01/manifest.json
+./shared
+./shared/context
+./shared/context/CURSOR_GOLD_CENT.md
+./shared/context/CURSOR_IDEATION.md
+./shared/context/CURSOR_TASTE_AND_TRASH.md
+./shared/context/golden-example-assets
+./shared/context/grokbot-capabilities.md
+./shared/context/mydashperks-discovery-adaptation-v1.md
+./shared/context/mydashperks-golden-examples.md
+./shared/context/mydashperks-production-remake-v1.md
+./shared/research
+./shared/research/airpods5-packaging
+./shared/research/apify-instrumentation-test
+./shared/research/benchmark-run4
+./shared/research/benchmark-run5
+./shared/research/benchmark-run6
+./shared/research/commercial-occupation-diagnostic
+./shared/research/grokbot-watch
+./shared/research/hooks-tutpinned-20260925
+./shared/research/hooks-tutpinned-20261002
+./shared/research/lane-b-fyp-probe
+./shared/research/live-heat-scout-spec
+./shared/research/live-heat-search-brain-test
+./shared/research/scrapecreators-probe
+./shared/research/ser-colocation-discovery
+./shared/research/ser-diagnostic
+./shared/research/ser-gate2b-dry-run
+./shared/research/ssg-orchestration-test
+./shared/research/target-airpods-candles-20261005
+./shared/research/target-reference-bank-v2
+./shared/research/viewer-state-diagnostic
+./shared/research/viral-story-learning
+./shared/templates
+./shared/templates/ios-messages-keyboard
+./shared/templates/ios-messages-peek
+./shared/templates/ios26-phone-9x19.6
+./site_audit
+./sources
+./sources/cards
+./sources/cards/src_20260923_amazonmustha_176771.json
+./sources/cards/src_20260923_amazonmustha_357279.json
+./sources/cards/src_20260923_amazonmustha_587022.json
+./sources/cards/src_20260923_fyp_ashley_cc_swipe.json
+./sources/cards/src_20260923_fyp_frank_marriott_text.json
+./sources/cards/src_20260923_fyp_ilovemygf_giftchat.json
+./sources/cards/src_20260923_fyp_ron7_editz_mathmeme.json
+./sources/cards/src_20260923_fyp_tenaweng_discountchat.json
+./sources/cards/src_20260923_giftbasketid_429856.json
+./sources/cards/src_20260923_giftbasketid_850913.json
+./sources/cards/src_20260923_giftbasketid_854422.json
+./sources/cards/src_20260923_proteinmealp_393143.json
+./sources/cards/src_20260923_proteinmealp_491591.json
+./sources/cards/src_20260923_proteinmealp_556950.json
+./sources/cards/src_20260923_proteinmealp_701216.json
+./sources/cards/src_20260923_proteinmealp_913044.json
+./sources/cards/src_20260923_proteinmealp_917664.json
+./sources/cards/src_20260923_softglammake_085774.json
+./sources/cards/src_20260923_softglammake_262433.json
+./sources/cards/src_20260923_softglammake_471572.json
+./sources/cards/src_20260923_softglammake_673223.json
+./sources/cards/src_20260923_softglammake_822151.json
+./sources/cards/src_20260923_softglammake_851540.json
+./sources/cards/src_20260923_targethaul_066317.json
+./sources/cards/src_20260923_targethaul_353310.json
+./sources/cards/src_20260923_targethaul_415117.json
+./sources/cards/src_20260923_targethaul_683167.json
+./sources/cards/src_20260923_ubereatsnigh_204831.json
+./sources/cards/src_20260923_ubereatsnigh_282056.json
+./sources/cards/src_20260923_ubereatsnigh_411614.json
+./specs
+./specs/spec_draft_20260923_cand01_dinner_handled.json
+
+## image counts per dir
+      1 ./HANDOFF_ASSETS
+      2 ./HANDOFF_ASSETS/01_dre_posted
+      3 ./HANDOFF_ASSETS/02_mcdonalds_broke_ready
+      3 ./HANDOFF_ASSETS/03_jalen_wingstop_posted
+      2 ./HANDOFF_ASSETS/04_jalen_part2_ready
+      3 ./HANDOFF_ASSETS/05_terrence_superseded_pending_rebuild
+      3 ./HANDOFF_ASSETS/06_isaiah_chat_ready_order_on_hold
+      6 ./HANDOFF_ASSETS/07_dasher_nosy_posted
+      4 ./HANDOFF_ASSETS/phone_plates
+      1 ./_examples_stage/EXAMPLES/our_posts_handoff_assets
+    107 ./_examples_stage/EXAMPLES/user_uploads_raw
+      4 ./assets/phone_plates
+      4 ./assets/phone_plates/_cache
+     99 ./assets/phone_plates/_w
+      4 ./assets/phone_plates/tests
+      1 ./outputs
+      6 ./outputs/_account_review_assets
+      2 ./outputs/_tools/ios26_assets
+      4 ./outputs/cand01_final_916
+     11 ./outputs/cand01_final_916/_w26
+     27 ./outputs/cand01_sourcing
+     12 ./outputs/cand02_broke
+     28 ./outputs/cand02_broke/_w
+     16 ./outputs/cand03_dasher_receipt
+     32 ./outputs/cand03_dasher_receipt/_w
+      2 ./outputs/cand04_groceries_wingstop
+     13 ./outputs/cand04_groceries_wingstop/_w
+      2 ./outputs/cand04b_jalen_part2
+      7 ./outputs/cand04b_jalen_part2/_w
+      4 ./outputs/cand05_terrence_cheesecake
+     13 ./outputs/cand05_terrence_cheesecake/_w
+      3 ./outputs/cand06_isaiah_chipotle
+     12 ./outputs/cand06_isaiah_chipotle/_w
+      3 ./outputs/carousel_banger_20261002
+      5 ./outputs/carousel_banger_20261002/_w
+      7 ./outputs/carousel_banger_dre_maria_20261002
+      5 ./outputs/carousel_banger_dre_maria_20261002/_w
+      7 ./outputs/chore_stuff_target_20261005
+     14 ./outputs/chore_stuff_target_20261005/_w
+      8 ./outputs/chore_stuff_target_20261005/thumbs
+     11 ./outputs/chore_stuff_target_20261005_v2
+     58 ./outputs/chore_stuff_target_20261005_v2/_inspect
+     21 ./outputs/chore_stuff_target_20261005_v2/_w
+      8 ./outputs/chore_stuff_target_20261005_v2/thumbs
+      8 ./outputs/chore_stuff_target_20261005_v3
+      6 ./outputs/chore_stuff_target_20261005_v3/s3_candidates
+      3 ./outputs/chore_stuff_target_20261005_v4
+      9 ./outputs/chore_stuff_target_20261005_v5
+      5 ./outputs/chore_stuff_target_20261005_v5/s2_ingredients
+      8 ./outputs/chore_stuff_target_20261005_v5/s3_candidates
+      6 ./outputs/dd_carousel_boards_20261002
+      2 ./outputs/dd_carousel_library_20261002
+     48 ./outputs/dd_carousel_library_20261002/board_assets
+      2 ./outputs/dd_carousel_library_20261002/our_lock_mcd
+     14 ./outputs/dd_step_refs_20261002
+     19 ./outputs/dd_step_refs_round2_20261002
+     13 ./outputs/dd_step_refs_round3_20261002
+      2 ./outputs/dd_step_refs_round4_20261002
+      5 ./outputs/our_versions_20261003
+      6 ./outputs/our_versions_20261003/chats
+      6 ./outputs/our_versions_20261003/refs
+     10 ./outputs/proof_cand01_s1
+     21 ./outputs/proof_cand01_s1/_w
+     28 ./outputs/proof_cand01_s2
+     19 ./outputs/proof_cand01_s2/_w2
+     34 ./outputs/proof_cand01_s2/_work
+      2 ./outputs/sarah_ipad_20261002
+      7 ./outputs/sarah_ipad_notif_refs
+      4 ./outputs/sarah_ipad_pinterest_refs
+      3 ./outputs/the_cent
+     14 ./outputs/the_cent/_w
+     12 ./outputs/tut_pinned_pilot_20261002/work
+      7 ./persona-01/identity
+     14 ./shared/context/golden-example-assets
+      2 ./shared/research/airpods5-packaging
+      1 ./shared/research/hooks-tutpinned-20260925
+      1 ./shared/research/hooks-tutpinned-20261002
+      8 ./shared/research/target-airpods-candles-20261005
+     23 ./shared/research/target-reference-bank-v2
+      4 ./shared/templates
+      1 ./shared/templates/ios-messages-keyboard
+      4 ./shared/templates/ios-messages-peek
+      2 ./shared/templates/ios26-phone-9x19.6
+      2 ./site_audit

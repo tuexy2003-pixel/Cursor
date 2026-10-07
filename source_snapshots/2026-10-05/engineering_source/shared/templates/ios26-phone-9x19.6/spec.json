@@ -1,0 +1,44 @@
+{
+  "template_id": "ios26-phone-9x19.6",
+  "master_file": "/workspace/creative-pipeline/shared/templates/ios26-phone-9x19.6/ios26-phone-9x19.6_device_chrome.png",
+  "reference_files": [
+    "/home/box/agent-data/agents/71956b4e-224f-4d42-b037-b9845361c1a3/attachments/af797d1b969c5418421c113e9ed334b0cdc593246bac27fe76f25226aba7876b.png"
+  ],
+  "canvas_px": [
+    1206,
+    2622
+  ],
+  "reference_ratio": 0.459954,
+  "exact_9_19_6": false,
+  "time_bounds_xyxy": [
+    173,
+    79,
+    267,
+    116
+  ],
+  "cellular_bounds_xyxy": [
+    859,
+    87,
+    900,
+    115
+  ],
+  "network_label_bounds_xyxy": [
+    937,
+    84,
+    1003,
+    113
+  ],
+  "battery_bounds_xyxy": [
+    1029,
+    78,
+    1104,
+    116
+  ],
+  "home_indicator_bounds_xyxy": [
+    512,
+    2542,
+    694,
+    2551
+  ],
+  "excluded": "Target page, Safari target.com pill, navigation"
+}

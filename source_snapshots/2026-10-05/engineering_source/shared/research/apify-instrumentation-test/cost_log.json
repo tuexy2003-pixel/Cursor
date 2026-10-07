@@ -1,0 +1,90 @@
+{
+  "capUsd": 5.0,
+  "runs": [
+    {
+      "label": "dryrun",
+      "runId": "vpUXBJPwmeEdvfUmw",
+      "datasetId": "P3h7Rv6LevO5VXOri",
+      "query": "funny cats",
+      "items": 5,
+      "usageTotalUsd": 0.001,
+      "maxTotalChargeUsd": 0.5,
+      "status": "SUCCEEDED",
+      "estFromEventsUsd": 0.0195
+    },
+    {
+      "label": "arm_a",
+      "runId": "lOzAHOT68Udmwflsm",
+      "datasetId": "jHbso4fSrGYuupXhn",
+      "queries": [
+        "KUSTFYR",
+        "IKEA ghost lamp",
+        "Lunch in My City",
+        "PDRN skincare"
+      ],
+      "resultsPerPage": 20,
+      "items": 75,
+      "usageTotalUsd": 0.376,
+      "estFromEventsUsd": 0.376,
+      "chargedEventCounts": {
+        "result": 75,
+        "filter-applied": 75,
+        "popularity-filter-applied": 0,
+        "follower-dataset-item": 0,
+        "mobile-filter-sorting-applied": 0,
+        "video-download": 0,
+        "comment-dataset-item": 0,
+        "scrape-as-in-country": 0,
+        "transcription-minute": 0,
+        "ai-video-description": 0,
+        "ai-video-summary": 0,
+        "actor-start": 1
+      },
+      "maxTotalChargeUsd": 1.0,
+      "status": "SUCCEEDED",
+      "statusMessage": "Scraped 3/4 search queries"
+    },
+    {
+      "label": "arm_b",
+      "runId": "eeavTYNM05fEpzpRU",
+      "datasetId": "fsgipVt9vW3nP4u0M",
+      "queries": [
+        "home finds",
+        "trending beauty products",
+        "new restaurant menu",
+        "look what I got Target haul",
+        "copied their order",
+        "personal tech accessories"
+      ],
+      "resultsPerPage": 25,
+      "items": 150,
+      "usageTotalUsd": 0.751,
+      "estFromEventsUsd": 0.751,
+      "chargedEventCounts": {
+        "result": 150,
+        "filter-applied": 150,
+        "popularity-filter-applied": 0,
+        "follower-dataset-item": 0,
+        "mobile-filter-sorting-applied": 0,
+        "video-download": 0,
+        "comment-dataset-item": 0,
+        "scrape-as-in-country": 0,
+        "transcription-minute": 0,
+        "ai-video-description": 0,
+        "ai-video-summary": 0,
+        "actor-start": 1
+      },
+      "maxTotalChargeUsd": 1.5,
+      "status": "SUCCEEDED",
+      "statusMessage": "Scraped 6/6 search queries"
+    }
+  ],
+  "sumUsageTotalUsd": 1.128,
+  "sumEstFromEventsUsd": 1.1465,
+  "analysisCompleteAt": "2026-10-05 11:43 EDT",
+  "commentsRun": false,
+  "expansionsRun": false,
+  "additionalSpendUsd": 0.0,
+  "remainingBudgetUsd": 3.872,
+  "notes": "Analysis completed from saved datasets only; comments and expansions skipped ($0 additional)."
+}

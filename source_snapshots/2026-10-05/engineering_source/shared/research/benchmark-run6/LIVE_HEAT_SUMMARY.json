@@ -1,0 +1,49 @@
+{
+  "run": "Benchmark RUN 6 — Live Heat Scout (independent pass)",
+  "date": "2026-10-05",
+  "timezone": "America/New_York",
+  "skill": "/home/box/agent-data/workflows/live-heat-scout/SKILL.md",
+  "query_hygiene": "/home/box/agent-data/workflows/live-heat-scout/QUERY_HYGIENE_PLAYBOOK.md",
+  "spec": "/workspace/creative-pipeline/shared/research/live-heat-scout-spec/FINAL_PROPOSED_LIVE_HEAT_SCOUT_SPEC.md",
+  "story_object_findings_consulted": false,
+  "skills_edited": false,
+  "banned_seeds_used_as_openers": false,
+  "banned_seed_organic_appearances_quarantined": ["Dyson (ReFa 'Japan's Dyson')", "Labubu (Oklahoman squishy-ban article)", "Coach (Gap Bag designer bio)"],
+  "counts": {
+    "initial_probes_total": 27,
+    "probes_by_channel": {"A_language": 5, "B_category_world": 15, "C_retailer_community": 3, "D_platform_proxy": 4},
+    "scarcity_price_probe_share": "2/27 (~7%)",
+    "result_mining_expansion_chains": 18,
+    "discovery_vocabulary_entries": 52,
+    "validation_cards": 3,
+    "explicit_rejects": 2,
+    "near_misses": ["Michaels/Ashland Vintage Spirits jack-o'-lantern gumball machine", "Halloween 'costume foods' cluster (Hidden Valley Spooky Ranch / Cup Noodles Vampire Noodles)", "October Theory / Winter Arc (recurring seasonal)"]
+  },
+  "validation_cards": [
+    {"name": "Anti-blush (MAC Film Noir Buff / muted blush)", "archetype_primary": "ARGUMENT", "archetype_secondary": "OBJECT", "origin_channel": "B -> E", "distribution": "MIXED", "ecosystem": "INDEPENDENT ORGANIC REPLICATION (+ later BRAND-SEEDED amplification)", "lifecycle": "SCALING / MAINSTREAMING", "platform_magnitude": "UNTESTED", "confidence": "MED", "most_recent_evidence": "2026-10-02 IPSY"},
+    {"name": "Squishy craze: NeeDoh & dumpling/mochi squishies (hunting, school bans, counterfeits)", "archetype_primary": "OBJECT", "archetype_secondary": "BEHAVIOR", "origin_channel": "B -> E", "distribution": "ORGANIC", "ecosystem": "INDEPENDENT ORGANIC REPLICATION", "lifecycle": "CONTINUING / SCALING", "platform_magnitude": "UNTESTED", "confidence": "HIGH (existence/currentness; magnitude untested)", "most_recent_evidence": "2026-10-05 Good Housekeeping"},
+    {"name": "Food-illusion combos ('weird food combos that taste like other foods')", "archetype_primary": "METHOD", "archetype_secondary": "BEHAVIOR", "origin_channel": "A -> E", "distribution": "ORGANIC", "ecosystem": "INDEPENDENT ORGANIC REPLICATION", "lifecycle": "ACTIVE", "platform_magnitude": "UNTESTED (press figures suggest Instagram-led)", "confidence": "MED", "most_recent_evidence": "2026-10-02 Jacaranda FM"}
+  ],
+  "explicit_rejects": [
+    {"name": "B.O.D.Y. balance challenge", "reason": "SYNDICATION (single Outside upstream + mirrors) + alias COLLISION (Megan Thee Stallion 'Body' 2020)"},
+    {"name": "Oreogate", "reason": "PAID (Suno paid partnership) + STALE (peak ~2026-08-28)"}
+  ],
+  "apify": {
+    "used": false,
+    "available": false,
+    "availability_check": "GetDynamicTools pattern (?i)apify|tiktok -> 0 matches",
+    "named_question_considered": "Card 3: TikTok-native vs Instagram-led; is TikTok replication still rising? (would not materially change MODE/CONFIDENCE)",
+    "cost_usd": 0.0,
+    "status": "NOT USED — PLATFORM_MAGNITUDE UNTESTED on all cards"
+  },
+  "comments_fetched": false,
+  "comment_intent": "NOT CHECKED",
+  "files": {
+    "discovery_vocabulary": "/workspace/creative-pipeline/shared/research/benchmark-run6/LIVE_HEAT_DISCOVERY_VOCABULARY.md",
+    "validation_cards": "/workspace/creative-pipeline/shared/research/benchmark-run6/LIVE_HEAT_VALIDATION_CARDS.md",
+    "result_mining": "/workspace/creative-pipeline/shared/research/benchmark-run6/LIVE_HEAT_RESULT_MINING.md",
+    "summary": "/workspace/creative-pipeline/shared/research/benchmark-run6/LIVE_HEAT_SUMMARY.json",
+    "apify_cost_log": "/workspace/creative-pipeline/shared/research/benchmark-run6/APIFY_COST_LOG.md"
+  },
+  "statement": "Heat is input, not a gate. Only MODE=VALIDATION_CARD entries are synthesis-facing; DISCOVERY_VOCABULARY_ONLY must not be passed as heat evidence. Live Heat observed commercial discourse only; no residual-space, ownership, or promo-amount decisions made."
+}

@@ -1,0 +1,124 @@
+TARGET REFERENCE BANK V1 — GROKBOT HANDOFF
+
+PURPOSE This is a structural/visual reference bank for building
+staged/original Target-style commerce surfaces and selecting the correct
+artifact for a storyboard.
+
+CORE RULE Do not treat every image as one universal template. Choose the
+reference family whose native information state actually serves the
+story.
+
+REFERENCE FAMILIES
+
+01_PRODUCT_PAGE_darkmode_iPad_Air_M4.jpeg ROLE: PRODUCT PAGE BASE /
+PRODUCT-SWAP TEMPLATE. USE FOR: Target product-page composition, search
+bar, product title, product image region, rating/in-stock/bought
+signals, price region. WORKFLOW: Keep the Target page structure as the
+base. For a new object, research the exact target object separately and
+replace only object-specific content: search term, title, product image,
+observed price/regular-price treatment, and directly supported
+product-specific metadata. DO NOT: carry iPad facts into another product
+or invent a sale.
+
+02–07 CHECKOUT FAMILY 02_CART_darkmode_single_item.webp
+03_CHECKOUT_darkmode_order_summary.jpeg
+04_CHECKOUT_darkmode_discounts_total.jpeg
+05_CHECKOUT_darkmode_payment_giftcards.jpeg
+06_CHECKOUT_darkmode_gift_options.jpeg
+07_ORDER_CONFIRMATION_darkmode.jpeg ROLE: cart → checkout → confirmation
+grammar. USE FOR: staged transaction surfaces when the storyboard
+actually needs cart, totals, payment, discounts, gift options, or
+confirmation. DO NOT: assume every field appears in every Target state.
+Preserve the chosen reference’s hierarchy.
+
+08–11 PURCHASE HISTORY FAMILY
+08_PURCHASE_HISTORY_darkmode_delivered.jpeg
+09_PURCHASE_HISTORY_darkmode_date_total_shipping.png
+10_PURCHASE_HISTORY_darkmode_pickup_cancelled.webp
+11_PURCHASE_HISTORY_darkmode_multiple_orders.jpeg ROLE: purchase-history
+chronology and order grouping. USE FOR: proving that a Target
+transaction exists on a particular date and showing fulfillment
+state/items at history level. IMPORTANT: 09 and 10 visibly demonstrate a
+date heading plus item/order grouping on the same surface. DO NOT:
+reinterpret estimated arrival, delivered, pickup, or cancellation dates
+as purchase dates.
+
+12–17 ORDER DETAILS / FULFILLMENT FAMILY
+12_ORDER_DETAILS_darkmode_item_tracking.png
+13_ORDER_DETAILS_lightmode_order_placed_item.jpeg
+14_ORDER_DETAILS_lightmode_preordered_item.webp
+15_ORDER_DETAILS_lightmode_order_placed_item_nav.webp
+16_ORDER_DETAILS_darkmode_ready_for_pickup.jpeg
+17_ORDER_DETAILS_darkmode_same_day_scheduled.webp ROLE: item identity +
+fulfillment chronology. CRITICAL REFERENCES: 13 and 15 visibly show an
+‘Order placed’ timestamp in the same artifact as the purchased item.
+These are the strongest chronology references when a story needs WHAT +
+WHEN. 16 shows Ready for pickup. 17 shows scheduled same-day order
+state. DO NOT: invent an ‘Order placed’ field on a different layout
+merely because these references contain one.
+
+18–19 IN-STORE / RECEIPT FAMILY
+18_INSTORE_PURCHASE_HISTORY_darkmode_items.jpeg
+19_DIGITAL_RECEIPT_darkmode.jpeg ROLE: in-store purchase record and
+digital receipt. USE FOR: stories requiring store purchase, receipt
+access, itemized purchase, subtotal/tax/total, or payment proof. DO NOT:
+make the receipt prove a fact that is not printed on it.
+
+20–24 PHYSICAL PROOF / PACKAGE FAMILY
+20_PHYSICAL_PROOF_receipt_plus_product.jpeg
+21_PACKAGE_OPEN_target_box_product_primary.jpeg
+22_PACKAGE_OPEN_target_box_multi_item.jpeg
+23_PACKAGE_OPEN_packing_slip.jpeg
+24_PACKAGE_OPEN_target_box_outdoor.jpeg ROLE: camera-roll-native
+physical payoff/evidence. PRIMARY GENERAL PACKAGE REFERENCE: 21. USE
+FOR: delivered/opened product, Target shipment, package reveal, packing
+slip, physical receipt/product pairing. DO NOT: clone the Nintendo
+product. Transfer photographic behavior, packaging logic, framing
+imperfection, and ordinary environment only.
+
+25–26 RETURN / REFUND FAMILY 25_RETURN_COMPLETE_lightmode_items.jpeg
+26_REFUND_APPROVED_email_darkmode.jpeg ROLE: return/refund chronology.
+25 establishes Return complete + Refund issued date + Refund processed
+timestamp + returned items/unit prices. 26 establishes refund-approved
+email behavior, approved amount, timing language, and refunded item. USE
+ONLY when return/refund is part of the story.
+
+GLOBAL REFERENCE RULES 1. STORYBOARD FIRST. Pick the artifact after the
+narrative information turn is known. 2. Preserve INFORMATION FUNCTION,
+not a favorite screenshot. 3. Never combine unrelated Target states and
+pretend they are one native screen. 4. Dates are semantic. Order placed,
+scheduled, estimated arrival, delivered, picked up, return complete,
+refund issued, and refund processed are different facts. 5. For exact
+UI/text/numbers, deterministic reconstruction is preferred over asking
+an image model to redraw an entire screenshot. 6. For product swaps, use
+the supplied Target page as structural base and independently obtain the
+target object’s current product image/title/price information. 7. For
+physical photos, use references for composition/photographic language;
+do not copy a stranger’s unique environment or identity. 8. Keep
+staged/original commerce artifacts internally consistent across product,
+price, quantity, dates, fulfillment state, totals, and later story
+surfaces. 9. Do not let a reference force a story. If the storyboard
+needs a fact no genuine reference supports, find a better artifact or
+hold/rewrite that reveal. 10. Treat this bank as a starting set, not a
+limit. Search for a new reference when the story requires a state absent
+here.
+
+BYOMA CHRONOLOGY NOTE The earlier concern that Target could not
+naturally show item identity + acquisition chronology on one surface is
+resolved structurally by references 13 and 15: they visibly show an
+‘Order placed’ timestamp and the item on the same artifact. A future
+BYOMA version should recreate that information function with the actual
+BYOMA item and story dates; it should not reuse Nintendo facts or claim
+the product medically caused a breakout.
+
+V2 ADDENDUM
+27_ORDER_DETAILS_darkmode_BYOMA_preparing_to_ship.png
+ROLE: STAGED/EDITED ORDER-DETAILS EXAMPLE.
+USE FOR: visual/information-function reference for Preparing to ship + scheduled arrival + Delivering to + Order placed timestamp + item identity/price/qty on one staged surface.
+IMPORTANT: this is a staged/edited example, not a live forensic Target capture. Do not use it alone to assert current Target policy or a real promotion.
+
+00_CONTACT_SHEET_ALL_REFERENCES.jpg
+ROLE: navigation/contact sheet only. Inspect the original individual reference before production.
+
+00_READ_FIRST_CURRENT_HANDOFF.md
+ROLE: current project correction + locked Target benchmark + live-capture-blocker clarification.

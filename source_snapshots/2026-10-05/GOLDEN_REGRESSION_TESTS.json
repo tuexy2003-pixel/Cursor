@@ -1,0 +1,253 @@
+[
+ {
+  "id": "T01",
+  "category": "s1_presentation",
+  "input": "3 short bubbles; peek template leaves >40% empty card",
+  "expected_decision": "choose cropped thread / lock screen / preview card or thread+hook; not peek",
+  "pass_conditions": [
+   "no large dead space",
+   "no padded fake dialogue"
+  ],
+  "fail_conditions": [
+   "peek chosen with dead space",
+   "invented filler bubbles"
+  ],
+  "source_rule": "production-spec-qa hook-presentation router"
+ },
+ {
+  "id": "T02",
+  "category": "propulsion",
+  "input": "S1 'don't look at the order' then S2 order screen immediately",
+  "expected_decision": "flag missing action trigger; add smallest causal beat (e.g. 'bc you're nosy' / 'ok now i'm looking')",
+  "pass_conditions": [
+   "trigger+action present before proof"
+  ],
+  "fail_conditions": [
+   "proof shown without motivated action"
+  ],
+  "source_rule": "story-development Pass 1"
+ },
+ {
+  "id": "T03a",
+  "category": "micro_detail_firewall",
+  "input": "weak basket; propose AirPods to raise subtotal",
+  "expected_decision": "reject AirPods",
+  "pass_conditions": [
+   "no headroom-only item"
+  ],
+  "fail_conditions": [
+   "expensive item added for discount"
+  ],
+  "source_rule": "story-development discount-headroom firewall"
+ },
+ {
+  "id": "T03b",
+  "category": "micro_detail_firewall",
+  "input": "birthday gift story; AirPods are the hidden gift",
+  "expected_decision": "approve AirPods",
+  "pass_conditions": [
+   "item independently story-motivated"
+  ],
+  "fail_conditions": [
+   "rejected despite motivation"
+  ],
+  "source_rule": "story-development"
+ },
+ {
+  "id": "T04",
+  "category": "continuity",
+  "input": "hook 'birthday tomorrow' then same-day lit cake, no time transition",
+  "expected_decision": "fail; change hook to today or add transition",
+  "pass_conditions": [
+   "state-transition consistent"
+  ],
+  "fail_conditions": [
+   "impossible timeline passes"
+  ],
+  "source_rule": "story-development Pass 3"
+ },
+ {
+  "id": "T05",
+  "category": "stale_reference_date",
+  "input": "Target base shows 'Pick up by Wed, Oct 23'; ledger says Oct 7",
+  "expected_decision": "render Oct 7",
+  "pass_conditions": [
+   "visible date = ledger"
+  ],
+  "fail_conditions": [
+   "reference date retained"
+  ],
+  "source_rule": "Pass 3 + production-spec-qa Reference Is Law carve-out"
+ },
+ {
+  "id": "T06",
+  "category": "current_lock_precedence",
+  "input": "old asset/memory says AirPods 4; approved lock says AirPods 5",
+  "expected_decision": "use AirPods 5; mark old assets STALE",
+  "pass_conditions": [
+   "AirPods 5 used",
+   "stale listed"
+  ],
+  "fail_conditions": [
+   "AirPods 4 used",
+   "old files deleted/rewritten"
+  ],
+  "source_rule": "story-development current-lock precedence"
+ },
+ {
+  "id": "T07",
+  "category": "ui_fit",
+  "input": "5 products don't fit native Target base",
+  "expected_decision": "choose another real base or natural scroll state",
+  "pass_conditions": [
+   "native row heights preserved"
+  ],
+  "fail_conditions": [
+   "rows shrunk/squeezed"
+  ],
+  "source_rule": "production-spec-qa"
+ },
+ {
+  "id": "T08",
+  "category": "reference_is_law",
+  "input": "suitable Target base exists",
+  "expected_decision": "localized edit of base",
+  "pass_conditions": [
+   "base pixels retained"
+  ],
+  "fail_conditions": [
+   "freehand full UI reconstruction"
+  ],
+  "source_rule": "production-spec-qa router"
+ },
+ {
+  "id": "T09",
+  "category": "camera_roll_routing",
+  "input": "real-life payoff slide needed",
+  "expected_decision": "visual search first, then edit/reference-guided scene",
+  "pass_conditions": [
+   "search performed and logged before generation"
+  ],
+  "fail_conditions": [
+   "generated from text first"
+  ],
+  "source_rule": "production-spec-qa Type C"
+ },
+ {
+  "id": "T10",
+  "category": "proof_boundary",
+  "input": "order screen used as proof",
+  "expected_decision": "claims limited to visible facts",
+  "pass_conditions": [
+   "no invented intent/location/payment causality"
+  ],
+  "fail_conditions": [
+   "slide implies facts the screen doesn't show"
+  ],
+  "source_rule": "story-development / production-spec-qa"
+ },
+ {
+  "id": "T11",
+  "category": "comment_surface_overreach",
+  "input": "micro-detail becomes hero product or ad",
+  "expected_decision": "fail",
+  "pass_conditions": [
+   "details secondary and native"
+  ],
+  "fail_conditions": [
+   "detail dominates or reads like ad"
+  ],
+  "source_rule": "story-development Pass 2"
+ },
+ {
+  "id": "T12",
+  "category": "overlay_redundancy",
+  "input": "bubble 'don't look at the order'; overlay 'why did she tell me not to look'",
+  "expected_decision": "rate weaker than overlay adding new context (e.g. 'my birthday is literally today 😭')",
+  "pass_conditions": [
+   "overlay adds new fact"
+  ],
+  "fail_conditions": [
+   "paraphrase overlay rated best"
+  ],
+  "source_rule": "production-spec-qa S1 hook gate"
+ },
+ {
+  "id": "T13",
+  "category": "product_generation",
+  "input": "lock wants AirPods 4 at $129.99 from cached snippet",
+  "expected_decision": "verify live retailer; use current generation",
+  "pass_conditions": [
+   "live check recorded"
+  ],
+  "fail_conditions": [
+   "cached/stale product"
+  ],
+  "source_rule": "memory rule (2026-10-05)"
+ },
+ {
+  "id": "T14",
+  "category": "aspect_ratio",
+  "input": "final asset 1080x1920",
+  "expected_decision": "fail; require 9:19.6",
+  "pass_conditions": [
+   "ratio ≈ 0.4602 (e.g. 1206x2622)"
+  ],
+  "fail_conditions": [
+   "9:16 output"
+  ],
+  "source_rule": "production-spec-qa default output"
+ },
+ {
+  "id": "T15",
+  "category": "dialogue_naturalness",
+  "input": "bubble 'doing a quick Drive Up'",
+  "expected_decision": "fail; rewrite to how a person texts",
+  "pass_conditions": [
+   "no retailer-term exposition"
+  ],
+  "fail_conditions": [
+   "commerce-first dialogue passes"
+  ],
+  "source_rule": "story-development / taste"
+ },
+ {
+  "id": "T16",
+  "category": "math",
+  "input": "subtotal 142.97, discount -125.00, tax 1.26",
+  "expected_decision": "total 19.23",
+  "pass_conditions": [
+   "arithmetic exact"
+  ],
+  "fail_conditions": [
+   "mismatch"
+  ],
+  "source_rule": "deterministic"
+ },
+ {
+  "id": "T17",
+  "category": "weekday",
+  "input": "story date Mon Oct 5 2026; pickup 'Wed, Oct 7'",
+  "expected_decision": "weekday matches calendar",
+  "pass_conditions": [
+   "Oct 7 2026 is Wednesday"
+  ],
+  "fail_conditions": [
+   "weekday mismatch"
+  ],
+  "source_rule": "Pass 3 deterministic"
+ },
+ {
+  "id": "T18",
+  "category": "recursive_edit",
+  "input": "need a second fix on an edited output",
+  "expected_decision": "re-edit from original base",
+  "pass_conditions": [
+   "edit source = original base"
+  ],
+  "fail_conditions": [
+   "edit chained on degraded output"
+  ],
+  "source_rule": "production rule"
+ }
+]

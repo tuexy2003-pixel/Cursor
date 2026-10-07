@@ -1,0 +1,47 @@
+{
+  "overall_status": "READY",
+  "diagnosis": "The locked narrative is production-ready. Sister's house-stuff cover, the don't-look line, the nosy dare, and \"ok now i'm looking\" give a human reason to open the order. The floating hook supplies the single stake that the birthday is today. S2 reveals the party supplies, mid-list AirPods 5, paper-towel cover, and staged $19.23 total. S3 pays that off as the same-evening celebration. Commerce stays secondary, and the birthday story still holds if the discount is ignored. The prose lock is internally consistent on beats, math, date, and product identity. The structured AirPods 5 row still carries TCIN 85978615, which the prose identifies as the superseded AirPods 4 id.",
+  "hook_assessment": "The thread hook \"don't look at the order tho\" creates the forbidden look. The locked floating hook \"my birthday is literally today 😭\" adds the stake the bubbles do not contain and does not restate a line. Together they make the swipe prediction specific: she is hiding a birthday surprise. The five locked messages stay in force, including the dropped option A.",
+  "propulsion_assessment": "Pass. Stakes are today's birthday. The trigger is the don't-look warning. Pressure is \"bc you're nosy 😭\". The action is \"ok now i'm looking\", caused by that dare. The expected next beat is the hidden birthday contents. S2 is the reveal and S3 is the physical payoff. The narrator opens the order because the sister provoked it, which satisfies the proof-exposing action test.",
+  "viral_texture_assessment": "Texture is story-native. S1 has the \"sis\" contact, the nosy sibling jab, and the house-stuff cover. S2's spiral candles, same-size AirPods thumbnail, last-position paper towels, and $19.23 total reward inspection. AirPods, paper towels, and the party supplies are load-bearing reveal facts, so they stay. S3's edge-cropped AirPods box, primary-color streamers, optional paper-towel callback, and crooked streamers belong to the payoff. Rejected extras stay rejected: the lone gold \"1\" candle, AirPods Pro 3, relighting candles, and a $99.99 sale price.",
+  "continuity_assessment": "Pass on the approved ledger. Monday, Oct 5, 2026; thread Today 4:12 PM with status bar 4:14; S2 status bar 4:15; order placed 8:06am Today; pickup by Wed, Oct 7. Knowledge moves from unaware, to nosy, to looking, to discovery, to the party. The order moves from placed, to ready and unpicked at Phoenix SW, to picked up and used that evening. Item math holds: $3.00 + $1.99 + $129.99 + $3.00 + $4.99 = $142.97; $142.97 − $125.00 + $1.26 = $19.23. Cake mix to a frosted, candle-lit Funfetti cake the same evening is an approved plausible compression. S3 keeps one 12ct gold/silver spiral pack, prefers 12 lit candles, never 14+, and primary-color crepe streamers. The stale-asset list stays in force for earlier AirPods 4, \"tomorrow\", Oct 23, ~14-candle, and pastel-streamer attempts.",
+  "comment_door_assessment": "Primary door is \"why did she say not to look?\" Independent secondary doors are intact: the AirPods, house stuff versus a gift, the candles, the paper-towel cover, the impulse to check, the sister being sweet, and the $19 total. Those reactions come from the locked artifacts.",
+  "commerce_integration_assessment": "Secondary, as locked. The birthday surprise works without the economics. The money path appears only as the native \"mydashperks.com Discount\" line of -$125.00 on the S2 order surface. It stays out of the S1 bubbles, the floating hook, any character reaction, and any savings slide. The label remains FICTIONAL / STAGED. The discount is not increased for shock, and AirPods 5 stay because they are the birthday gift.",
+  "proof_boundary_assessment": "S2 can show only what the order surface contains: the five locked items, ready-for-pickup at Phoenix SW, the clocks and dates, and the staged subtotal, discount, tax, and $19.23 total. Sister's intent is carried by the dialogue and confirmed by the S3 scene. The order surface does not establish a real Target or MyDashPerks promotion, payment causality, or checkout. S3 proves the matching candles, streamers, cake, and AirPods 5 package in a home kitchen. No orders are placed and no carts are checked out.",
+  "recommended_changes": [
+    "Clear external_id 85978615 from the Apple AirPods 5 line item so the structured row matches the prose lock. Keep generation 5, the title Apple AirPods 5 Wireless Earbuds, and the human-approved price $129.99."
+  ],
+  "recommended_patches": [
+    {
+      "field": "line_items.Apple AirPods 5 Wireless Earbuds.external_id",
+      "action": "clear_stale_identifier",
+      "stale_value": "85978615",
+      "preserve": [
+        "Apple AirPods 5 Wireless Earbuds",
+        "generation 5",
+        "unit_price 129.99",
+        "mid-list placement",
+        "S3 AirPods 5 packaging from a real AirPods 5 reference"
+      ],
+      "reason": "The prose lock supersedes Apple AirPods 4, TCIN 85978615. Leaving that TCIN on the AirPods 5 row can resurrect the stale product identity."
+    }
+  ],
+  "things_to_preserve": [
+    "Locked S1 dialogue and the floating hook \"my birthday is literally today 😭\"",
+    "House-stuff cover, paper towels last, and the paper-towel callback",
+    "AirPods 5 at $129.99 as the hidden birthday gift, mid-list, same thumbnail size, never the S3 hero",
+    "Gold/silver tall spiral candles 12ct, Funfetti mix, and 4pk primary-color rainbow crepe streamers",
+    "Staged math $142.97 / -$125.00 / $1.26 / $19.23 and the mydashperks.com Discount line only on S2",
+    "Story date Monday, Oct 5, 2026, clocks 4:12 / 4:14 / 4:15, placed 8:06am Today, pickup by Wed, Oct 7, Phoenix SW",
+    "S3 same-evening kitchen payoff with about 12 spiral candles, primary-color streamers, and optional paper towels",
+    "Secondary commerce and the existing comment-door map",
+    "Rejected lone gold 1 candle, AirPods Pro 3, relighting candles, and a $99.99 sale explanation",
+    "Stale-asset marks for the AirPods 4, tomorrow-hook, Oct 23, and mismatched S3 attempts"
+  ],
+  "uncertainties": [
+    "s1_v6b.png, s2_v6.png, and s3_v6.png were not pixel-checked against the lock.",
+    "Candles, Funfetti, streamers, and Bounty prices are cached Target snippets and were not live-confirmed on 2026-10-05. AirPods 5 at $129.99 is the human-approved price.",
+    "No Account DNA profile is in scope, so the account lane is unassigned.",
+    "The structured S1 visible_clock stores 4:14 PM, while the prose ledger also locks the thread stamp Today 4:12 PM."
+  ]
+}

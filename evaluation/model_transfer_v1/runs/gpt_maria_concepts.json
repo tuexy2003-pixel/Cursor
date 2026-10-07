@@ -1,0 +1,168 @@
+{
+  "concepts": [
+    {
+      "title": "the snack-table volunteer",
+      "premise": "LABEL: FICTIONAL/STAGED — Maria discovers that her boyfriend volunteered both of them to handle his younger sister’s club snack table before asking her.",
+      "family": "I — interpersonal/event",
+      "hook_direction": "A group-thread screenshot raises the question of why he volunteered her so confidently.",
+      "action_trigger": "His sister shares his RSVP in the family group chat.",
+      "human_event": "He made a public promise on their behalf, then reveals he had quietly collected the club’s food restrictions because he knew Maria would not want anyone excluded.",
+      "stakes": "Maria has to decide whether the thoughtful preparation outweighs being volunteered without consent.",
+      "expected_consequence": "They either make the event work together or he has to own the overstep in front of his family.",
+      "reveal": "The practical work was real care, but it does not erase the fact that he should have asked first.",
+      "proof_surface_direction": "group thread; notes-list artifact; native order artifact; candid snack-table photo",
+      "payoff": "A warm but debatable recovery rather than a clean romantic win.",
+      "primary_comment_door": "is it sweet if he did all that homework, or still annoying because he volunteered her?",
+      "secondary_comment_doors": [
+        "would you help anyway?",
+        "which food restriction is easiest to forget when planning for a group?"
+      ],
+      "commerce_relation": "OUTCOME-MEANS — only pursue if later boundary mapping shows a natural order changes not-enough-to-enough for the actual club need; any program evidence remains a staged native discount line on an order surface, never a character explanation.",
+      "why_it_fits_account": "A low-stakes couple disagreement anchored in recognizable teen-family food logistics.",
+      "viral_texture_opportunities": [
+        "overconfident RSVP",
+        "family group-chat pile-on",
+        "tiny handwritten accommodation list"
+      ],
+      "risks": [
+        "Could feel like a food argument if the relationship tension overtakes the public-volunteering issue.",
+        "The food quantity must arise from the event, never from discount headroom."
+      ],
+      "research_needed": [
+        "Verify a plausible, natural group-order boundary and normal ordering path before commercial synthesis.",
+        "Verify that the selected food and event details fit current teen-life behavior."
+      ]
+    },
+    {
+      "title": "the finals-night elevator delay",
+      "premise": "LABEL: FICTIONAL/STAGED — A first-year roommate’s family arrives to help move her out, but everyone is trapped waiting on an overloaded dorm elevator while the roommate tries not to cry about leaving.",
+      "family": "I — interpersonal/event",
+      "hook_direction": "A lock-screen preview announces that the family has arrived just as the roommate says she cannot do a goodbye speech.",
+      "action_trigger": "The family reaches the dorm early and the move-out plan stalls.",
+      "human_event": "Maria turns the forced wait into one final floor hangout so the roommate does not have to face a formal goodbye alone.",
+      "stakes": "The roommate wants a normal last memory, not a tearful scene in front of her parents and the whole floor.",
+      "expected_consequence": "The improvised hangout either gives her a softer goodbye or makes the departure feel even more real.",
+      "reveal": "The people waiting with her had already made a tiny goodbye ritual without telling her.",
+      "proof_surface_direction": "lock-screen preview; roommate group thread; native order artifact; camera-roll hallway photo",
+      "payoff": "An unexpectedly intimate, slightly chaotic final dorm-floor memory.",
+      "primary_comment_door": "would you want everyone to make a big deal out of leaving, or pretend it is a normal night?",
+      "secondary_comment_doors": [
+        "what was your last-night-of-school food?",
+        "is an improvised goodbye better than a planned one?"
+      ],
+      "commerce_relation": "ARTIFACT — the food order belongs to the stalled hangout; a later staged order artifact may create a separate method-gap question, but it does not explain the goodbye.",
+      "why_it_fits_account": "It stays inside the first-year-college phone life-world and lets food support a real emotional event instead of replacing it.",
+      "viral_texture_opportunities": [
+        "elevator status updates",
+        "parents waiting downstairs",
+        "messy hallway camera-roll photo"
+      ],
+      "risks": [
+        "Must not imply that a commerce artifact caused the emotional resolution.",
+        "Avoid making move-out logistics look implausibly dramatic."
+      ],
+      "research_needed": [
+        "Verify normal dorm move-out constraints and a credible food-order timing path.",
+        "Research whether a material economic boundary exists without inventing one."
+      ]
+    },
+    {
+      "title": "the sleepover guest list changed at 10:48",
+      "premise": "LABEL: FICTIONAL/STAGED — Maria agrees to a quiet cousin sleepover, then learns that her cousin invited the entire friend group because one girl is newly avoiding a fight at home.",
+      "family": "I — interpersonal/event",
+      "hook_direction": "A family text says the guest count changed, but not why.",
+      "action_trigger": "Maria’s younger cousin sends a panicked update after the friends have already arrived.",
+      "human_event": "The bigger group is not a planned party; it is a last-minute attempt to give one friend a safe, ordinary night.",
+      "stakes": "Maria must protect the cousin’s trust without making the guest feel like a charity case.",
+      "expected_consequence": "The group either settles into a believable normal sleepover or the secret becomes the center of the night.",
+      "reveal": "The cousin planned the inflated guest list so no one would notice which friend needed somewhere else to be.",
+      "proof_surface_direction": "family text thread; cousin group-chat fragment; native order artifact; low-light living-room photo",
+      "payoff": "The sleepover becomes caring because it stays ordinary.",
+      "primary_comment_door": "would you tell the host why you needed to stay over, or let a friend cover for you?",
+      "secondary_comment_doors": [
+        "what makes a sleepover feel normal when someone is having a bad night?",
+        "would your family notice an extra group immediately?"
+      ],
+      "commerce_relation": "OUTCOME-MEANS — only if later boundary mapping supports a natural transition from insufficient food for a quiet sleepover to enough for the real group need. The order cannot be padded or treated as the reason the friend feels safe.",
+      "why_it_fits_account": "A recognizable high-school group dynamic with food as a natural hosting need and a meaningful viewer judgment.",
+      "viral_texture_opportunities": [
+        "late-night family texts",
+        "guest-count panic",
+        "blankets and shoes by the door"
+      ],
+      "risks": [
+        "Handle the home-conflict context lightly; it cannot become trauma bait.",
+        "The food must remain secondary to the cousin’s protective choice."
+      ],
+      "research_needed": [
+        "Research a credible, non-exploitative framing for a teen needing an ordinary night away from family conflict.",
+        "Verify a natural group-order boundary and realistic delivery chronology."
+      ]
+    },
+    {
+      "title": "the spicy-food alibi",
+      "premise": "LABEL: FICTIONAL/STAGED — Maria realizes her boyfriend has let his relatives believe she dislikes spicy food because it has been his easiest excuse for years to skip dishes he hates.",
+      "family": "I — interpersonal/event",
+      "hook_direction": "A family dinner photo makes it look like Maria is the reason he ordered a separate comfort meal.",
+      "action_trigger": "A relative tags Maria in a joke about finally getting him to eat plain food.",
+      "human_event": "Maria has to decide whether to expose the harmless lie or let him keep the alibi at the next family dinner.",
+      "stakes": "The joke is small, but it turns Maria into the person his family thinks changed him.",
+      "expected_consequence": "His relatives either learn the truth or keep treating Maria as the explanation for his preferences.",
+      "reveal": "He has always avoided those foods; Maria only noticed he never corrected the story.",
+      "proof_surface_direction": "family photo; tagged comment; saved-menu note; casual camera-roll payoff",
+      "payoff": "A tiny couple truth that invites judgment without needing a villain.",
+      "primary_comment_door": "would you expose him immediately or let him keep the alibi?",
+      "secondary_comment_doors": [
+        "what food opinion do people blame on your partner?",
+        "is this a harmless cover story or unfair to her?"
+      ],
+      "commerce_relation": "ABSENT — organic-only. Do not force program economics into this premise.",
+      "why_it_fits_account": "It is a casual food-and-couples observation with an easy, culturally familiar comment split.",
+      "viral_texture_opportunities": [
+        "family-tag embarrassment",
+        "separate comfort meal",
+        "saved note of actual preferences"
+      ],
+      "risks": [
+        "Must not turn into a generic food argument.",
+        "No campaign production unless later work finds a genuine, non-forced economic job."
+      ],
+      "research_needed": [
+        "Research needed only if later adapting actual food, restaurant, or ordering behavior."
+      ]
+    },
+    {
+      "title": "the post-exam comfort spread",
+      "premise": "LABEL: FICTIONAL/STAGED — After a friend leaves an exam convinced she failed, her friends build a deliberately unserious movie-night comfort spread without letting her know they saw her crying.",
+      "family": "D — desire/utility",
+      "hook_direction": "A close-friends message asks for one very specific kind of ‘do not ask questions’ night.",
+      "action_trigger": "The friend sends a single-word update after the exam and goes quiet.",
+      "human_event": "Her friends coordinate an attainable sleepover-style reset instead of giving advice she does not want.",
+      "stakes": "They want to show up without embarrassing her or making the bad exam the theme of the night.",
+      "expected_consequence": "The friend either feels cared for by the ordinary ritual or realizes everyone saw more than she wanted them to.",
+      "reveal": "Each person brought one detail from a comfort routine she had mentioned at different times.",
+      "proof_surface_direction": "close-friends thread; shared list artifact; native order artifact; camera-roll movie-night photo",
+      "payoff": "The desired outcome is a specific, savable feeling of being looked after rather than a product reveal.",
+      "primary_comment_door": "what is the correct food for a ‘do not ask me about it’ night?",
+      "secondary_comment_doors": [
+        "would you want friends to acknowledge the bad exam or distract you?",
+        "what tiny detail makes a comfort night feel thoughtful?"
+      ],
+      "commerce_relation": "ABSENT — preserve as organic desire/utility material unless later research identifies a natural qualitative boundary; cheaper same outcome is not a usable job.",
+      "why_it_fits_account": "A highly recognizable 15–20 food ritual with outcome desire and a method gap that work without economics.",
+      "viral_texture_opportunities": [
+        "close-friends code phrase",
+        "shared list with anonymous contributions",
+        "soft-focus floor movie night"
+      ],
+      "risks": [
+        "Family D evidence is thin, so treat this as lower confidence.",
+        "Do not make the friend’s distress performative or turn the spread into a purchase showcase."
+      ],
+      "research_needed": [
+        "Research whether the chosen comfort-food details are current and naturally attainable for the intended age group.",
+        "Research needed before assigning any commerce relation beyond ABSENT."
+      ]
+    }
+  ]
+}

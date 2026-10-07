@@ -1,0 +1,1 @@
+Architecture is encoded in the skills (skills/) and summarized in ../SYSTEM_MANIFEST.json workflow_order and ../CURRENT_STATE.md. Architecture history and research: ../reference_docs/SYSTEM_PLAYBOOK.md, ../reference_docs/CATCHUP.md, and /workspace/creative-pipeline/shared/research/benchmark-run*/ (not copied; large).

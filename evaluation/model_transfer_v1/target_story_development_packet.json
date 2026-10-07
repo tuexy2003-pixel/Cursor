@@ -1,0 +1,1812 @@
+{
+  "bundle_id": "ba1aa586-b0ae-4a0a-b53f-44c52ae0d2bf",
+  "bundle_hash": "3780765dd5392b18e67d683f202d80ea124c73bd8de1e5c82e7137fe576ee444",
+  "provider_execution": "NOT_IMPLEMENTED",
+  "compiler_version": "context-compiler-0.3.0",
+  "as_of": "2026-10-06T20:37:02.666607+00:00",
+  "requested_stage": "STORY_DEVELOPMENT",
+  "creative_task_id": "b6421dc4-79e3-42b0-9652-5ae5cd64d4de",
+  "packet": {
+    "dry_run": true,
+    "provider_execution": "NOT_IMPLEMENTED",
+    "compiler_version": "context-compiler-0.3.0",
+    "as_of": "2026-10-06T20:37:02.666607+00:00",
+    "requested_stage": "STORY_DEVELOPMENT",
+    "skill_coverage": "COVERED",
+    "task": {
+      "id": "b6421dc4-79e3-42b0-9652-5ae5cd64d4de",
+      "stage": "STORY_DEVELOPMENT",
+      "instruction": "Audit the current story as a creative director.\nDetermine whether the narrative is production-ready.\nPreserve strong existing decisions.\nIdentify only meaningful remaining story-level weaknesses.\nDo not redesign it simply to be different.\nDo not inspect image pixels. This test is narrative and system transfer only.",
+      "constraints": {},
+      "input_refs": {},
+      "status": "CONSUMED",
+      "expected_output_type": "STORY_DEVELOPMENT_AUDIT",
+      "created_by": "operator"
+    },
+    "scope": {
+      "program": {
+        "id": "c0616ab6-7386-4fa3-af2c-9bac09540c4e",
+        "slug": "mydashperks",
+        "name": "MyDashPerks"
+      },
+      "account": null,
+      "campaign": {
+        "id": "0d6c6304-057e-4a8f-a6e7-b510cfe24144",
+        "slug": "october-2026-benchmarks",
+        "name": "October 2026 benchmarks"
+      },
+      "ecosystem": {
+        "id": "896685eb-397f-4ea4-9a2f-72166a9fec8f",
+        "code": "TARGET",
+        "name": "Target"
+      },
+      "creative": {
+        "id": "b0840313-1060-4967-bfb4-fe0a3350ef3b",
+        "slug": "chore-stuff-target",
+        "name": "SHE SAID IT WAS CHORE STUFF",
+        "status": "produced",
+        "holdout": true
+      }
+    },
+    "output_contract": {
+      "name": "STORY_DEVELOPMENT_AUDIT",
+      "instructions": "Return StoryDevelopmentAuditResult JSON only. This is a diagnosis and proposal. Do not mutate the StoryLock. Preserve decisions that are already working.",
+      "json_schema": {
+        "description": "Diagnosis only. The model must not mutate the StoryLock.",
+        "properties": {
+          "overall_status": {
+            "enum": [
+              "READY",
+              "THIN",
+              "NEEDS_CHANGES"
+            ],
+            "title": "Overall Status",
+            "type": "string"
+          },
+          "diagnosis": {
+            "title": "Diagnosis",
+            "type": "string"
+          },
+          "hook_assessment": {
+            "title": "Hook Assessment",
+            "type": "string"
+          },
+          "propulsion_assessment": {
+            "title": "Propulsion Assessment",
+            "type": "string"
+          },
+          "viral_texture_assessment": {
+            "title": "Viral Texture Assessment",
+            "type": "string"
+          },
+          "continuity_assessment": {
+            "title": "Continuity Assessment",
+            "type": "string"
+          },
+          "comment_door_assessment": {
+            "title": "Comment Door Assessment",
+            "type": "string"
+          },
+          "commerce_integration_assessment": {
+            "title": "Commerce Integration Assessment",
+            "type": "string"
+          },
+          "proof_boundary_assessment": {
+            "title": "Proof Boundary Assessment",
+            "type": "string"
+          },
+          "recommended_changes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Recommended Changes",
+            "type": "array"
+          },
+          "recommended_patches": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Recommended Patches",
+            "type": "array"
+          },
+          "things_to_preserve": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Things To Preserve",
+            "type": "array"
+          },
+          "uncertainties": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Uncertainties",
+            "type": "array"
+          }
+        },
+        "required": [
+          "overall_status",
+          "diagnosis",
+          "hook_assessment",
+          "propulsion_assessment",
+          "viral_texture_assessment",
+          "continuity_assessment",
+          "comment_door_assessment",
+          "commerce_integration_assessment",
+          "proof_boundary_assessment"
+        ],
+        "title": "StoryDevelopmentAuditResult",
+        "type": "object"
+      }
+    },
+    "current_story_lock_version": {
+      "id": "08c56ceb-91a9-4ab3-b853-58faa458b933",
+      "version_number": 1,
+      "document_hash": "7899292fc644604e9c61802d6fc9fe714826465497b4a3db9398e85c8b357844",
+      "source_hash": "1a2d8ea6381391391cd957ce67aef9fa2121be06e7de6594bbeb96299871bd9c",
+      "approval_state": "APPROVED",
+      "authority": "approved story lock",
+      "reason_included": "current approved pointer",
+      "document": {
+        "title": "SHE SAID IT WAS CHORE STUFF (Target) — story-development record, 2026-10-05",
+        "label": "FICTIONAL / STAGED. Economics are staged creative values, NOT a verified Target promotion or program.",
+        "core_story": "Sister says she's grabbing house stuff and tells narrator not to look at the order; narrator looks; it's their birthday surprise (party supplies + AirPods), and the order total is oddly low.",
+        "hook": "don't look at the order tho",
+        "floating_hook": "my birthday is literally today 😭",
+        "stakes": "narrator's birthday is TODAY (floating hook only)",
+        "trigger": "narrator resists (\"why would i look\"); sister provokes (\"bc you're nosy 😭\")",
+        "action": "narrator opens the order",
+        "expected_next_beat": "\"she's hiding something for my birthday — what's in it?\"",
+        "reveal": "S2 order = birthday stuff + paper towels cover + AirPods, total $19.23; S3 birthday surprise photo",
+        "commerce_relation": "SECONDARY",
+        "story_works_without_economics": true,
+        "dialogue": [
+          {
+            "speaker": "sis",
+            "direction": "incoming",
+            "text": "grabbing stuff for the house rn"
+          },
+          {
+            "speaker": "sis",
+            "direction": "incoming",
+            "text": "don't look at the order tho"
+          },
+          {
+            "speaker": "me",
+            "direction": "outgoing",
+            "text": "why would i look"
+          },
+          {
+            "speaker": "sis",
+            "direction": "incoming",
+            "text": "bc you're nosy 😭"
+          },
+          {
+            "speaker": "me",
+            "direction": "outgoing",
+            "text": "ok now i'm looking"
+          }
+        ],
+        "line_items": [
+          {
+            "position": 1,
+            "title": "Gold/Silver Tall Spiral Birthday Candles 12ct - Spritz™",
+            "quantity": null,
+            "unit_price": "3.00",
+            "model": null,
+            "generation": null,
+            "variant": null,
+            "color": null,
+            "pack_count": 12,
+            "external_id": "92290028"
+          },
+          {
+            "position": 2,
+            "title": "Pillsbury Funfetti Premium Cake & Cupcake Mix - 15.25oz",
+            "quantity": null,
+            "unit_price": "1.99",
+            "model": null,
+            "generation": null,
+            "variant": null,
+            "color": null,
+            "pack_count": null,
+            "external_id": null
+          },
+          {
+            "position": 3,
+            "title": "Apple AirPods 5 Wireless Earbuds",
+            "quantity": null,
+            "unit_price": "129.99",
+            "model": "AirPods 5",
+            "generation": "5",
+            "variant": null,
+            "color": null,
+            "pack_count": null,
+            "external_id": "85978615"
+          },
+          {
+            "position": 4,
+            "title": "4pk Primary Color Rainbow Crepe Streamer - Spritz™",
+            "quantity": null,
+            "unit_price": "3.00",
+            "model": null,
+            "generation": null,
+            "variant": null,
+            "color": null,
+            "pack_count": null,
+            "external_id": null
+          },
+          {
+            "position": 5,
+            "title": "Bounty Select-A-Size Paper Towels - 1 Mega Roll",
+            "quantity": null,
+            "unit_price": "4.99",
+            "model": null,
+            "generation": null,
+            "variant": null,
+            "color": null,
+            "pack_count": null,
+            "external_id": null
+          }
+        ],
+        "economics": {
+          "subtotal": "142.97",
+          "discount": "125.00",
+          "discount_label": "mydashperks.com Discount",
+          "tax": "1.26",
+          "total": "19.23",
+          "staged": true,
+          "notes": "Parsed from the story lock economics block. Staged when the lock says so."
+        },
+        "story_date": "2026-10-05",
+        "story_weekday": "Monday",
+        "slides": [
+          {
+            "index": 1,
+            "beat": "sister forbids looking; narrator decides to look",
+            "relative_time": "afternoon, birthday day",
+            "visible_clock": "4:14 PM",
+            "visible_date": null,
+            "overlay": "my birthday is literally today 😭",
+            "order_state": "placed earlier (8:06 AM), not yet seen by narrator",
+            "actor_knowledge": "sis says she's grabbing house stuff; does NOT know what's in the order",
+            "actor_location": "narrator at home, ordinary phone context"
+          },
+          {
+            "index": 2,
+            "beat": "the order (Target Order Details, Ready for pickup)",
+            "relative_time": null,
+            "visible_clock": "status bar 4:15",
+            "visible_date": "\"Order placed 8:06am Today\"; \"Pick up by Wed, Oct 7\" (Oct 7, 2026 = Wednesday ✔)",
+            "overlay": null,
+            "order_state": "ready for pickup, not yet picked up",
+            "actor_knowledge": "birthday supplies, AirPods 5, paper towels, low total",
+            "actor_location": "narrator viewing the order; sis about to collect it at Phoenix SW"
+          },
+          {
+            "index": 3,
+            "beat": "birthday surprise camera-roll photo",
+            "relative_time": "later the same evening; no visible clock required",
+            "visible_clock": null,
+            "visible_date": null,
+            "overlay": null,
+            "order_state": "picked up and used",
+            "actor_knowledge": "narrator understands the surprise",
+            "actor_location": "home kitchen"
+          }
+        ],
+        "continuity": [
+          {
+            "slide_index": 1,
+            "field": "RELATIVE TIME",
+            "value": "afternoon, birthday day"
+          },
+          {
+            "slide_index": 1,
+            "field": "VISIBLE CLOCK",
+            "value": "thread \"Today 4:12 PM\"; status bar 4:14"
+          },
+          {
+            "slide_index": 1,
+            "field": "OVERLAY",
+            "value": "my birthday is literally today 😭"
+          },
+          {
+            "slide_index": 1,
+            "field": "ACTOR LOCATION",
+            "value": "narrator at home, ordinary phone context"
+          },
+          {
+            "slide_index": 1,
+            "field": "KNOWS",
+            "value": "sis says she's grabbing house stuff; does NOT know what's in the order"
+          },
+          {
+            "slide_index": 1,
+            "field": "HAS DONE",
+            "value": "called nosy → decides to check (\"ok now i'm looking\")"
+          },
+          {
+            "slide_index": 1,
+            "field": "ORDER STATE",
+            "value": "placed earlier (8:06 AM), not yet seen by narrator"
+          },
+          {
+            "slide_index": 1,
+            "field": "TRANSITION",
+            "value": "narrator opens the Target order immediately"
+          },
+          {
+            "slide_index": 2,
+            "field": "VISIBLE CLOCK",
+            "value": "status bar 4:15 (tiny nearby variation only if the approved base forces it)"
+          },
+          {
+            "slide_index": 2,
+            "field": "VISIBLE DATE",
+            "value": "\"Order placed 8:06am Today\"; \"Pick up by Wed, Oct 7\" (Oct 7, 2026 = Wednesday ✔)"
+          },
+          {
+            "slide_index": 2,
+            "field": "STATUS",
+            "value": "Ready for pickup (Drive Up at Phoenix SW)"
+          },
+          {
+            "slide_index": 2,
+            "field": "ACTOR LOCATION",
+            "value": "narrator viewing the order; sis about to collect it at Phoenix SW"
+          },
+          {
+            "slide_index": 2,
+            "field": "KNOWS (now discovers)",
+            "value": "birthday supplies, AirPods 5, paper towels, low total"
+          },
+          {
+            "slide_index": 2,
+            "field": "ORDER STATE",
+            "value": "ready for pickup, not yet picked up"
+          },
+          {
+            "slide_index": 2,
+            "field": "LOCKED PRODUCTS",
+            "value": "candles 12ct gold/silver spiral; Funfetti mix; Apple AirPods 5 Wireless Earbuds $129.99; 4pk primary-color rainbow crepe streamers; Bounty Mega Roll (last)"
+          },
+          {
+            "slide_index": 2,
+            "field": "ECONOMICS (unchanged)",
+            "value": "Subtotal $142.97 / mydashperks.com Discount -$125.00 / Tax $1.26 / Total $19.23"
+          },
+          {
+            "slide_index": 2,
+            "field": "TRANSITION",
+            "value": "sis picks up → supplies used → gift physically present → celebration later that evening"
+          },
+          {
+            "slide_index": 3,
+            "field": "RELATIVE TIME",
+            "value": "later the same evening; no visible clock required"
+          },
+          {
+            "slide_index": 3,
+            "field": "ACTOR LOCATION",
+            "value": "home kitchen"
+          },
+          {
+            "slide_index": 3,
+            "field": "ORDER STATE",
+            "value": "picked up and used"
+          },
+          {
+            "slide_index": 3,
+            "field": "CAKE",
+            "value": "baked, frosted (Funfetti-style), candles lit"
+          },
+          {
+            "slide_index": 3,
+            "field": "CANDLES",
+            "value": "contents of one 12ct gold/silver spiral pack; prefer exactly 12 visible lit; never 14+"
+          },
+          {
+            "slide_index": 3,
+            "field": "STREAMERS",
+            "value": "match the ordered primary-color rainbow crepe streamers; no pastel/ombre style"
+          },
+          {
+            "slide_index": 3,
+            "field": "GIFT",
+            "value": "AirPods 5 physically present, packaging from a real AirPods 5 reference; opened, half-unwrapped, or sitting near the edge; never the hero"
+          },
+          {
+            "slide_index": 3,
+            "field": "PAPER TOWEL",
+            "value": "optional subtle background callback"
+          },
+          {
+            "slide_index": 3,
+            "field": "KNOWS",
+            "value": "narrator understands the surprise"
+          },
+          {
+            "slide_index": 3,
+            "field": "PAYOFF",
+            "value": "birthday happened; the suspicious order was birthday prep + gift"
+          },
+          {
+            "slide_index": 3,
+            "field": "GIFT-OPENING ORDER",
+            "value": "an opened gift before cake is plausible; change the box state only if the final composition reads as confusing (not a defect)"
+          }
+        ],
+        "comment_doors": [
+          {
+            "kind": "primary",
+            "text": "why did she say not to look?"
+          },
+          {
+            "kind": "secondary",
+            "text": "THE AIRPODS??"
+          },
+          {
+            "kind": "secondary",
+            "text": "she said house stuff and bought AirPods 😭"
+          },
+          {
+            "kind": "secondary",
+            "text": "those candles are cute"
+          },
+          {
+            "kind": "secondary",
+            "text": "the paper towels as cover"
+          },
+          {
+            "kind": "secondary",
+            "text": "I would've checked too"
+          },
+          {
+            "kind": "secondary",
+            "text": "your sister is sweet"
+          },
+          {
+            "kind": "secondary",
+            "text": "wait how was all of that only $19?"
+          }
+        ],
+        "viral_texture": [
+          {
+            "slide_index": 1,
+            "text": "contact \"sis\" (social); \"bc you're nosy 😭\" sibling-coded provocation (social); \"stuff for the house\" cover (sets up paper-towel callback)",
+            "category": null
+          },
+          {
+            "slide_index": 2,
+            "text": "gold/silver tall spiral candles (desire); AirPods 5 mid-list, same thumbnail size (desire / mini contradiction); paper towels LAST (mini contradiction / cover story); $19.23 total (price anomaly)",
+            "category": null
+          },
+          {
+            "slide_index": 3,
+            "text": "gold/silver spiral candles on the cake (continuity/desire); white AirPods box opened or half-unwrapped near the frame edge, partly cropped, not centered (background callback); optional paper towel roll in background (callback); crooked streamers (realism)",
+            "category": null
+          }
+        ],
+        "stale_notes": [
+          "v5/s2_attempt1.png — STALE — SUPERSEDED BY CURRENT STORY_LOCK (AirPods 4 row; status bar 4:31; \"Pick up by Wed, Oct 23\")",
+          "v5/s1_attempt2.png — STALE — REPRODUCTION REQUIRED (hook says \"tomorrow\")",
+          "v5/s1_attempt1.png, v4/s1_attempt1.png, v4/s1_attempt2.png, v4/s1_kb_attempt1.png — STALE — REPRODUCTION REQUIRED (hook says \"tomorrow\" / earlier attempts)",
+          "v5/s3_attempt1.png — STALE — REPRODUCTION REQUIRED (~14 candles vs one 12ct pack; pastel/ombre streamers; AirPods packaging not matched to AirPods 5)"
+        ],
+        "extra": {}
+      },
+      "markdown": "# STORY LOCK — SHE SAID IT WAS CHORE STUFF (Target) — story-development record, 2026-10-05\nCURRENT LOCK REVISION: continuity update, 2026-10-05 ~9:10 PM ET (Tyrel-approved). This file is the authoritative story truth; older assets, drafts, memory notes and references are STALE for any field changed here.\nLABEL: FICTIONAL / STAGED. Economics are staged creative values, NOT a verified Target promotion or program.\n\nCORE STORY: Sister says she's grabbing house stuff and tells narrator not to look at the order; narrator looks; it's their birthday surprise (party supplies + AirPods), and the order total is oddly low.\nHOOK: \"don't look at the order tho\"\nSTAKES: narrator's birthday is TODAY (floating hook only)\nTRIGGER / PROVOCATION: narrator resists (\"why would i look\"); sister provokes (\"bc you're nosy 😭\")\nACTION: narrator opens the order\nEXPECTED NEXT BEAT: \"she's hiding something for my birthday — what's in it?\"\nREVEAL / PAYOFF: S2 order = birthday stuff + paper towels cover + AirPods, total $19.23; S3 birthday surprise photo\n\nS1 DIALOGUE — LOCKED (Tyrel, 2026-10-05):\n  sis (incoming): grabbing stuff for the house rn\n  sis (incoming): don't look at the order tho\n  me (outgoing): why would i look\n  sis (incoming): bc you're nosy 😭\n  me (outgoing): ok now i'm looking\nS1 FLOATING HOOK — LOCKED: \"my birthday is literally today 😭\"   (superseded: \"my birthday is literally tomorrow 😭\")\nRejected: option A (\"it literally just popped up on my phone\" / \"DON'T open it\" / \"well now i'm opening it\") — constructed, dropped the \"stuff for the house\" setup.\nS1 base: /workspace/creative-pipeline/shared/templates/ios-messages-keyboard/keyboard_thread_base_ios26_dark.png\nS1 withholds: Target, Drive Up, birthday supplies, AirPods, discount, MyDashPerks.\n\nSLIDE-BY-SLIDE PRIMARY BEAT:\n  S1 — sister forbids looking; narrator decides to look\n  S2 — the order (Target Order Details, Ready for pickup)\n  S3 — birthday surprise camera-roll photo\n\nAPPROVED MICRO-DETAILS BY SLIDE:\n  S1 — contact \"sis\" (social); \"bc you're nosy 😭\" sibling-coded provocation (social); \"stuff for the house\" cover (sets up paper-towel callback)\n  S2 — gold/silver tall spiral candles (desire); AirPods 5 mid-list, same thumbnail size (desire / mini contradiction); paper towels LAST (mini contradiction / cover story); $19.23 total (price anomaly)\n  S3 — gold/silver spiral candles on the cake (continuity/desire); white AirPods box opened or half-unwrapped near the frame edge, partly cropped, not centered (background callback); optional paper towel roll in background (callback); crooked streamers (realism)\n\nS2 LOCKED ITEMS (top → bottom):\n  1. Gold/Silver Tall Spiral Birthday Candles 12ct - Spritz™ (TCIN 92290028) — $3.00\n  2. Pillsbury Funfetti Premium Cake & Cupcake Mix - 15.25oz — $1.99\n  3. Apple AirPods 5 Wireless Earbuds — $129.99   (Tyrel-locked 2026-10-05; superseded: Apple AirPods 4 Wireless Earbuds, TCIN 85978615)\n  4. 4pk Primary Color Rainbow Crepe Streamer - Spritz™ — $3.00\n  5. Bounty Select-A-Size Paper Towels - 1 Mega Roll — $4.99\n  Prices: candles/Funfetti/streamers/Bounty from cached Target snippets, not confirmed live on 10/5 (Target bot-check). AirPods 5 at $129.99 is the human-approved current product and price.\n\nS2 LOCKED MATH (staged):\n  Subtotal                  $142.97\n  mydashperks.com Discount  -$125.00\n  Tax                         $1.26\n  Total                      $19.23\n  142.97 − 125.00 = 17.97; 17.97 × 7% = 1.2579 → 1.26; 17.97 + 1.26 = 19.23\n  Do not increase the discount for shock. Discount does not appear in S1 dialogue, hook, character reaction, or a separate savings slide.\n\nPRIMARY COMMENT DOOR: why did she say not to look?\nSECONDARY COMMENT DOORS: THE AIRPODS?? / she said house stuff and bought AirPods 😭 / those candles are cute / the paper towels as cover / I would've checked too / your sister is sweet / wait how was all of that only $19?\n\nDETAILS REJECTED AS FORCED: lone gold \"1\" candle (competing joke); AirPods Pro 3 (parent-gift price, reads less natural); relighting trick candles (not sold at Target); Target sale price $99.99 (would explain the low total).\nCOMMERCE RELATION: SECONDARY\nDOES STORY WORK WITHOUT ECONOMICS: YES\n\nImage refs: /workspace/creative-pipeline/shared/research/target-airpods-candles-20261005/\n\nSTORY DATE: Monday, Oct 5, 2026\n\nCONTINUITY LEDGER\nS1\n  RELATIVE TIME: afternoon, birthday day\n  VISIBLE CLOCK: thread \"Today 4:12 PM\"; status bar 4:14\n  OVERLAY: my birthday is literally today 😭\n  ACTOR LOCATION: narrator at home, ordinary phone context\n  KNOWS: sis says she's grabbing house stuff; does NOT know what's in the order\n  HAS DONE: called nosy → decides to check (\"ok now i'm looking\")\n  ORDER STATE: placed earlier (8:06 AM), not yet seen by narrator\n  TRANSITION: narrator opens the Target order immediately\nS2\n  VISIBLE CLOCK: status bar 4:15 (tiny nearby variation only if the approved base forces it)\n  VISIBLE DATE: \"Order placed 8:06am Today\"; \"Pick up by Wed, Oct 7\" (Oct 7, 2026 = Wednesday ✔)\n  STATUS: Ready for pickup (Drive Up at Phoenix SW)\n  ACTOR LOCATION: narrator viewing the order; sis about to collect it at Phoenix SW\n  KNOWS (now discovers): birthday supplies, AirPods 5, paper towels, low total\n  ORDER STATE: ready for pickup, not yet picked up\n  LOCKED PRODUCTS: candles 12ct gold/silver spiral; Funfetti mix; Apple AirPods 5 Wireless Earbuds $129.99; 4pk primary-color rainbow crepe streamers; Bounty Mega Roll (last)\n  ECONOMICS (unchanged): Subtotal $142.97 / mydashperks.com Discount -$125.00 / Tax $1.26 / Total $19.23\n  TRANSITION: sis picks up → supplies used → gift physically present → celebration later that evening\nS3\n  RELATIVE TIME: later the same evening; no visible clock required\n  ACTOR LOCATION: home kitchen\n  ORDER STATE: picked up and used\n  CAKE: baked, frosted (Funfetti-style), candles lit\n  CANDLES: contents of one 12ct gold/silver spiral pack; prefer exactly 12 visible lit; never 14+\n  STREAMERS: match the ordered primary-color rainbow crepe streamers; no pastel/ombre style\n  GIFT: AirPods 5 physically present, packaging from a real AirPods 5 reference; opened, half-unwrapped, or sitting near the edge; never the hero\n  PAPER TOWEL: optional subtle background callback\n  KNOWS: narrator understands the surprise\n  PAYOFF: birthday happened; the suspicious order was birthday prep + gift\n  GIFT-OPENING ORDER: an opened gift before cake is plausible; change the box state only if the final composition reads as confusing (not a defect)\n\nSTATE-TRANSITION CHECK: PASS on this ledger\n  ORDER placed 8:06 AM → ready (seen 4:15 PM) → picked up → used that evening\n  CAKE mix ordered → acquired at pickup → baked/frosted → candles lit (same evening)\n  GIFT hidden → discovered in order → acquired → present at birthday\n  KNOWLEDGE unaware → suspicious → checks → discovers → sees payoff\n\nSTALE ASSETS (do not use; not deleted):\n  v5/s2_attempt1.png — STALE — SUPERSEDED BY CURRENT STORY_LOCK (AirPods 4 row; status bar 4:31; \"Pick up by Wed, Oct 23\")\n  v5/s1_attempt2.png — STALE — REPRODUCTION REQUIRED (hook says \"tomorrow\")\n  v5/s1_attempt1.png, v4/s1_attempt1.png, v4/s1_attempt2.png, v4/s1_kb_attempt1.png — STALE — REPRODUCTION REQUIRED (hook says \"tomorrow\" / earlier attempts)\n  v5/s3_attempt1.png — STALE — REPRODUCTION REQUIRED (~14 candles vs one 12ct pack; pastel/ombre streamers; AirPods packaging not matched to AirPods 5)\n\nNEXT REPRODUCTION PASS MUST CORRECT:\n  S1: hook tomorrow → today\n  S2: status bar ≈4:15; Pick up by Wed, Oct 7; AirPods 5 row (Tyrel's corrected screenshot may serve as the AirPods 5 reference)\n  S3: AirPods 5 packaging continuity; ~12 spiral candles; primary-color streamer continuity\n\nREADY FOR PRODUCTION: YES — current lock above; reproduce on authorization.\n\nCURRENT PRODUCTION FILES (v5 folder): s1_v6b.png, s2_v6.png, s3_v6.png\n"
+    },
+    "global_invariants": [
+      {
+        "code": "principles-a-01",
+        "title": "The latest human-approved STORY_LOCK wins for story-specific values. Superseded assets are marked STALE; files are not deleted or rewritten.",
+        "text": "The latest human-approved STORY_LOCK wins for story-specific values. Superseded assets are marked STALE; files are not deleted or rewritten.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-01; retained regardless of token budget",
+        "version": "32aa5351-805f-454f-8b0e-5064fb8fc8e7",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "09a8df054cfd8e2b5bbe11a7a42e9d99931090613a114580c82ef876482b3a24",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-02",
+        "title": "An explicit human correction beats any skill default, until the skill is updated.",
+        "text": "An explicit human correction beats any skill default, until the skill is updated.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-02; retained regardless of token budget",
+        "version": "c1dce379-8a04-4702-9f78-7f92a077cae9",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "36f019813c393ae97c50fa37adb63e9aa92b93bf179ebbf017c693e669a7748c",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-03",
+        "title": "Proof boundary: a proof surface proves only what it literally shows. It cannot invent the actor's intent, location, payment causality or a retailer promotion.",
+        "text": "Proof boundary: a proof surface proves only what it literally shows. It cannot invent the actor's intent, location, payment causality or a retailer promotion.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-03; retained regardless of token budget",
+        "version": "173ff17a-478e-4d8a-88ce-266afb620b55",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "f0d9825dac49b5552a5068c2bf81293b29ea7ced33efbd2d446693c9cf3b1314",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-04",
+        "title": "Research mode never invents evidence. Staged/creative economics are labeled FICTIONAL/STAGED and never presented as a real retailer promo.",
+        "text": "Research mode never invents evidence. Staged/creative economics are labeled FICTIONAL/STAGED and never presented as a real retailer promo.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-04; retained regardless of token budget",
+        "version": "478c3159-0a02-48c4-a864-a0ea58cf32e7",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "2372debaa763186c568a5a052cc99ae0c12f57b0251b4694c29373dea47ca46e",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-05",
+        "title": "Reference-first production: when a suitable real base exists, edit it (smallest localized edit) and do not freehand-reconstruct retailer UI.",
+        "text": "Reference-first production: when a suitable real base exists, edit it (smallest localized edit) and do not freehand-reconstruct retailer UI.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-05; retained regardless of token budget",
+        "version": "7d2c61db-ee98-4454-a20d-aeaed4b37b8b",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "f720dfcba71dd36a1b7ace806d35db41c1a0e0f82cef99ce2fe0cc35ef47fe18",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-06",
+        "title": "Never silently compress or squeeze native UI rows to fit content. If it doesn't fit, choose another real base or a natural scroll state.",
+        "text": "Never silently compress or squeeze native UI rows to fit content. If it doesn't fit, choose another real base or a natural scroll state.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-06; retained regardless of token budget",
+        "version": "c2f0abae-2da5-43b2-8a33-2c49bf62485a",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "1ff8a637e240119bf33107257f0a213dbda466275733f8d2611b7b29531aa345",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-07",
+        "title": "Story-specific visible dates, times and weekdays come from the continuity ledger, not from the reference image.",
+        "text": "Story-specific visible dates, times and weekdays come from the continuity ledger, not from the reference image.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-07; retained regardless of token budget",
+        "version": "39b2ded4-048b-43d1-ba78-9ad2c530d085",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "f1e0c155a3162ded65ab40d97e541cdcc32d1a2557fd64e5b8f086f5a44a6497",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-08",
+        "title": "Cross-slide congruency: no impossible state or time transitions (for example \"tomorrow\" followed by the party already happening with no time change).",
+        "text": "Cross-slide congruency: no impossible state or time transitions (for example \"tomorrow\" followed by the party already happening with no time change).",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-08; retained regardless of token budget",
+        "version": "dafd8c70-dd09-48a4-9fd0-c7ab26310f9b",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "05975790b58a9d97f75c359feb90a27580bb9aa2a36483172d9e241e2aa5673d",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-09",
+        "title": "Discount-headroom firewall: never add an expensive item only to enlarge the subtotal or discount. Items must be story-motivated.",
+        "text": "Discount-headroom firewall: never add an expensive item only to enlarge the subtotal or discount. Items must be story-motivated.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-09; retained regardless of token budget",
+        "version": "6394e18f-5cdc-4ffb-95e5-2cd1765f5a63",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "1d753fec070569868947e13c6b0b6028f4bff76981be6abd70040918ed213b60",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-10",
+        "title": "Re-edits start from the original base, never from a drifted or degraded output.",
+        "text": "Re-edits start from the original base, never from a drifted or degraded output.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-10; retained regardless of token budget",
+        "version": "0077238d-b1b0-4aee-aef5-ad5599514475",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "2c48acf5797739d6b05769d631b1a231a7f3b2a471abb7584560d4d430f80a4e",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-11",
+        "title": "Any real object added to an image is edited in using a real photo of that exact object as a reference.",
+        "text": "Any real object added to an image is edited in using a real photo of that exact object as a reference.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-11; retained regardless of token budget",
+        "version": "93eecee7-6bf8-4cef-92fa-4b01adeb57a7",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "e3e6b4965458aa98bd43d60345d572afc8c8a1c7c4f381dca87ff634df7983c8",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-12",
+        "title": "Real products use the current generation and live price, verified before lock.",
+        "text": "Real products use the current generation and live price, verified before lock.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-12; retained regardless of token budget",
+        "version": "9ea10bd0-62fe-4cd8-8d66-aa1201861bc5",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "585289d3f4602b47498a25412153f42614672bbd5037b760de67475b62dbac39",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-13",
+        "title": "Rights: personal or unknown-rights images (Pinterest pins) are REFERENCE ONLY and their pixels are never shipped. Only CLEARED images may be a BASE.",
+        "text": "Rights: personal or unknown-rights images (Pinterest pins) are REFERENCE ONLY and their pixels are never shipped. Only CLEARED images may be a BASE.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-13; retained regardless of token budget",
+        "version": "265197d7-7aa1-488a-812f-d6609cf24e3f",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "bfdd9b60d71a0515bde4e418be759778126da4564631a96cc157618526906e92",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-14",
+        "title": "Never send messages, place orders or post without explicit human approval. DoorDash carts are referenced, never checked out.",
+        "text": "Never send messages, place orders or post without explicit human approval. DoorDash carts are referenced, never checked out.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-14; retained regardless of token budget",
+        "version": "fa5aebf9-5933-4a3c-a317-278c592d23e4",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "19682641541cc7902bf88ba6d8cc7fc4ee465725b06e002f9b2e812ab12895e2",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-15",
+        "title": "The money path appears only as the native \"mydashperks.com Discount\" line on the order surface. It never appears in chat bubbles, never on S1, and never as a savings slide.",
+        "text": "The money path appears only as the native \"mydashperks.com Discount\" line on the order surface. It never appears in chat bubbles, never on S1, and never as a savings slide.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-15; retained regardless of token budget",
+        "version": "2c4c62a2-68d5-4e9e-9bcb-d086ba176773",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "e1e469eb47df19b442ea1b3fe3ce4b11946e6330c5b20d2c09df0e75f96efdc4",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-16",
+        "title": "Frozen architecture (V1.2, CAS, Gates 1/2A/2B, campaign salience, Desire/Utility gate, scouts, Live Heat, firewall) is not modified without explicit authorization.",
+        "text": "Frozen architecture (V1.2, CAS, Gates 1/2A/2B, campaign salience, Desire/Utility gate, scouts, Live Heat, firewall) is not modified without explicit authorization.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-16; retained regardless of token budget",
+        "version": "fa373c64-bebe-452d-a3f9-817375cc01c6",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "9757ba7fc9c24976d68a32808603f0711f81220a96b8bc7f29a9edf468e1e0c1",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-17",
+        "title": "No burned real names or handles of private people. Amounts and clocks are internally consistent.",
+        "text": "No burned real names or handles of private people. Amounts and clocks are internally consistent.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-17; retained regardless of token budget",
+        "version": "d60ab077-cfb5-4540-86c1-f028fb77f2eb",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "72a89c3658ba72f3fc9d36760820f36ac6547beeea53ec80a425f04e335b3800",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-b-01",
+        "title": "Use the hook-presentation router: cropped full thread, lock-screen, preview card, peek or thread plus floating hook. Peek only when the conversation fills the card.",
+        "text": "Use the hook-presentation router: cropped full thread, lock-screen, preview card, peek or thread plus floating hook. Peek only when the conversation fills the card.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-01",
+        "version": "14c0120d-5829-403f-be2d-f34097e9ebf6",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "7554ae5db8063da10f2e15115b4c4e63f2bc8a7a5820f13b04f6911a15ef749d",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=7;code=principles-b-01"
+      },
+      {
+        "code": "principles-b-02",
+        "title": "Avoid dead space on S1.",
+        "text": "Avoid dead space on S1.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-02",
+        "version": "9c1c0857-89f2-427a-9ff7-a82d8ef86e1e",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "93e35898a4ba38feca6714123f0bb57d956633729e156829c2a7c8755452360f",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=8;code=principles-b-02"
+      },
+      {
+        "code": "principles-b-03",
+        "title": "0–3 secondary micro-details per slide, with quality over count.",
+        "text": "0–3 secondary micro-details per slide, with quality over count.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-03",
+        "version": "9f9f99c8-9b3c-4ba0-b4ba-a7d835162480",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "a5738e4526d5fdab9eae520e96a19d725913f79cce7381e4a34472110092b4ec",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=9;code=principles-b-03"
+      },
+      {
+        "code": "principles-b-04",
+        "title": "Commerce is usually a secondary discovery. Family D can lead with desire/method instead.",
+        "text": "Commerce is usually a secondary discovery. Family D can lead with desire/method instead.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-04",
+        "version": "57e47e38-5d8c-46fa-8e95-a1f634392da6",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "6bccc17bf889f17882fb757d053c08e977624b3a71df79713de968f41c86f85e",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=10;code=principles-b-04"
+      },
+      {
+        "code": "principles-b-05",
+        "title": "Camera-roll payoff: visual search first (Pinterest short queries) before any generation.",
+        "text": "Camera-roll payoff: visual search first (Pinterest short queries) before any generation.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-05",
+        "version": "eb4ac548-22ca-48a3-a778-220f0def0c8a",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "8f726086dd32d1a22e43fa3ecf9fc1533e55a247ca1954d7d6f0cf8ec1649d06",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=11;code=principles-b-05"
+      },
+      {
+        "code": "principles-b-06",
+        "title": "S1 often uses a native TikTok floating hook. The hook must add new context, never restate a bubble.",
+        "text": "S1 often uses a native TikTok floating hook. The hook must add new context, never restate a bubble.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-06",
+        "version": "19baffb7-8f82-44e6-986b-822a13b4e8c7",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "a8d22540af15f4b57b8bf15b689138f77ccadc90bc697bde4bd9ed2be52cbf67",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=12;code=principles-b-06"
+      },
+      {
+        "code": "principles-b-07",
+        "title": "Story-led concepts should usually work without the economics.",
+        "text": "Story-led concepts should usually work without the economics.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-07",
+        "version": "92aa2f2f-7c67-460e-b9ac-ca7865b2489c",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "c467d7541dcef4ab4639662e2ed10959049f002f03777eda61e58b9bbf45c816",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=13;code=principles-b-07"
+      },
+      {
+        "code": "principles-b-08",
+        "title": "A completed order can open a carousel. The notification-then-receipt opener is not required.",
+        "text": "A completed order can open a carousel. The notification-then-receipt opener is not required.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-08",
+        "version": "22705ce8-d775-4e9b-993b-699105f47459",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "c559eae5dd2861d972b622ad4b6d07c076347ecfb29cdd847565fefccce25261",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=14;code=principles-b-08"
+      },
+      {
+        "code": "principles-b-09",
+        "title": "Keyboard-up Messages is an option, not a rule.",
+        "text": "Keyboard-up Messages is an option, not a rule.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-09",
+        "version": "e5708e32-c49a-4824-925d-d9e660153271",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "2c4961ec154b92235bd6e44526ade16be8f4d80c6842743ab872c27b22952f0f",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=15;code=principles-b-09"
+      },
+      {
+        "code": "principles-b-10",
+        "title": "Temporal compression is fine when it's plausible.",
+        "text": "Temporal compression is fine when it's plausible.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-10",
+        "version": "5cb480ca-1bad-4734-8928-139ba08d9dd7",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "a32199877e397b8711d082d84fe6e6fa985148919511afe0edfdd6beba17b8eb",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=16;code=principles-b-10"
+      },
+      {
+        "code": "principles-b-11",
+        "title": "Use about three slides: hook, proof, payoff.",
+        "text": "Use about three slides: hook, proof, payoff.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-11",
+        "version": "63118b4d-03eb-49ad-9656-57a80148cdba",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "c515242522691a7894584bc651f04fd1e5c43312d5d0521fb6078544eb147aa3",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=17;code=principles-b-11"
+      },
+      {
+        "code": "principles-b-12",
+        "title": "Make aspect changes through the image editor, not by crop or stretch.",
+        "text": "Make aspect changes through the image editor, not by crop or stretch.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-12",
+        "version": "1c3d0df0-3853-4475-8d0e-b81542249389",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "79771f6f94e8b9fee4cb0a77936b23eff89ba78b0433fbc30de101841894d13a",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=18;code=principles-b-12"
+      },
+      {
+        "code": "principles-b-13",
+        "title": "Prefer user-supplied screenshots over the reference bank, over organic screenshots, over marketing images, over generation.",
+        "text": "Prefer user-supplied screenshots over the reference bank, over organic screenshots, over marketing images, over generation.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-13",
+        "version": "51d947c9-0942-4701-a6b5-944191a6f5f0",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "87f84df0bca2ba1992eea52ae2d0b13257344fe4a1b80650e7a21c826a6aa896",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=19;code=principles-b-13"
+      }
+    ],
+    "program_policies": [
+      {
+        "code": "principles-c-01",
+        "title": "The audience is the 15–20 phone life-world: high school or first-year college, parents, siblings, friends, group chats, Target/Sephora. Avoid adult gravity such as landlords, marke",
+        "text": "The audience is the 15–20 phone life-world: high school or first-year college, parents, siblings, friends, group chats, Target/Sephora. Avoid adult gravity such as landlords, marketplaces and corporate settings.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "PROGRAM",
+        "scope_id": "c0616ab6-7386-4fa3-af2c-9bac09540c4e",
+        "reason_included": "resolved PROGRAM PREFERENCE for principles-c-01",
+        "version": "ff8cbbe1-3168-484b-b00f-990bd2d192d0",
+        "authority": "preference",
+        "rule_kind": "PREFERENCE",
+        "content_hash": "757b63651df37ccb2fda2e490d4ff05d9513baf7b1149f8fa4dcd03c26296feb",
+        "approval_state": "APPROVED",
+        "priority": "scope=3;kind=0;stage=1;order=0;code=principles-c-01"
+      },
+      {
+        "code": "principles-c-02",
+        "title": "Account lanes: Maria covers food and couples (e.g. Dre). Sarah and Brooke cover electronics.",
+        "text": "Account lanes: Maria covers food and couples (e.g. Dre). Sarah and Brooke cover electronics.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "PROGRAM",
+        "scope_id": "c0616ab6-7386-4fa3-af2c-9bac09540c4e",
+        "reason_included": "resolved PROGRAM PREFERENCE for principles-c-02",
+        "version": "ef05bace-74ce-41ea-a0d9-be154f74190d",
+        "authority": "preference",
+        "rule_kind": "PREFERENCE",
+        "content_hash": "5346181289c877aea66213456b19c43d8ba8b321bdb6b6d91434288decd95f1c",
+        "approval_state": "APPROVED",
+        "priority": "scope=3;kind=0;stage=1;order=1;code=principles-c-02"
+      },
+      {
+        "code": "principles-c-03",
+        "title": "Ecosystems are TARGET and DOORDASH only.",
+        "text": "Ecosystems are TARGET and DOORDASH only.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "PROGRAM",
+        "scope_id": "c0616ab6-7386-4fa3-af2c-9bac09540c4e",
+        "reason_included": "resolved PROGRAM PREFERENCE for principles-c-03",
+        "version": "3fdabe19-b5e5-4c58-b5b7-e5edc3e26c5c",
+        "authority": "preference",
+        "rule_kind": "PREFERENCE",
+        "content_hash": "38059e4da777683650e2b98038f30028352a381490d7afc0c30c1e7a6363f873",
+        "approval_state": "APPROVED",
+        "priority": "scope=3;kind=0;stage=1;order=2;code=principles-c-03"
+      },
+      {
+        "code": "principles-c-04",
+        "title": "Final format is 9:19.6 portrait (1206×2622 native, or about 851×1849). It is never 1080×1920 or 9:16.",
+        "text": "Final format is 9:19.6 portrait (1206×2622 native, or about 851×1849). It is never 1080×1920 or 9:16.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "PROGRAM",
+        "scope_id": "c0616ab6-7386-4fa3-af2c-9bac09540c4e",
+        "reason_included": "resolved PROGRAM PREFERENCE for principles-c-04",
+        "version": "67354a96-2bdf-415e-af5c-364b0990d64d",
+        "authority": "preference",
+        "rule_kind": "PREFERENCE",
+        "content_hash": "ea1a92861e0158723e6250f957cc6a76c8c895d3922a6b0d8c568376c28e8536",
+        "approval_state": "APPROVED",
+        "priority": "scope=3;kind=0;stage=1;order=3;code=principles-c-04"
+      },
+      {
+        "code": "principles-c-05",
+        "title": "Tone: casual and lowercase where natural, with emoji like 😭. No marketing, UI-doc or sitcom phrasing.",
+        "text": "Tone: casual and lowercase where natural, with emoji like 😭. No marketing, UI-doc or sitcom phrasing.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "PROGRAM",
+        "scope_id": "c0616ab6-7386-4fa3-af2c-9bac09540c4e",
+        "reason_included": "resolved PROGRAM PREFERENCE for principles-c-05",
+        "version": "f03f3544-3a7f-43cf-9f77-c6aff5c18e6d",
+        "authority": "preference",
+        "rule_kind": "PREFERENCE",
+        "content_hash": "2576eb65fe2311ae829f4ae5959c8097dee7e992f64b9f34034a4a0b1b192846",
+        "approval_state": "APPROVED",
+        "priority": "scope=3;kind=0;stage=1;order=4;code=principles-c-05"
+      },
+      {
+        "code": "principles-c-06",
+        "title": "Proven patterns (historical): overslept + Dasher + object outside; a couple fight + a dumb food total; a money ask + an unfair reason + proof.",
+        "text": "Proven patterns (historical): overslept + Dasher + object outside; a couple fight + a dumb food total; a money ask + an unfair reason + proof.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "PROGRAM",
+        "scope_id": "c0616ab6-7386-4fa3-af2c-9bac09540c4e",
+        "reason_included": "resolved PROGRAM PREFERENCE for principles-c-06",
+        "version": "8a4918e2-4653-4f6b-bba5-cba6140769ba",
+        "authority": "preference",
+        "rule_kind": "PREFERENCE",
+        "content_hash": "c575dd14718834d722cca5fe294a495b05c86e0a378b44da007c8d056a9be3ee",
+        "approval_state": "APPROVED",
+        "priority": "scope=3;kind=0;stage=1;order=5;code=principles-c-06"
+      },
+      {
+        "code": "principles-c-07",
+        "title": "Dark-mode iOS 26 surfaces.",
+        "text": "Dark-mode iOS 26 surfaces.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "PROGRAM",
+        "scope_id": "c0616ab6-7386-4fa3-af2c-9bac09540c4e",
+        "reason_included": "resolved PROGRAM PREFERENCE for principles-c-07",
+        "version": "e7167694-cba4-4a56-8b76-077d59f1ee5e",
+        "authority": "preference",
+        "rule_kind": "PREFERENCE",
+        "content_hash": "b747d5ad72f4997d1011831482e013db8cea7c8b4cb3951ad41be4f2dfbc7e2a",
+        "approval_state": "APPROVED",
+        "priority": "scope=3;kind=0;stage=1;order=6;code=principles-c-07"
+      }
+    ],
+    "account_policies": [],
+    "campaign_policies": [],
+    "creative_locks": [
+      {
+        "code": "principles-d-creative-lock-note",
+        "title": "Creative-specific locks from principles section D",
+        "text": "CREATIVE-SPECIFIC LOCKS (never promote to global rules)\nTarget \"SHE SAID IT WAS CHORE STUFF\":\n- Hook \"my birthday is literally today 😭\".\n- Thread: \"don't look at the order tho\" / \"bc you're nosy 😭\" / \"ok now i'm looking\".\n- S1 thread 4:12 with status bar 4:14. S2 status bar 4:15.\n- Story date Mon Oct 5, 2026. \"Order placed 8:06am Today\" and \"Pick up by Wed, Oct 7\" at Phoenix SW.\n- Items: spiral candles, Funfetti, Apple AirPods 5 at $129.99, streamers, paper towels.\n- $142.97 − $125.00 + $1.26 = $19.23.\n- S3: 12 candles, primary-color streamers, AirPods 5 box.\nDoorDash \"ONIONS NOTE WAS BLANK\":\n- McDonald's Double Cheeseburger with the missing \"No Diced Onions\" modifier.\n- Overlay \"he said he copied my order exactly\".\nHistorical amounts are not global rules either: $156.05, $54.02, $8.08, $90.29.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "CREATIVE",
+        "scope_id": "b0840313-1060-4967-bfb4-fe0a3350ef3b",
+        "reason_included": "resolved CREATIVE LOCKED_VALUE for principles-d-creative-lock-note; retained regardless of token budget",
+        "version": "2d1201ff-4804-4eb6-aa95-2be0adcccc5c",
+        "authority": "locked_value",
+        "rule_kind": "LOCKED_VALUE",
+        "content_hash": "33549ebd39b0535e5cbec9cd27903fc7a5caf34cd05c6fef36ec4bb7d36d6d67",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      }
+    ],
+    "skill_versions": [
+      {
+        "slug": "story-development",
+        "skill_role": "REQUIRED",
+        "source": "/home/box/agent-data/workflows/story-development/SKILL.md",
+        "scope": "GLOBAL",
+        "reason_included": "required skill for stage STORY_DEVELOPMENT",
+        "version": "handoff-2026-10-05",
+        "version_id": "f7c0e0f1-b00f-429a-b7d1-af0b9e8d2c72",
+        "authority": "stage registry",
+        "content_hash": "f0883af775b0736c458e6c17481cf381a57074bae58c91fd9e41f85b2c0504a2",
+        "rule_kind": "HEURISTIC",
+        "dependencies": [
+          "adaptation-blitz-match"
+        ],
+        "content": "---\nname: Story development\ndescription: >-\n  Use after concept lock and before final storyboard approval, production spec\n  QA, or production routing. Runs three ordered passes: narrative propulsion\n  (why the protagonist takes the action that reveals the proof), the\n  comment-surface / micro-detail pass (viral texture), and cross-slide\n  congruency (continuity ledger + state-transition test). Outputs a compact lock\n  record that is the authoritative story truth. Does not pick concepts, change gates, or produce assets.\n---\n# Story development\n\n## Where it sits\nConcept selection / concept lock → **story development** → final storyboard approval → production spec QA / production routing.\n\nThis stage owns beat progression, viral texture, and intended cross-slide continuity. Production spec QA only verifies that these decisions survived execution; it does not originate them. This skill does not change Gate 1, Gate 2A/2B, campaign salience, Desire/Utility, commercial-aware synthesis, the promotion-first firewall, early exits, scouts, or production rules.\n\nThis stage develops a premise that already passed upstream. It does not add conflict, urgency, deadlines, characters, or desirable objects to rescue a weak premise or to make economics matter; the Adaptation Blitz and commercial-aware synthesis rules against that still apply. Stakes and details must already be consistent with the locked premise.\n\nRun the three passes in order. Pass 2 starts only after the core story, propulsion, and proof logic are stable. Pass 3 runs after Pass 2 and before production routing.\n\n## Pass 1 — Narrative propulsion\nApplies to STORY-LED creative: judgment, misunderstanding, conflict, caught-by-proof, social event, mishap, gift, purchase consequence.\n\nName each narrative function:\n- **HOOK** — what grabs attention?\n- **STAKES** — why does this matter now? Usually one contextual fact (birthday tomorrow, party tonight, mom already asking, order just became ready). Not backstory.\n- **TRIGGER** — what specific line, event, or contradiction changes the situation?\n- **PROVOCATION / PRESSURE** — what makes the protagonist unable to ignore it?\n- **ACTION** — what does the protagonist decide to do?\n- **EXPECTED CONSEQUENCE** — what does the viewer now predict is about to happen? That prediction is part of why they swipe.\n- **REVEAL** — what actually happens?\n\nThese are functions, not slides. Several can live inside one message exchange. Do not force seven beats into seven slides.\n\nRepair the smallest missing causal beat. Preserve existing story-native setup, texture, contradictions, and useful micro-details unless they are themselves causing the propulsion failure.\n\nHook is not propulsion. A strange line can create attention and still motivate nothing.\n\n### Propulsion failure test\nFor every proof-exposing action, ask why the protagonist does it: checks the order, opens the receipt, looks at the screenshot, replies, confronts someone, inspects the app, takes the photo, keeps scrolling.\n\nIf the answer is \"because the storyboard needs the proof\": **FAIL**. Repair the human causality inside the story. If a function is missing without a deliberate reason, mark the story THIN and repair before production.\n\n### Overlay job\nIf S1 uses a floating TikTok hook, it adds context, stakes, or POV the artifact does not already contain. It must not restate a bubble, and it must not explain the story.\n\n### Family D exception\nDo not force interpersonal propulsion onto pure desire/method content. Family D uses: DESIRE → METHOD / ACCESS GAP → USEFUL REVEAL → PROOF / REPLICATION. The same \"why would they do that?\" test applies to each step.\n\n## Pass 2 — Comment surface / micro-detail\n\n### Viral texture\n**Viral texture** = small, believable, non-essential details that reward closer inspection and create additional audience reactions without interfering with the primary story.\n\n- A **core beat** moves the story.\n- **Viral texture** makes the story richer, more inspectable, more commentable, more shareable, or more desirable.\n\nDo not confuse them.\n\n### Per slide\nKeep ONE primary story beat. Add 0–3 secondary details only where they naturally belong. Zero is allowed. Quality over count; never add density to satisfy the rule.\n\nDetail categories (not quotas): object, social, taste / judgment, desire, mini contradiction, realism, timing, identity, price / quantity anomaly, background callback.\n\n### Four-question test\nEvery approved micro-detail must pass:\n1. Would this naturally be here?\n2. Does it create a new reaction, question, desire, judgment, or inspection reward?\n3. Does it make the main story better?\n4. Would the post still work without it?\n\nIdeal: yes / yes / yes / yes. If removing it breaks the story, it is a CORE BEAT, not a micro-detail.\n\nReject details that exist only to bait comments and do not belong to the world: a random expensive product, an unrelated notification, a fake price typo, a celebrity poster.\n\n### Discount-headroom firewall\nA desirable or expensive item may NEVER be added solely to increase the subtotal, create discount headroom, make a staged savings number larger, or manufacture an economic reveal. It is allowed only when the story independently gives it a reason to exist. Example: AirPods pass as the hidden birthday gift in a sibling's order; AirPods dropped into an unrelated basket fail. This restates, and does not relax, the existing rule against padding a basket.\n\n### Comment-door map\nBefore final storyboard approval, record the PRIMARY comment door and the independent SECONDARY doors. Do not require every viewer to react to the same thing. The goal is not to script comments; it is to confirm the artifacts contain several natural reaction opportunities.\n\n## Pass 3 — Cross-slide congruency / continuity\nA story-led carousel passes only if every slide belongs to the same coherent story world. Individual slides being plausible is NOT enough. The sequence must be mutually compatible across time, date, weekday, location, actor state, knowledge state, object state, order / transaction state, product identity, quantity, color / variant, economics, physical payoff, and cause and effect.\n\n### Continuity ledger\nBefore the lock record becomes production-ready, record for every slide:\n\n```\nRELATIVE TIME:\nVISIBLE CLOCK:\nVISIBLE DATE / WEEKDAY / TODAY / YESTERDAY:\nACTOR LOCATION:\nWHAT THE ACTOR KNOWS:\nWHAT THE ACTOR HAS DONE:\nORDER / TRANSACTION STATE:\nIMPORTANT OBJECT STATES:\nLOCKED PRODUCT IDENTITIES:\nLOCKED COUNTS / COLORS / VARIANTS (where relevant):\nPHYSICAL PAYOFF STATE:\nCAUSAL TRANSITION INTO NEXT SLIDE:\n```\n\nKeep it compact. Its job is to prevent contradictions, not create paperwork. Leave a field blank when it does not apply.\n\n### State-transition test\nFor each important story element, confirm it can naturally move from slide N to slide N+1 within the implied time. Examples:\n- ORDER: placed → ready → picked up → items used\n- CAKE: mix ordered → acquired → baked → frosted → candles lit\n- GIFT: hidden → discovered in order → acquired → physically present\n- KNOWLEDGE: doesn't know → suspicious → checks → discovers → sees payoff\n\nIf a required transition is impossible or missing: **FAIL**. Fix the smallest value or state necessary (a timestamp, a date, one overlay word, a count). Do not invent extra plot to repair chronology.\n\n### Temporal compression\nViewers perceive consecutive slides as temporally close unless the creative clearly suggests otherwise. Avoid meaningful unmarked jumps. If a jump is truly required, signal it natively; prefer adjusting the timeline so no explanation is needed. The ideal continuity is invisible: if viewers notice the timeline mechanics, it was overdone.\n\n### Visible UI values are story facts\nAny visible clock, date, weekday, Today / Yesterday, order time, pickup deadline, delivery time, arrival date, or message timestamp is part of the story world and MUST come from the continuity ledger. Do not preserve stale reference values because the base screenshot contained them. Reference Is Law governs layout, geometry, native UI appearance, spacing, cards, icons, and behavior, not story-specific clock, date, or order values.\n\n## Current-lock precedence\nThe latest human-approved STORY_LOCK is the authoritative story truth. When a human-approved change supersedes an earlier value, older generated assets, prior lock versions, memory notes, drafts, and references become STALE for that field and may not override the current lock. Example: if the current lock says AirPods 5, an older S2 showing AirPods 4 is a stale asset, not competing evidence; never resurrect it.\n\n### Stale-asset handling\nWhen a locked field changes, list each affected prior production asset in the lock record as `STALE — REPRODUCTION REQUIRED` (or `STALE — SUPERSEDED BY CURRENT STORY_LOCK`). Do not silently keep using it, do not rewrite history, and do not delete prior files unless explicitly asked. The newest approved lock controls the next production pass.\n\n## Output: lock record\nKeep it compact. Do not expose long framework reports in normal creative review unless asked.\n\n```\nCORE STORY:\nHOOK:\nSTAKES:\nTRIGGER:\nACTION:\nEXPECTED NEXT BEAT:\nREVEAL / PAYOFF:\nSLIDE-BY-SLIDE PRIMARY BEAT:\nAPPROVED MICRO-DETAILS BY SLIDE:\nPRIMARY COMMENT DOOR:\nSECONDARY COMMENT DOORS:\nDETAILS REJECTED AS FORCED:\nCOMMERCE RELATION: PRIMARY / SECONDARY / INCIDENTAL\nDOES STORY WORK WITHOUT ECONOMICS: YES / NO\nSTORY DATE:\nCONTINUITY LEDGER (per slide, Pass 3 fields):\nSTATE-TRANSITION CHECK: PASS / FAIL (+ any fix)\nSTALE ASSETS (superseded fields):\nREADY FOR PRODUCTION: YES / NO\n```\n\nSave the lock record beside the concept's outputs (for example `STORY_LOCK.md`). Production spec QA reads it; production may not add, drop, or swap approved details or continuity values without returning here.\n"
+      }
+    ],
+    "skill_dependency_audit": [
+      {
+        "skill": "story-development",
+        "dependency": "adaptation-blitz-match",
+        "state": "intentionally_not_included",
+        "reason": "stage registry did not select this dependency; structured creative state is carried separately when a StoryLock or DNA profile is in scope",
+        "stage": "STORY_DEVELOPMENT"
+      }
+    ],
+    "account_dna": null,
+    "creative_genome": {
+      "id": "d6a1e39b-dcc3-4c0f-aaac-ccce3c1bcd8d",
+      "version_label": "import-2026-10-05",
+      "source_story_lock_version_id": "08c56ceb-91a9-4ab3-b853-58faa458b933",
+      "origin": "HUMAN_SET",
+      "approval_state": "APPROVED",
+      "source": "import-2026-10-05",
+      "scope": "CREATIVE",
+      "reason_included": "genome bound to the current approved story lock",
+      "authority": "HUMAN_SET",
+      "version": "import-2026-10-05",
+      "facets": [
+        {
+          "dimension": "commerce_integration",
+          "value": "SECONDARY",
+          "assignment": "human_set",
+          "confidence": null,
+          "source": "story lock COMMERCE RELATION"
+        },
+        {
+          "dimension": "ecosystem",
+          "value": "TARGET",
+          "assignment": "human_set",
+          "confidence": null,
+          "source": "story lock title names Target"
+        },
+        {
+          "dimension": "floating_hook",
+          "value": "my birthday is literally today 😭",
+          "assignment": "human_set",
+          "confidence": null,
+          "source": "story lock floating hook"
+        },
+        {
+          "dimension": "hook_text",
+          "value": "don't look at the order tho",
+          "assignment": "human_set",
+          "confidence": null,
+          "source": "story lock HOOK"
+        },
+        {
+          "dimension": "label",
+          "value": "FICTIONAL / STAGED. Economics are staged creative values, NOT a verified Target promotion or program.",
+          "assignment": "human_set",
+          "confidence": null,
+          "source": "story lock LABEL"
+        },
+        {
+          "dimension": "slide_count",
+          "value": "3",
+          "assignment": "human_set",
+          "confidence": null,
+          "source": "continuity ledger headings"
+        },
+        {
+          "dimension": "story_works_without_economics",
+          "value": "yes",
+          "assignment": "human_set",
+          "confidence": null,
+          "source": "story lock DOES STORY WORK WITHOUT ECONOMICS"
+        }
+      ]
+    },
+    "genome_state": "BOUND",
+    "selected_concept": null,
+    "benchmarks": [
+      {
+        "name": "Brooke pink iPad / overslept",
+        "account": "Brooke",
+        "category": "WINNER",
+        "ecosystem": null,
+        "views": 2300000,
+        "likes": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "lesson": "source text: 2.3M",
+        "metrics_note": "source text: 2.3M",
+        "source": "BENCHMARKS.md",
+        "holdout": false,
+        "scope": "PROGRAM",
+        "reason_included": "category WINNER",
+        "version": "2b29c6d7-9335-4c97-9095-9383bd056e45",
+        "authority": "reference example"
+      },
+      {
+        "name": "Brooke boyfriend pink-iPad sequel",
+        "account": "Brooke",
+        "category": "WEAK",
+        "ecosystem": null,
+        "views": null,
+        "likes": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "lesson": "UNKNOWN",
+        "metrics_note": "UNKNOWN",
+        "source": "BENCHMARKS.md",
+        "holdout": false,
+        "scope": "PROGRAM",
+        "reason_included": "category WEAK",
+        "version": "2d37ac48-7560-447e-bd38-c7292e2a8b6c",
+        "authority": "reference example"
+      },
+      {
+        "name": "Sarah Dasher got nosy",
+        "account": "Sarah",
+        "category": "WEAK",
+        "ecosystem": null,
+        "views": null,
+        "likes": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "lesson": "UNKNOWN",
+        "metrics_note": "UNKNOWN",
+        "source": "BENCHMARKS.md",
+        "holdout": false,
+        "scope": "PROGRAM",
+        "reason_included": "category WEAK",
+        "version": "ba2213df-5dc1-400e-9930-b2209ac3501b",
+        "authority": "reference example"
+      },
+      {
+        "name": "Cent post",
+        "account": null,
+        "category": "FAILURE",
+        "ecosystem": null,
+        "views": null,
+        "likes": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "lesson": "did not travel",
+        "metrics_note": "did not travel",
+        "source": "BENCHMARKS.md",
+        "holdout": false,
+        "scope": "PROGRAM",
+        "reason_included": "category FAILURE",
+        "version": "c8f31e9d-7629-4eb6-a004-944725d9fc93",
+        "authority": "reference example"
+      },
+      {
+        "name": "Jenny screen recording",
+        "account": null,
+        "category": "FAILURE",
+        "ecosystem": null,
+        "views": null,
+        "likes": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "lesson": "did not travel",
+        "metrics_note": "did not travel",
+        "source": "BENCHMARKS.md",
+        "holdout": false,
+        "scope": "PROGRAM",
+        "reason_included": "category FAILURE",
+        "version": "be7f906c-efc1-4e15-bb8b-9721c1463656",
+        "authority": "reference example"
+      },
+      {
+        "name": "Lindy metadata joke",
+        "account": null,
+        "category": "FAILURE",
+        "ecosystem": null,
+        "views": null,
+        "likes": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "lesson": "did not travel",
+        "metrics_note": "did not travel",
+        "source": "BENCHMARKS.md",
+        "holdout": false,
+        "scope": "PROGRAM",
+        "reason_included": "category FAILURE",
+        "version": "e0c6b922-ad25-4b02-b546-39ec6d4b21b0",
+        "authority": "reference example"
+      },
+      {
+        "name": "Maria Chick-fil-A",
+        "account": "Maria",
+        "category": null,
+        "ecosystem": null,
+        "views": 338200,
+        "likes": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "lesson": "source text: 338.2K",
+        "metrics_note": "source text: 338.2K",
+        "source": "BENCHMARKS.md",
+        "holdout": false,
+        "scope": "PROGRAM",
+        "reason_included": "non-holdout program benchmark",
+        "version": "2e9060de-ce60-4ad2-a777-9e90788e1250",
+        "authority": "reference example"
+      },
+      {
+        "name": "Maria McChicken",
+        "account": "Maria",
+        "category": null,
+        "ecosystem": null,
+        "views": null,
+        "likes": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "lesson": "UNKNOWN / NEEDS FOLLOW-UP",
+        "metrics_note": "UNKNOWN / NEEDS FOLLOW-UP",
+        "source": "BENCHMARKS.md",
+        "holdout": false,
+        "scope": "PROGRAM",
+        "reason_included": "non-holdout program benchmark",
+        "version": "0c7d26d7-5c27-42a9-a72d-52c83851312b",
+        "authority": "reference example"
+      },
+      {
+        "name": "Sarah MacBook",
+        "account": "Sarah",
+        "category": null,
+        "ecosystem": null,
+        "views": 150500,
+        "likes": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "lesson": "source text: 150.5K",
+        "metrics_note": "source text: 150.5K",
+        "source": "BENCHMARKS.md",
+        "holdout": false,
+        "scope": "PROGRAM",
+        "reason_included": "non-holdout program benchmark",
+        "version": "c1bcfc1e-eeb9-4338-8058-fc386dcdcb16",
+        "authority": "reference example"
+      }
+    ],
+    "mechanic_context": {
+      "account_id": null,
+      "as_of": "2026-10-06T20:37:02.666607+00:00",
+      "source": "mechanic_observations",
+      "scope": "UNSCOPED",
+      "reason_included": "account-local mechanic history; no fatigue score",
+      "authority": "observation",
+      "version": "windows",
+      "windows": {
+        "last_7_days": [
+          {
+            "dimension": "commerce_integration",
+            "value": "SECONDARY",
+            "count": 1
+          },
+          {
+            "dimension": "ecosystem",
+            "value": "TARGET",
+            "count": 1
+          },
+          {
+            "dimension": "hook_pattern",
+            "value": "my birthday is literally today 😭",
+            "count": 1
+          },
+          {
+            "dimension": "proof_surface",
+            "value": "order_details",
+            "count": 1
+          }
+        ],
+        "last_30_days": [
+          {
+            "dimension": "commerce_integration",
+            "value": "SECONDARY",
+            "count": 1
+          },
+          {
+            "dimension": "ecosystem",
+            "value": "TARGET",
+            "count": 1
+          },
+          {
+            "dimension": "hook_pattern",
+            "value": "my birthday is literally today 😭",
+            "count": 1
+          },
+          {
+            "dimension": "proof_surface",
+            "value": "order_details",
+            "count": 1
+          }
+        ],
+        "lifetime": [
+          {
+            "dimension": "commerce_integration",
+            "value": "SECONDARY",
+            "count": 1
+          },
+          {
+            "dimension": "ecosystem",
+            "value": "TARGET",
+            "count": 1
+          },
+          {
+            "dimension": "hook_pattern",
+            "value": "my birthday is literally today 😭",
+            "count": 1
+          },
+          {
+            "dimension": "proof_surface",
+            "value": "order_details",
+            "count": 1
+          }
+        ],
+        "last_n_posts": []
+      },
+      "program_lifetime": [
+        {
+          "dimension": "commerce_integration",
+          "value": "SECONDARY",
+          "count": 1
+        },
+        {
+          "dimension": "ecosystem",
+          "value": "TARGET",
+          "count": 1
+        },
+        {
+          "dimension": "hook_pattern",
+          "value": "my birthday is literally today 😭",
+          "count": 1
+        },
+        {
+          "dimension": "proof_surface",
+          "value": "order_details",
+          "count": 1
+        }
+      ]
+    },
+    "references": [],
+    "assets": [],
+    "comment_doors": [
+      {
+        "kind": "primary",
+        "text": "why did she say not to look?",
+        "source": "story lock document",
+        "scope": "CREATIVE",
+        "reason_included": "comment door stored on the current story lock",
+        "version": "08c56ceb-91a9-4ab3-b853-58faa458b933",
+        "authority": "approved story lock"
+      },
+      {
+        "kind": "secondary",
+        "text": "THE AIRPODS??",
+        "source": "story lock document",
+        "scope": "CREATIVE",
+        "reason_included": "comment door stored on the current story lock",
+        "version": "08c56ceb-91a9-4ab3-b853-58faa458b933",
+        "authority": "approved story lock"
+      },
+      {
+        "kind": "secondary",
+        "text": "she said house stuff and bought AirPods 😭",
+        "source": "story lock document",
+        "scope": "CREATIVE",
+        "reason_included": "comment door stored on the current story lock",
+        "version": "08c56ceb-91a9-4ab3-b853-58faa458b933",
+        "authority": "approved story lock"
+      },
+      {
+        "kind": "secondary",
+        "text": "those candles are cute",
+        "source": "story lock document",
+        "scope": "CREATIVE",
+        "reason_included": "comment door stored on the current story lock",
+        "version": "08c56ceb-91a9-4ab3-b853-58faa458b933",
+        "authority": "approved story lock"
+      },
+      {
+        "kind": "secondary",
+        "text": "the paper towels as cover",
+        "source": "story lock document",
+        "scope": "CREATIVE",
+        "reason_included": "comment door stored on the current story lock",
+        "version": "08c56ceb-91a9-4ab3-b853-58faa458b933",
+        "authority": "approved story lock"
+      },
+      {
+        "kind": "secondary",
+        "text": "I would've checked too",
+        "source": "story lock document",
+        "scope": "CREATIVE",
+        "reason_included": "comment door stored on the current story lock",
+        "version": "08c56ceb-91a9-4ab3-b853-58faa458b933",
+        "authority": "approved story lock"
+      },
+      {
+        "kind": "secondary",
+        "text": "your sister is sweet",
+        "source": "story lock document",
+        "scope": "CREATIVE",
+        "reason_included": "comment door stored on the current story lock",
+        "version": "08c56ceb-91a9-4ab3-b853-58faa458b933",
+        "authority": "approved story lock"
+      },
+      {
+        "kind": "secondary",
+        "text": "wait how was all of that only $19?",
+        "source": "story lock document",
+        "scope": "CREATIVE",
+        "reason_included": "comment door stored on the current story lock",
+        "version": "08c56ceb-91a9-4ab3-b853-58faa458b933",
+        "authority": "approved story lock"
+      }
+    ],
+    "continuity": [
+      {
+        "slide_index": 1,
+        "field": "RELATIVE TIME",
+        "value": "afternoon, birthday day"
+      },
+      {
+        "slide_index": 1,
+        "field": "VISIBLE CLOCK",
+        "value": "thread \"Today 4:12 PM\"; status bar 4:14"
+      },
+      {
+        "slide_index": 1,
+        "field": "OVERLAY",
+        "value": "my birthday is literally today 😭"
+      },
+      {
+        "slide_index": 1,
+        "field": "ACTOR LOCATION",
+        "value": "narrator at home, ordinary phone context"
+      },
+      {
+        "slide_index": 1,
+        "field": "KNOWS",
+        "value": "sis says she's grabbing house stuff; does NOT know what's in the order"
+      },
+      {
+        "slide_index": 1,
+        "field": "HAS DONE",
+        "value": "called nosy → decides to check (\"ok now i'm looking\")"
+      },
+      {
+        "slide_index": 1,
+        "field": "ORDER STATE",
+        "value": "placed earlier (8:06 AM), not yet seen by narrator"
+      },
+      {
+        "slide_index": 1,
+        "field": "TRANSITION",
+        "value": "narrator opens the Target order immediately"
+      },
+      {
+        "slide_index": 2,
+        "field": "VISIBLE CLOCK",
+        "value": "status bar 4:15 (tiny nearby variation only if the approved base forces it)"
+      },
+      {
+        "slide_index": 2,
+        "field": "VISIBLE DATE",
+        "value": "\"Order placed 8:06am Today\"; \"Pick up by Wed, Oct 7\" (Oct 7, 2026 = Wednesday ✔)"
+      },
+      {
+        "slide_index": 2,
+        "field": "STATUS",
+        "value": "Ready for pickup (Drive Up at Phoenix SW)"
+      },
+      {
+        "slide_index": 2,
+        "field": "ACTOR LOCATION",
+        "value": "narrator viewing the order; sis about to collect it at Phoenix SW"
+      },
+      {
+        "slide_index": 2,
+        "field": "KNOWS (now discovers)",
+        "value": "birthday supplies, AirPods 5, paper towels, low total"
+      },
+      {
+        "slide_index": 2,
+        "field": "ORDER STATE",
+        "value": "ready for pickup, not yet picked up"
+      },
+      {
+        "slide_index": 2,
+        "field": "LOCKED PRODUCTS",
+        "value": "candles 12ct gold/silver spiral; Funfetti mix; Apple AirPods 5 Wireless Earbuds $129.99; 4pk primary-color rainbow crepe streamers; Bounty Mega Roll (last)"
+      },
+      {
+        "slide_index": 2,
+        "field": "ECONOMICS (unchanged)",
+        "value": "Subtotal $142.97 / mydashperks.com Discount -$125.00 / Tax $1.26 / Total $19.23"
+      },
+      {
+        "slide_index": 2,
+        "field": "TRANSITION",
+        "value": "sis picks up → supplies used → gift physically present → celebration later that evening"
+      },
+      {
+        "slide_index": 3,
+        "field": "RELATIVE TIME",
+        "value": "later the same evening; no visible clock required"
+      },
+      {
+        "slide_index": 3,
+        "field": "ACTOR LOCATION",
+        "value": "home kitchen"
+      },
+      {
+        "slide_index": 3,
+        "field": "ORDER STATE",
+        "value": "picked up and used"
+      },
+      {
+        "slide_index": 3,
+        "field": "CAKE",
+        "value": "baked, frosted (Funfetti-style), candles lit"
+      },
+      {
+        "slide_index": 3,
+        "field": "CANDLES",
+        "value": "contents of one 12ct gold/silver spiral pack; prefer exactly 12 visible lit; never 14+"
+      },
+      {
+        "slide_index": 3,
+        "field": "STREAMERS",
+        "value": "match the ordered primary-color rainbow crepe streamers; no pastel/ombre style"
+      },
+      {
+        "slide_index": 3,
+        "field": "GIFT",
+        "value": "AirPods 5 physically present, packaging from a real AirPods 5 reference; opened, half-unwrapped, or sitting near the edge; never the hero"
+      },
+      {
+        "slide_index": 3,
+        "field": "PAPER TOWEL",
+        "value": "optional subtle background callback"
+      },
+      {
+        "slide_index": 3,
+        "field": "KNOWS",
+        "value": "narrator understands the surprise"
+      },
+      {
+        "slide_index": 3,
+        "field": "PAYOFF",
+        "value": "birthday happened; the suspicious order was birthday prep + gift"
+      },
+      {
+        "slide_index": 3,
+        "field": "GIFT-OPENING ORDER",
+        "value": "an opened gift before cake is plausible; change the box state only if the final composition reads as confusing (not a defect)"
+      }
+    ],
+    "excluded_for_token_budget": [
+      {
+        "slug": "chat-story-slideshow",
+        "skill_role": "OPTIONAL_SPECIALIST",
+        "reason_excluded": "optional specialist not requested for this task",
+        "authority": "stage registry"
+      },
+      {
+        "slug": "adaptation-blitz-match",
+        "skill_role": null,
+        "version_id": "f0a2e950-377a-4db5-b71d-8dbec361cfa9",
+        "reason_excluded": "not part of stage STORY_DEVELOPMENT",
+        "authority": "stage registry"
+      },
+      {
+        "slug": "commercial-aware-synthesis",
+        "skill_role": null,
+        "version_id": "95b07559-0be2-4a37-9fbe-88d0ab9eb575",
+        "reason_excluded": "not part of stage STORY_DEVELOPMENT",
+        "authority": "stage registry"
+      },
+      {
+        "slug": "find-purchase-screens-on-pinterest",
+        "skill_role": null,
+        "version_id": "c4279eea-b43c-451d-acd1-55089cb7f3f0",
+        "reason_excluded": "not part of stage STORY_DEVELOPMENT",
+        "authority": "stage registry"
+      },
+      {
+        "slug": "ios-26-production-normalization",
+        "skill_role": null,
+        "version_id": "45862384-e971-43c0-aeed-04ba81dff831",
+        "reason_excluded": "not part of stage STORY_DEVELOPMENT",
+        "authority": "stage registry"
+      },
+      {
+        "slug": "live-heat-scout",
+        "skill_role": null,
+        "version_id": "437eb9d4-8ad3-4dde-a59a-fd51c7785ee3",
+        "reason_excluded": "not part of stage STORY_DEVELOPMENT",
+        "authority": "stage registry"
+      },
+      {
+        "slug": "object-culture-scout",
+        "skill_role": null,
+        "version_id": "2d623443-ad89-4a0c-8701-2a5f47b4ac58",
+        "reason_excluded": "not part of stage STORY_DEVELOPMENT",
+        "authority": "stage registry"
+      },
+      {
+        "slug": "production-spec-qa",
+        "skill_role": null,
+        "version_id": "e5d6ae5f-a594-412c-9efe-2c7aa05d28d6",
+        "reason_excluded": "not part of stage STORY_DEVELOPMENT",
+        "authority": "stage registry"
+      },
+      {
+        "slug": "story-conflict-scout",
+        "skill_role": null,
+        "version_id": "ebdd8458-fe6d-433d-9e91-d4f0d45f9048",
+        "reason_excluded": "not part of stage STORY_DEVELOPMENT",
+        "authority": "stage registry"
+      },
+      {
+        "slug": "synthetic-story-generator",
+        "skill_role": null,
+        "version_id": "5e5b7693-4b34-4aca-9902-2dc6bf7b98ed",
+        "reason_excluded": "not part of stage STORY_DEVELOPMENT",
+        "authority": "stage registry"
+      },
+      {
+        "slug": "visual-surface-acquisition",
+        "skill_role": null,
+        "version_id": "31c11b8d-685a-4ef2-8dd2-741921672ba3",
+        "reason_excluded": "not part of stage STORY_DEVELOPMENT",
+        "authority": "stage registry"
+      },
+      {
+        "holdout": true,
+        "authority": "reference example",
+        "reason_excluded": "holdout benchmark",
+        "reason_included": "withheld from provider context"
+      },
+      {
+        "holdout": true,
+        "authority": "reference example",
+        "reason_excluded": "holdout benchmark",
+        "reason_included": "withheld from provider context"
+      },
+      {
+        "name": "DoorDash step refs",
+        "version": "7ba2730c-5807-4431-9da7-4c20c5806bf3",
+        "reason_excluded": "visual references are not loaded for stage STORY_DEVELOPMENT"
+      },
+      {
+        "name": "Target reference bank V2",
+        "version": "076577bd-ca3a-4b28-828d-0709ee5ac382",
+        "reason_excluded": "visual references are not loaded for stage STORY_DEVELOPMENT"
+      }
+    ],
+    "section_sizes": {
+      "task": {
+        "characters": 2712,
+        "token_estimate": 678
+      },
+      "invariants": {
+        "characters": 10179,
+        "token_estimate": 2544
+      },
+      "policies": {
+        "characters": 3481,
+        "token_estimate": 870
+      },
+      "skills": {
+        "characters": 10395,
+        "token_estimate": 2598
+      },
+      "story_lock": {
+        "characters": 19044,
+        "token_estimate": 4761
+      },
+      "dna": {
+        "characters": 59,
+        "token_estimate": 14
+      },
+      "genome": {
+        "characters": 994,
+        "token_estimate": 248
+      },
+      "benchmarks": {
+        "characters": 2409,
+        "token_estimate": 602
+      },
+      "mechanics": {
+        "characters": 2156,
+        "token_estimate": 539
+      },
+      "references": {
+        "characters": 90,
+        "token_estimate": 22
+      },
+      "other": {
+        "characters": 10149,
+        "token_estimate": 2537
+      }
+    }
+  },
+  "compiled_text": "# Creative OS provider packet\nPROVIDER_EXECUTION: NOT_IMPLEMENTED\nUse only this packet. Do not search the web. Do not mutate stored creative truth.\nCOMPILER: context-compiler-0.3.0\nAS_OF: 2026-10-06T20:37:02.666607+00:00\nSTAGE: STORY_DEVELOPMENT\n\n## TASK\nAudit the current story as a creative director.\nDetermine whether the narrative is production-ready.\nPreserve strong existing decisions.\nIdentify only meaningful remaining story-level weaknesses.\nDo not redesign it simply to be different.\nDo not inspect image pixels. This test is narrative and system transfer only.\nTask id: b6421dc4-79e3-42b0-9652-5ae5cd64d4de\nStage: STORY_DEVELOPMENT\nStatus: CONSUMED\nExpected output: STORY_DEVELOPMENT_AUDIT\nConstraints:\n{}\nInput refs:\n{}\n\n## OUTPUT CONTRACT STORY_DEVELOPMENT_AUDIT\nReturn StoryDevelopmentAuditResult JSON only. This is a diagnosis and proposal. Do not mutate the StoryLock. Preserve decisions that are already working.\n{\n  \"description\": \"Diagnosis only. The model must not mutate the StoryLock.\",\n  \"properties\": {\n    \"comment_door_assessment\": {\n      \"title\": \"Comment Door Assessment\",\n      \"type\": \"string\"\n    },\n    \"commerce_integration_assessment\": {\n      \"title\": \"Commerce Integration Assessment\",\n      \"type\": \"string\"\n    },\n    \"continuity_assessment\": {\n      \"title\": \"Continuity Assessment\",\n      \"type\": \"string\"\n    },\n    \"diagnosis\": {\n      \"title\": \"Diagnosis\",\n      \"type\": \"string\"\n    },\n    \"hook_assessment\": {\n      \"title\": \"Hook Assessment\",\n      \"type\": \"string\"\n    },\n    \"overall_status\": {\n      \"enum\": [\n        \"READY\",\n        \"THIN\",\n        \"NEEDS_CHANGES\"\n      ],\n      \"title\": \"Overall Status\",\n      \"type\": \"string\"\n    },\n    \"proof_boundary_assessment\": {\n      \"title\": \"Proof Boundary Assessment\",\n      \"type\": \"string\"\n    },\n    \"propulsion_assessment\": {\n      \"title\": \"Propulsion Assessment\",\n      \"type\": \"string\"\n    },\n    \"recommended_changes\": {\n      \"items\": {\n        \"type\": \"string\"\n      },\n      \"title\": \"Recommended Changes\",\n      \"type\": \"array\"\n    },\n    \"recommended_patches\": {\n      \"items\": {\n        \"additionalProperties\": true,\n        \"type\": \"object\"\n      },\n      \"title\": \"Recommended Patches\",\n      \"type\": \"array\"\n    },\n    \"things_to_preserve\": {\n      \"items\": {\n        \"type\": \"string\"\n      },\n      \"title\": \"Things To Preserve\",\n      \"type\": \"array\"\n    },\n    \"uncertainties\": {\n      \"items\": {\n        \"type\": \"string\"\n      },\n      \"title\": \"Uncertainties\",\n      \"type\": \"array\"\n    },\n    \"viral_texture_assessment\": {\n      \"title\": \"Viral Texture Assessment\",\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"overall_status\",\n    \"diagnosis\",\n    \"hook_assessment\",\n    \"propulsion_assessment\",\n    \"viral_texture_assessment\",\n    \"continuity_assessment\",\n    \"comment_door_assessment\",\n    \"commerce_integration_assessment\",\n    \"proof_boundary_assessment\"\n  ],\n  \"title\": \"StoryDevelopmentAuditResult\",\n  \"type\": \"object\"\n}\n\n## GLOBAL INVARIANTS\n### principles-a-01 (GLOBAL INVARIANT)\nversion 32aa5351-805f-454f-8b0e-5064fb8fc8e7 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-01; retained regardless of token budget\nThe latest human-approved STORY_LOCK wins for story-specific values. Superseded assets are marked STALE; files are not deleted or rewritten.\n\n### principles-a-02 (GLOBAL INVARIANT)\nversion c1dce379-8a04-4702-9f78-7f92a077cae9 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-02; retained regardless of token budget\nAn explicit human correction beats any skill default, until the skill is updated.\n\n### principles-a-03 (GLOBAL INVARIANT)\nversion 173ff17a-478e-4d8a-88ce-266afb620b55 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-03; retained regardless of token budget\nProof boundary: a proof surface proves only what it literally shows. It cannot invent the actor's intent, location, payment causality or a retailer promotion.\n\n### principles-a-04 (GLOBAL INVARIANT)\nversion 478c3159-0a02-48c4-a864-a0ea58cf32e7 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-04; retained regardless of token budget\nResearch mode never invents evidence. Staged/creative economics are labeled FICTIONAL/STAGED and never presented as a real retailer promo.\n\n### principles-a-05 (GLOBAL INVARIANT)\nversion 7d2c61db-ee98-4454-a20d-aeaed4b37b8b priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-05; retained regardless of token budget\nReference-first production: when a suitable real base exists, edit it (smallest localized edit) and do not freehand-reconstruct retailer UI.\n\n### principles-a-06 (GLOBAL INVARIANT)\nversion c2f0abae-2da5-43b2-8a33-2c49bf62485a priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-06; retained regardless of token budget\nNever silently compress or squeeze native UI rows to fit content. If it doesn't fit, choose another real base or a natural scroll state.\n\n### principles-a-07 (GLOBAL INVARIANT)\nversion 39b2ded4-048b-43d1-ba78-9ad2c530d085 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-07; retained regardless of token budget\nStory-specific visible dates, times and weekdays come from the continuity ledger, not from the reference image.\n\n### principles-a-08 (GLOBAL INVARIANT)\nversion dafd8c70-dd09-48a4-9fd0-c7ab26310f9b priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-08; retained regardless of token budget\nCross-slide congruency: no impossible state or time transitions (for example \"tomorrow\" followed by the party already happening with no time change).\n\n### principles-a-09 (GLOBAL INVARIANT)\nversion 6394e18f-5cdc-4ffb-95e5-2cd1765f5a63 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-09; retained regardless of token budget\nDiscount-headroom firewall: never add an expensive item only to enlarge the subtotal or discount. Items must be story-motivated.\n\n### principles-a-10 (GLOBAL INVARIANT)\nversion 0077238d-b1b0-4aee-aef5-ad5599514475 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-10; retained regardless of token budget\nRe-edits start from the original base, never from a drifted or degraded output.\n\n### principles-a-11 (GLOBAL INVARIANT)\nversion 93eecee7-6bf8-4cef-92fa-4b01adeb57a7 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-11; retained regardless of token budget\nAny real object added to an image is edited in using a real photo of that exact object as a reference.\n\n### principles-a-12 (GLOBAL INVARIANT)\nversion 9ea10bd0-62fe-4cd8-8d66-aa1201861bc5 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-12; retained regardless of token budget\nReal products use the current generation and live price, verified before lock.\n\n### principles-a-13 (GLOBAL INVARIANT)\nversion 265197d7-7aa1-488a-812f-d6609cf24e3f priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-13; retained regardless of token budget\nRights: personal or unknown-rights images (Pinterest pins) are REFERENCE ONLY and their pixels are never shipped. Only CLEARED images may be a BASE.\n\n### principles-a-14 (GLOBAL INVARIANT)\nversion fa5aebf9-5933-4a3c-a317-278c592d23e4 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-14; retained regardless of token budget\nNever send messages, place orders or post without explicit human approval. DoorDash carts are referenced, never checked out.\n\n### principles-a-15 (GLOBAL INVARIANT)\nversion 2c4c62a2-68d5-4e9e-9bcb-d086ba176773 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-15; retained regardless of token budget\nThe money path appears only as the native \"mydashperks.com Discount\" line on the order surface. It never appears in chat bubbles, never on S1, and never as a savings slide.\n\n### principles-a-16 (GLOBAL INVARIANT)\nversion fa373c64-bebe-452d-a3f9-817375cc01c6 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-16; retained regardless of token budget\nFrozen architecture (V1.2, CAS, Gates 1/2A/2B, campaign salience, Desire/Utility gate, scouts, Live Heat, firewall) is not modified without explicit authorization.\n\n### principles-a-17 (GLOBAL INVARIANT)\nversion d60ab077-cfb5-4540-86c1-f028fb77f2eb priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-17; retained regardless of token budget\nNo burned real names or handles of private people. Amounts and clocks are internally consistent.\n\n### principles-b-01 (GLOBAL HEURISTIC)\nversion 14c0120d-5829-403f-be2d-f34097e9ebf6 priority scope=4;kind=1;stage=1;order=7;code=principles-b-01 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-01\nUse the hook-presentation router: cropped full thread, lock-screen, preview card, peek or thread plus floating hook. Peek only when the conversation fills the card.\n\n### principles-b-02 (GLOBAL HEURISTIC)\nversion 9c1c0857-89f2-427a-9ff7-a82d8ef86e1e priority scope=4;kind=1;stage=1;order=8;code=principles-b-02 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-02\nAvoid dead space on S1.\n\n### principles-b-03 (GLOBAL HEURISTIC)\nversion 9f9f99c8-9b3c-4ba0-b4ba-a7d835162480 priority scope=4;kind=1;stage=1;order=9;code=principles-b-03 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-03\n0–3 secondary micro-details per slide, with quality over count.\n\n### principles-b-04 (GLOBAL HEURISTIC)\nversion 57e47e38-5d8c-46fa-8e95-a1f634392da6 priority scope=4;kind=1;stage=1;order=10;code=principles-b-04 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-04\nCommerce is usually a secondary discovery. Family D can lead with desire/method instead.\n\n### principles-b-05 (GLOBAL HEURISTIC)\nversion eb4ac548-22ca-48a3-a778-220f0def0c8a priority scope=4;kind=1;stage=1;order=11;code=principles-b-05 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-05\nCamera-roll payoff: visual search first (Pinterest short queries) before any generation.\n\n### principles-b-06 (GLOBAL HEURISTIC)\nversion 19baffb7-8f82-44e6-986b-822a13b4e8c7 priority scope=4;kind=1;stage=1;order=12;code=principles-b-06 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-06\nS1 often uses a native TikTok floating hook. The hook must add new context, never restate a bubble.\n\n### principles-b-07 (GLOBAL HEURISTIC)\nversion 92aa2f2f-7c67-460e-b9ac-ca7865b2489c priority scope=4;kind=1;stage=1;order=13;code=principles-b-07 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-07\nStory-led concepts should usually work without the economics.\n\n### principles-b-08 (GLOBAL HEURISTIC)\nversion 22705ce8-d775-4e9b-993b-699105f47459 priority scope=4;kind=1;stage=1;order=14;code=principles-b-08 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-08\nA completed order can open a carousel. The notification-then-receipt opener is not required.\n\n### principles-b-09 (GLOBAL HEURISTIC)\nversion e5708e32-c49a-4824-925d-d9e660153271 priority scope=4;kind=1;stage=1;order=15;code=principles-b-09 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-09\nKeyboard-up Messages is an option, not a rule.\n\n### principles-b-10 (GLOBAL HEURISTIC)\nversion 5cb480ca-1bad-4734-8928-139ba08d9dd7 priority scope=4;kind=1;stage=1;order=16;code=principles-b-10 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-10\nTemporal compression is fine when it's plausible.\n\n### principles-b-11 (GLOBAL HEURISTIC)\nversion 63118b4d-03eb-49ad-9656-57a80148cdba priority scope=4;kind=1;stage=1;order=17;code=principles-b-11 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-11\nUse about three slides: hook, proof, payoff.\n\n### principles-b-12 (GLOBAL HEURISTIC)\nversion 1c3d0df0-3853-4475-8d0e-b81542249389 priority scope=4;kind=1;stage=1;order=18;code=principles-b-12 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-12\nMake aspect changes through the image editor, not by crop or stretch.\n\n### principles-b-13 (GLOBAL HEURISTIC)\nversion 51d947c9-0942-4701-a6b5-944191a6f5f0 priority scope=4;kind=1;stage=1;order=19;code=principles-b-13 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-13\nPrefer user-supplied screenshots over the reference bank, over organic screenshots, over marketing images, over generation.\n\n## PROGRAM POLICIES\n### principles-c-01 (PROGRAM PREFERENCE)\nversion ff8cbbe1-3168-484b-b00f-990bd2d192d0 priority scope=3;kind=0;stage=1;order=0;code=principles-c-01 authority preference\nIncluded because: resolved PROGRAM PREFERENCE for principles-c-01\nThe audience is the 15–20 phone life-world: high school or first-year college, parents, siblings, friends, group chats, Target/Sephora. Avoid adult gravity such as landlords, marketplaces and corporate settings.\n\n### principles-c-02 (PROGRAM PREFERENCE)\nversion ef05bace-74ce-41ea-a0d9-be154f74190d priority scope=3;kind=0;stage=1;order=1;code=principles-c-02 authority preference\nIncluded because: resolved PROGRAM PREFERENCE for principles-c-02\nAccount lanes: Maria covers food and couples (e.g. Dre). Sarah and Brooke cover electronics.\n\n### principles-c-03 (PROGRAM PREFERENCE)\nversion 3fdabe19-b5e5-4c58-b5b7-e5edc3e26c5c priority scope=3;kind=0;stage=1;order=2;code=principles-c-03 authority preference\nIncluded because: resolved PROGRAM PREFERENCE for principles-c-03\nEcosystems are TARGET and DOORDASH only.\n\n### principles-c-04 (PROGRAM PREFERENCE)\nversion 67354a96-2bdf-415e-af5c-364b0990d64d priority scope=3;kind=0;stage=1;order=3;code=principles-c-04 authority preference\nIncluded because: resolved PROGRAM PREFERENCE for principles-c-04\nFinal format is 9:19.6 portrait (1206×2622 native, or about 851×1849). It is never 1080×1920 or 9:16.\n\n### principles-c-05 (PROGRAM PREFERENCE)\nversion f03f3544-3a7f-43cf-9f77-c6aff5c18e6d priority scope=3;kind=0;stage=1;order=4;code=principles-c-05 authority preference\nIncluded because: resolved PROGRAM PREFERENCE for principles-c-05\nTone: casual and lowercase where natural, with emoji like 😭. No marketing, UI-doc or sitcom phrasing.\n\n### principles-c-06 (PROGRAM PREFERENCE)\nversion 8a4918e2-4653-4f6b-bba5-cba6140769ba priority scope=3;kind=0;stage=1;order=5;code=principles-c-06 authority preference\nIncluded because: resolved PROGRAM PREFERENCE for principles-c-06\nProven patterns (historical): overslept + Dasher + object outside; a couple fight + a dumb food total; a money ask + an unfair reason + proof.\n\n### principles-c-07 (PROGRAM PREFERENCE)\nversion e7167694-cba4-4a56-8b76-077d59f1ee5e priority scope=3;kind=0;stage=1;order=6;code=principles-c-07 authority preference\nIncluded because: resolved PROGRAM PREFERENCE for principles-c-07\nDark-mode iOS 26 surfaces.\n\n## CREATIVE LOCKS\n### principles-d-creative-lock-note (CREATIVE LOCKED_VALUE)\nversion 2d1201ff-4804-4eb6-aa95-2be0adcccc5c priority authoritative authority locked_value\nIncluded because: resolved CREATIVE LOCKED_VALUE for principles-d-creative-lock-note; retained regardless of token budget\nCREATIVE-SPECIFIC LOCKS (never promote to global rules)\nTarget \"SHE SAID IT WAS CHORE STUFF\":\n- Hook \"my birthday is literally today 😭\".\n- Thread: \"don't look at the order tho\" / \"bc you're nosy 😭\" / \"ok now i'm looking\".\n- S1 thread 4:12 with status bar 4:14. S2 status bar 4:15.\n- Story date Mon Oct 5, 2026. \"Order placed 8:06am Today\" and \"Pick up by Wed, Oct 7\" at Phoenix SW.\n- Items: spiral candles, Funfetti, Apple AirPods 5 at $129.99, streamers, paper towels.\n- $142.97 − $125.00 + $1.26 = $19.23.\n- S3: 12 candles, primary-color streamers, AirPods 5 box.\nDoorDash \"ONIONS NOTE WAS BLANK\":\n- McDonald's Double Cheeseburger with the missing \"No Diced Onions\" modifier.\n- Overlay \"he said he copied my order exactly\".\nHistorical amounts are not global rules either: $156.05, $54.02, $8.08, $90.29.\n\n## SKILLS\n### story-development role REQUIRED\nversion handoff-2026-10-05 id f7c0e0f1-b00f-429a-b7d1-af0b9e8d2c72 hash f0883af775b0736c458e6c17481cf381a57074bae58c91fd9e41f85b2c0504a2\nIncluded because: required skill for stage STORY_DEVELOPMENT\n---\nname: Story development\ndescription: >-\n  Use after concept lock and before final storyboard approval, production spec\n  QA, or production routing. Runs three ordered passes: narrative propulsion\n  (why the protagonist takes the action that reveals the proof), the\n  comment-surface / micro-detail pass (viral texture), and cross-slide\n  congruency (continuity ledger + state-transition test). Outputs a compact lock\n  record that is the authoritative story truth. Does not pick concepts, change gates, or produce assets.\n---\n# Story development\n\n## Where it sits\nConcept selection / concept lock → **story development** → final storyboard approval → production spec QA / production routing.\n\nThis stage owns beat progression, viral texture, and intended cross-slide continuity. Production spec QA only verifies that these decisions survived execution; it does not originate them. This skill does not change Gate 1, Gate 2A/2B, campaign salience, Desire/Utility, commercial-aware synthesis, the promotion-first firewall, early exits, scouts, or production rules.\n\nThis stage develops a premise that already passed upstream. It does not add conflict, urgency, deadlines, characters, or desirable objects to rescue a weak premise or to make economics matter; the Adaptation Blitz and commercial-aware synthesis rules against that still apply. Stakes and details must already be consistent with the locked premise.\n\nRun the three passes in order. Pass 2 starts only after the core story, propulsion, and proof logic are stable. Pass 3 runs after Pass 2 and before production routing.\n\n## Pass 1 — Narrative propulsion\nApplies to STORY-LED creative: judgment, misunderstanding, conflict, caught-by-proof, social event, mishap, gift, purchase consequence.\n\nName each narrative function:\n- **HOOK** — what grabs attention?\n- **STAKES** — why does this matter now? Usually one contextual fact (birthday tomorrow, party tonight, mom already asking, order just became ready). Not backstory.\n- **TRIGGER** — what specific line, event, or contradiction changes the situation?\n- **PROVOCATION / PRESSURE** — what makes the protagonist unable to ignore it?\n- **ACTION** — what does the protagonist decide to do?\n- **EXPECTED CONSEQUENCE** — what does the viewer now predict is about to happen? That prediction is part of why they swipe.\n- **REVEAL** — what actually happens?\n\nThese are functions, not slides. Several can live inside one message exchange. Do not force seven beats into seven slides.\n\nRepair the smallest missing causal beat. Preserve existing story-native setup, texture, contradictions, and useful micro-details unless they are themselves causing the propulsion failure.\n\nHook is not propulsion. A strange line can create attention and still motivate nothing.\n\n### Propulsion failure test\nFor every proof-exposing action, ask why the protagonist does it: checks the order, opens the receipt, looks at the screenshot, replies, confronts someone, inspects the app, takes the photo, keeps scrolling.\n\nIf the answer is \"because the storyboard needs the proof\": **FAIL**. Repair the human causality inside the story. If a function is missing without a deliberate reason, mark the story THIN and repair before production.\n\n### Overlay job\nIf S1 uses a floating TikTok hook, it adds context, stakes, or POV the artifact does not already contain. It must not restate a bubble, and it must not explain the story.\n\n### Family D exception\nDo not force interpersonal propulsion onto pure desire/method content. Family D uses: DESIRE → METHOD / ACCESS GAP → USEFUL REVEAL → PROOF / REPLICATION. The same \"why would they do that?\" test applies to each step.\n\n## Pass 2 — Comment surface / micro-detail\n\n### Viral texture\n**Viral texture** = small, believable, non-essential details that reward closer inspection and create additional audience reactions without interfering with the primary story.\n\n- A **core beat** moves the story.\n- **Viral texture** makes the story richer, more inspectable, more commentable, more shareable, or more desirable.\n\nDo not confuse them.\n\n### Per slide\nKeep ONE primary story beat. Add 0–3 secondary details only where they naturally belong. Zero is allowed. Quality over count; never add density to satisfy the rule.\n\nDetail categories (not quotas): object, social, taste / judgment, desire, mini contradiction, realism, timing, identity, price / quantity anomaly, background callback.\n\n### Four-question test\nEvery approved micro-detail must pass:\n1. Would this naturally be here?\n2. Does it create a new reaction, question, desire, judgment, or inspection reward?\n3. Does it make the main story better?\n4. Would the post still work without it?\n\nIdeal: yes / yes / yes / yes. If removing it breaks the story, it is a CORE BEAT, not a micro-detail.\n\nReject details that exist only to bait comments and do not belong to the world: a random expensive product, an unrelated notification, a fake price typo, a celebrity poster.\n\n### Discount-headroom firewall\nA desirable or expensive item may NEVER be added solely to increase the subtotal, create discount headroom, make a staged savings number larger, or manufacture an economic reveal. It is allowed only when the story independently gives it a reason to exist. Example: AirPods pass as the hidden birthday gift in a sibling's order; AirPods dropped into an unrelated basket fail. This restates, and does not relax, the existing rule against padding a basket.\n\n### Comment-door map\nBefore final storyboard approval, record the PRIMARY comment door and the independent SECONDARY doors. Do not require every viewer to react to the same thing. The goal is not to script comments; it is to confirm the artifacts contain several natural reaction opportunities.\n\n## Pass 3 — Cross-slide congruency / continuity\nA story-led carousel passes only if every slide belongs to the same coherent story world. Individual slides being plausible is NOT enough. The sequence must be mutually compatible across time, date, weekday, location, actor state, knowledge state, object state, order / transaction state, product identity, quantity, color / variant, economics, physical payoff, and cause and effect.\n\n### Continuity ledger\nBefore the lock record becomes production-ready, record for every slide:\n\n```\nRELATIVE TIME:\nVISIBLE CLOCK:\nVISIBLE DATE / WEEKDAY / TODAY / YESTERDAY:\nACTOR LOCATION:\nWHAT THE ACTOR KNOWS:\nWHAT THE ACTOR HAS DONE:\nORDER / TRANSACTION STATE:\nIMPORTANT OBJECT STATES:\nLOCKED PRODUCT IDENTITIES:\nLOCKED COUNTS / COLORS / VARIANTS (where relevant):\nPHYSICAL PAYOFF STATE:\nCAUSAL TRANSITION INTO NEXT SLIDE:\n```\n\nKeep it compact. Its job is to prevent contradictions, not create paperwork. Leave a field blank when it does not apply.\n\n### State-transition test\nFor each important story element, confirm it can naturally move from slide N to slide N+1 within the implied time. Examples:\n- ORDER: placed → ready → picked up → items used\n- CAKE: mix ordered → acquired → baked → frosted → candles lit\n- GIFT: hidden → discovered in order → acquired → physically present\n- KNOWLEDGE: doesn't know → suspicious → checks → discovers → sees payoff\n\nIf a required transition is impossible or missing: **FAIL**. Fix the smallest value or state necessary (a timestamp, a date, one overlay word, a count). Do not invent extra plot to repair chronology.\n\n### Temporal compression\nViewers perceive consecutive slides as temporally close unless the creative clearly suggests otherwise. Avoid meaningful unmarked jumps. If a jump is truly required, signal it natively; prefer adjusting the timeline so no explanation is needed. The ideal continuity is invisible: if viewers notice the timeline mechanics, it was overdone.\n\n### Visible UI values are story facts\nAny visible clock, date, weekday, Today / Yesterday, order time, pickup deadline, delivery time, arrival date, or message timestamp is part of the story world and MUST come from the continuity ledger. Do not preserve stale reference values because the base screenshot contained them. Reference Is Law governs layout, geometry, native UI appearance, spacing, cards, icons, and behavior, not story-specific clock, date, or order values.\n\n## Current-lock precedence\nThe latest human-approved STORY_LOCK is the authoritative story truth. When a human-approved change supersedes an earlier value, older generated assets, prior lock versions, memory notes, drafts, and references become STALE for that field and may not override the current lock. Example: if the current lock says AirPods 5, an older S2 showing AirPods 4 is a stale asset, not competing evidence; never resurrect it.\n\n### Stale-asset handling\nWhen a locked field changes, list each affected prior production asset in the lock record as `STALE — REPRODUCTION REQUIRED` (or `STALE — SUPERSEDED BY CURRENT STORY_LOCK`). Do not silently keep using it, do not rewrite history, and do not delete prior files unless explicitly asked. The newest approved lock controls the next production pass.\n\n## Output: lock record\nKeep it compact. Do not expose long framework reports in normal creative review unless asked.\n\n```\nCORE STORY:\nHOOK:\nSTAKES:\nTRIGGER:\nACTION:\nEXPECTED NEXT BEAT:\nREVEAL / PAYOFF:\nSLIDE-BY-SLIDE PRIMARY BEAT:\nAPPROVED MICRO-DETAILS BY SLIDE:\nPRIMARY COMMENT DOOR:\nSECONDARY COMMENT DOORS:\nDETAILS REJECTED AS FORCED:\nCOMMERCE RELATION: PRIMARY / SECONDARY / INCIDENTAL\nDOES STORY WORK WITHOUT ECONOMICS: YES / NO\nSTORY DATE:\nCONTINUITY LEDGER (per slide, Pass 3 fields):\nSTATE-TRANSITION CHECK: PASS / FAIL (+ any fix)\nSTALE ASSETS (superseded fields):\nREADY FOR PRODUCTION: YES / NO\n```\n\nSave the lock record beside the concept's outputs (for example `STORY_LOCK.md`). Production spec QA reads it; production may not add, drop, or swap approved details or continuity values without returning here.\n\n\n### SKILL DEPENDENCY AUDIT\n[\n  {\n    \"dependency\": \"adaptation-blitz-match\",\n    \"reason\": \"stage registry did not select this dependency; structured creative state is carried separately when a StoryLock or DNA profile is in scope\",\n    \"skill\": \"story-development\",\n    \"stage\": \"STORY_DEVELOPMENT\",\n    \"state\": \"intentionally_not_included\"\n  }\n]\n\n## CURRENT STORY LOCK\nversion 1 id 08c56ceb-91a9-4ab3-b853-58faa458b933 document_hash 7899292fc644604e9c61802d6fc9fe714826465497b4a3db9398e85c8b357844\n# STORY LOCK — SHE SAID IT WAS CHORE STUFF (Target) — story-development record, 2026-10-05\nCURRENT LOCK REVISION: continuity update, 2026-10-05 ~9:10 PM ET (Tyrel-approved). This file is the authoritative story truth; older assets, drafts, memory notes and references are STALE for any field changed here.\nLABEL: FICTIONAL / STAGED. Economics are staged creative values, NOT a verified Target promotion or program.\n\nCORE STORY: Sister says she's grabbing house stuff and tells narrator not to look at the order; narrator looks; it's their birthday surprise (party supplies + AirPods), and the order total is oddly low.\nHOOK: \"don't look at the order tho\"\nSTAKES: narrator's birthday is TODAY (floating hook only)\nTRIGGER / PROVOCATION: narrator resists (\"why would i look\"); sister provokes (\"bc you're nosy 😭\")\nACTION: narrator opens the order\nEXPECTED NEXT BEAT: \"she's hiding something for my birthday — what's in it?\"\nREVEAL / PAYOFF: S2 order = birthday stuff + paper towels cover + AirPods, total $19.23; S3 birthday surprise photo\n\nS1 DIALOGUE — LOCKED (Tyrel, 2026-10-05):\n  sis (incoming): grabbing stuff for the house rn\n  sis (incoming): don't look at the order tho\n  me (outgoing): why would i look\n  sis (incoming): bc you're nosy 😭\n  me (outgoing): ok now i'm looking\nS1 FLOATING HOOK — LOCKED: \"my birthday is literally today 😭\"   (superseded: \"my birthday is literally tomorrow 😭\")\nRejected: option A (\"it literally just popped up on my phone\" / \"DON'T open it\" / \"well now i'm opening it\") — constructed, dropped the \"stuff for the house\" setup.\nS1 base: /workspace/creative-pipeline/shared/templates/ios-messages-keyboard/keyboard_thread_base_ios26_dark.png\nS1 withholds: Target, Drive Up, birthday supplies, AirPods, discount, MyDashPerks.\n\nSLIDE-BY-SLIDE PRIMARY BEAT:\n  S1 — sister forbids looking; narrator decides to look\n  S2 — the order (Target Order Details, Ready for pickup)\n  S3 — birthday surprise camera-roll photo\n\nAPPROVED MICRO-DETAILS BY SLIDE:\n  S1 — contact \"sis\" (social); \"bc you're nosy 😭\" sibling-coded provocation (social); \"stuff for the house\" cover (sets up paper-towel callback)\n  S2 — gold/silver tall spiral candles (desire); AirPods 5 mid-list, same thumbnail size (desire / mini contradiction); paper towels LAST (mini contradiction / cover story); $19.23 total (price anomaly)\n  S3 — gold/silver spiral candles on the cake (continuity/desire); white AirPods box opened or half-unwrapped near the frame edge, partly cropped, not centered (background callback); optional paper towel roll in background (callback); crooked streamers (realism)\n\nS2 LOCKED ITEMS (top → bottom):\n  1. Gold/Silver Tall Spiral Birthday Candles 12ct - Spritz™ (TCIN 92290028) — $3.00\n  2. Pillsbury Funfetti Premium Cake & Cupcake Mix - 15.25oz — $1.99\n  3. Apple AirPods 5 Wireless Earbuds — $129.99   (Tyrel-locked 2026-10-05; superseded: Apple AirPods 4 Wireless Earbuds, TCIN 85978615)\n  4. 4pk Primary Color Rainbow Crepe Streamer - Spritz™ — $3.00\n  5. Bounty Select-A-Size Paper Towels - 1 Mega Roll — $4.99\n  Prices: candles/Funfetti/streamers/Bounty from cached Target snippets, not confirmed live on 10/5 (Target bot-check). AirPods 5 at $129.99 is the human-approved current product and price.\n\nS2 LOCKED MATH (staged):\n  Subtotal                  $142.97\n  mydashperks.com Discount  -$125.00\n  Tax                         $1.26\n  Total                      $19.23\n  142.97 − 125.00 = 17.97; 17.97 × 7% = 1.2579 → 1.26; 17.97 + 1.26 = 19.23\n  Do not increase the discount for shock. Discount does not appear in S1 dialogue, hook, character reaction, or a separate savings slide.\n\nPRIMARY COMMENT DOOR: why did she say not to look?\nSECONDARY COMMENT DOORS: THE AIRPODS?? / she said house stuff and bought AirPods 😭 / those candles are cute / the paper towels as cover / I would've checked too / your sister is sweet / wait how was all of that only $19?\n\nDETAILS REJECTED AS FORCED: lone gold \"1\" candle (competing joke); AirPods Pro 3 (parent-gift price, reads less natural); relighting trick candles (not sold at Target); Target sale price $99.99 (would explain the low total).\nCOMMERCE RELATION: SECONDARY\nDOES STORY WORK WITHOUT ECONOMICS: YES\n\nImage refs: /workspace/creative-pipeline/shared/research/target-airpods-candles-20261005/\n\nSTORY DATE: Monday, Oct 5, 2026\n\nCONTINUITY LEDGER\nS1\n  RELATIVE TIME: afternoon, birthday day\n  VISIBLE CLOCK: thread \"Today 4:12 PM\"; status bar 4:14\n  OVERLAY: my birthday is literally today 😭\n  ACTOR LOCATION: narrator at home, ordinary phone context\n  KNOWS: sis says she's grabbing house stuff; does NOT know what's in the order\n  HAS DONE: called nosy → decides to check (\"ok now i'm looking\")\n  ORDER STATE: placed earlier (8:06 AM), not yet seen by narrator\n  TRANSITION: narrator opens the Target order immediately\nS2\n  VISIBLE CLOCK: status bar 4:15 (tiny nearby variation only if the approved base forces it)\n  VISIBLE DATE: \"Order placed 8:06am Today\"; \"Pick up by Wed, Oct 7\" (Oct 7, 2026 = Wednesday ✔)\n  STATUS: Ready for pickup (Drive Up at Phoenix SW)\n  ACTOR LOCATION: narrator viewing the order; sis about to collect it at Phoenix SW\n  KNOWS (now discovers): birthday supplies, AirPods 5, paper towels, low total\n  ORDER STATE: ready for pickup, not yet picked up\n  LOCKED PRODUCTS: candles 12ct gold/silver spiral; Funfetti mix; Apple AirPods 5 Wireless Earbuds $129.99; 4pk primary-color rainbow crepe streamers; Bounty Mega Roll (last)\n  ECONOMICS (unchanged): Subtotal $142.97 / mydashperks.com Discount -$125.00 / Tax $1.26 / Total $19.23\n  TRANSITION: sis picks up → supplies used → gift physically present → celebration later that evening\nS3\n  RELATIVE TIME: later the same evening; no visible clock required\n  ACTOR LOCATION: home kitchen\n  ORDER STATE: picked up and used\n  CAKE: baked, frosted (Funfetti-style), candles lit\n  CANDLES: contents of one 12ct gold/silver spiral pack; prefer exactly 12 visible lit; never 14+\n  STREAMERS: match the ordered primary-color rainbow crepe streamers; no pastel/ombre style\n  GIFT: AirPods 5 physically present, packaging from a real AirPods 5 reference; opened, half-unwrapped, or sitting near the edge; never the hero\n  PAPER TOWEL: optional subtle background callback\n  KNOWS: narrator understands the surprise\n  PAYOFF: birthday happened; the suspicious order was birthday prep + gift\n  GIFT-OPENING ORDER: an opened gift before cake is plausible; change the box state only if the final composition reads as confusing (not a defect)\n\nSTATE-TRANSITION CHECK: PASS on this ledger\n  ORDER placed 8:06 AM → ready (seen 4:15 PM) → picked up → used that evening\n  CAKE mix ordered → acquired at pickup → baked/frosted → candles lit (same evening)\n  GIFT hidden → discovered in order → acquired → present at birthday\n  KNOWLEDGE unaware → suspicious → checks → discovers → sees payoff\n\nSTALE ASSETS (do not use; not deleted):\n  v5/s2_attempt1.png — STALE — SUPERSEDED BY CURRENT STORY_LOCK (AirPods 4 row; status bar 4:31; \"Pick up by Wed, Oct 23\")\n  v5/s1_attempt2.png — STALE — REPRODUCTION REQUIRED (hook says \"tomorrow\")\n  v5/s1_attempt1.png, v4/s1_attempt1.png, v4/s1_attempt2.png, v4/s1_kb_attempt1.png — STALE — REPRODUCTION REQUIRED (hook says \"tomorrow\" / earlier attempts)\n  v5/s3_attempt1.png — STALE — REPRODUCTION REQUIRED (~14 candles vs one 12ct pack; pastel/ombre streamers; AirPods packaging not matched to AirPods 5)\n\nNEXT REPRODUCTION PASS MUST CORRECT:\n  S1: hook tomorrow → today\n  S2: status bar ≈4:15; Pick up by Wed, Oct 7; AirPods 5 row (Tyrel's corrected screenshot may serve as the AirPods 5 reference)\n  S3: AirPods 5 packaging continuity; ~12 spiral candles; primary-color streamer continuity\n\nREADY FOR PRODUCTION: YES — current lock above; reproduce on authorization.\n\nCURRENT PRODUCTION FILES (v5 folder): s1_v6b.png, s2_v6.png, s3_v6.png\n\n\n### STORY LOCK DOCUMENT\n{\n  \"action\": \"narrator opens the order\",\n  \"comment_doors\": [\n    {\n      \"kind\": \"primary\",\n      \"text\": \"why did she say not to look?\"\n    },\n    {\n      \"kind\": \"secondary\",\n      \"text\": \"THE AIRPODS??\"\n    },\n    {\n      \"kind\": \"secondary\",\n      \"text\": \"she said house stuff and bought AirPods 😭\"\n    },\n    {\n      \"kind\": \"secondary\",\n      \"text\": \"those candles are cute\"\n    },\n    {\n      \"kind\": \"secondary\",\n      \"text\": \"the paper towels as cover\"\n    },\n    {\n      \"kind\": \"secondary\",\n      \"text\": \"I would've checked too\"\n    },\n    {\n      \"kind\": \"secondary\",\n      \"text\": \"your sister is sweet\"\n    },\n    {\n      \"kind\": \"secondary\",\n      \"text\": \"wait how was all of that only $19?\"\n    }\n  ],\n  \"commerce_relation\": \"SECONDARY\",\n  \"continuity\": [\n    {\n      \"field\": \"RELATIVE TIME\",\n      \"slide_index\": 1,\n      \"value\": \"afternoon, birthday day\"\n    },\n    {\n      \"field\": \"VISIBLE CLOCK\",\n      \"slide_index\": 1,\n      \"value\": \"thread \\\"Today 4:12 PM\\\"; status bar 4:14\"\n    },\n    {\n      \"field\": \"OVERLAY\",\n      \"slide_index\": 1,\n      \"value\": \"my birthday is literally today 😭\"\n    },\n    {\n      \"field\": \"ACTOR LOCATION\",\n      \"slide_index\": 1,\n      \"value\": \"narrator at home, ordinary phone context\"\n    },\n    {\n      \"field\": \"KNOWS\",\n      \"slide_index\": 1,\n      \"value\": \"sis says she's grabbing house stuff; does NOT know what's in the order\"\n    },\n    {\n      \"field\": \"HAS DONE\",\n      \"slide_index\": 1,\n      \"value\": \"called nosy → decides to check (\\\"ok now i'm looking\\\")\"\n    },\n    {\n      \"field\": \"ORDER STATE\",\n      \"slide_index\": 1,\n      \"value\": \"placed earlier (8:06 AM), not yet seen by narrator\"\n    },\n    {\n      \"field\": \"TRANSITION\",\n      \"slide_index\": 1,\n      \"value\": \"narrator opens the Target order immediately\"\n    },\n    {\n      \"field\": \"VISIBLE CLOCK\",\n      \"slide_index\": 2,\n      \"value\": \"status bar 4:15 (tiny nearby variation only if the approved base forces it)\"\n    },\n    {\n      \"field\": \"VISIBLE DATE\",\n      \"slide_index\": 2,\n      \"value\": \"\\\"Order placed 8:06am Today\\\"; \\\"Pick up by Wed, Oct 7\\\" (Oct 7, 2026 = Wednesday ✔)\"\n    },\n    {\n      \"field\": \"STATUS\",\n      \"slide_index\": 2,\n      \"value\": \"Ready for pickup (Drive Up at Phoenix SW)\"\n    },\n    {\n      \"field\": \"ACTOR LOCATION\",\n      \"slide_index\": 2,\n      \"value\": \"narrator viewing the order; sis about to collect it at Phoenix SW\"\n    },\n    {\n      \"field\": \"KNOWS (now discovers)\",\n      \"slide_index\": 2,\n      \"value\": \"birthday supplies, AirPods 5, paper towels, low total\"\n    },\n    {\n      \"field\": \"ORDER STATE\",\n      \"slide_index\": 2,\n      \"value\": \"ready for pickup, not yet picked up\"\n    },\n    {\n      \"field\": \"LOCKED PRODUCTS\",\n      \"slide_index\": 2,\n      \"value\": \"candles 12ct gold/silver spiral; Funfetti mix; Apple AirPods 5 Wireless Earbuds $129.99; 4pk primary-color rainbow crepe streamers; Bounty Mega Roll (last)\"\n    },\n    {\n      \"field\": \"ECONOMICS (unchanged)\",\n      \"slide_index\": 2,\n      \"value\": \"Subtotal $142.97 / mydashperks.com Discount -$125.00 / Tax $1.26 / Total $19.23\"\n    },\n    {\n      \"field\": \"TRANSITION\",\n      \"slide_index\": 2,\n      \"value\": \"sis picks up → supplies used → gift physically present → celebration later that evening\"\n    },\n    {\n      \"field\": \"RELATIVE TIME\",\n      \"slide_index\": 3,\n      \"value\": \"later the same evening; no visible clock required\"\n    },\n    {\n      \"field\": \"ACTOR LOCATION\",\n      \"slide_index\": 3,\n      \"value\": \"home kitchen\"\n    },\n    {\n      \"field\": \"ORDER STATE\",\n      \"slide_index\": 3,\n      \"value\": \"picked up and used\"\n    },\n    {\n      \"field\": \"CAKE\",\n      \"slide_index\": 3,\n      \"value\": \"baked, frosted (Funfetti-style), candles lit\"\n    },\n    {\n      \"field\": \"CANDLES\",\n      \"slide_index\": 3,\n      \"value\": \"contents of one 12ct gold/silver spiral pack; prefer exactly 12 visible lit; never 14+\"\n    },\n    {\n      \"field\": \"STREAMERS\",\n      \"slide_index\": 3,\n      \"value\": \"match the ordered primary-color rainbow crepe streamers; no pastel/ombre style\"\n    },\n    {\n      \"field\": \"GIFT\",\n      \"slide_index\": 3,\n      \"value\": \"AirPods 5 physically present, packaging from a real AirPods 5 reference; opened, half-unwrapped, or sitting near the edge; never the hero\"\n    },\n    {\n      \"field\": \"PAPER TOWEL\",\n      \"slide_index\": 3,\n      \"value\": \"optional subtle background callback\"\n    },\n    {\n      \"field\": \"KNOWS\",\n      \"slide_index\": 3,\n      \"value\": \"narrator understands the surprise\"\n    },\n    {\n      \"field\": \"PAYOFF\",\n      \"slide_index\": 3,\n      \"value\": \"birthday happened; the suspicious order was birthday prep + gift\"\n    },\n    {\n      \"field\": \"GIFT-OPENING ORDER\",\n      \"slide_index\": 3,\n      \"value\": \"an opened gift before cake is plausible; change the box state only if the final composition reads as confusing (not a defect)\"\n    }\n  ],\n  \"core_story\": \"Sister says she's grabbing house stuff and tells narrator not to look at the order; narrator looks; it's their birthday surprise (party supplies + AirPods), and the order total is oddly low.\",\n  \"dialogue\": [\n    {\n      \"direction\": \"incoming\",\n      \"speaker\": \"sis\",\n      \"text\": \"grabbing stuff for the house rn\"\n    },\n    {\n      \"direction\": \"incoming\",\n      \"speaker\": \"sis\",\n      \"text\": \"don't look at the order tho\"\n    },\n    {\n      \"direction\": \"outgoing\",\n      \"speaker\": \"me\",\n      \"text\": \"why would i look\"\n    },\n    {\n      \"direction\": \"incoming\",\n      \"speaker\": \"sis\",\n      \"text\": \"bc you're nosy 😭\"\n    },\n    {\n      \"direction\": \"outgoing\",\n      \"speaker\": \"me\",\n      \"text\": \"ok now i'm looking\"\n    }\n  ],\n  \"economics\": {\n    \"discount\": \"125.00\",\n    \"discount_label\": \"mydashperks.com Discount\",\n    \"notes\": \"Parsed from the story lock economics block. Staged when the lock says so.\",\n    \"staged\": true,\n    \"subtotal\": \"142.97\",\n    \"tax\": \"1.26\",\n    \"total\": \"19.23\"\n  },\n  \"expected_next_beat\": \"\\\"she's hiding something for my birthday — what's in it?\\\"\",\n  \"extra\": {},\n  \"floating_hook\": \"my birthday is literally today 😭\",\n  \"hook\": \"don't look at the order tho\",\n  \"label\": \"FICTIONAL / STAGED. Economics are staged creative values, NOT a verified Target promotion or program.\",\n  \"line_items\": [\n    {\n      \"color\": null,\n      \"external_id\": \"92290028\",\n      \"generation\": null,\n      \"model\": null,\n      \"pack_count\": 12,\n      \"position\": 1,\n      \"quantity\": null,\n      \"title\": \"Gold/Silver Tall Spiral Birthday Candles 12ct - Spritz™\",\n      \"unit_price\": \"3.00\",\n      \"variant\": null\n    },\n    {\n      \"color\": null,\n      \"external_id\": null,\n      \"generation\": null,\n      \"model\": null,\n      \"pack_count\": null,\n      \"position\": 2,\n      \"quantity\": null,\n      \"title\": \"Pillsbury Funfetti Premium Cake & Cupcake Mix - 15.25oz\",\n      \"unit_price\": \"1.99\",\n      \"variant\": null\n    },\n    {\n      \"color\": null,\n      \"external_id\": \"85978615\",\n      \"generation\": \"5\",\n      \"model\": \"AirPods 5\",\n      \"pack_count\": null,\n      \"position\": 3,\n      \"quantity\": null,\n      \"title\": \"Apple AirPods 5 Wireless Earbuds\",\n      \"unit_price\": \"129.99\",\n      \"variant\": null\n    },\n    {\n      \"color\": null,\n      \"external_id\": null,\n      \"generation\": null,\n      \"model\": null,\n      \"pack_count\": null,\n      \"position\": 4,\n      \"quantity\": null,\n      \"title\": \"4pk Primary Color Rainbow Crepe Streamer - Spritz™\",\n      \"unit_price\": \"3.00\",\n      \"variant\": null\n    },\n    {\n      \"color\": null,\n      \"external_id\": null,\n      \"generation\": null,\n      \"model\": null,\n      \"pack_count\": null,\n      \"position\": 5,\n      \"quantity\": null,\n      \"title\": \"Bounty Select-A-Size Paper Towels - 1 Mega Roll\",\n      \"unit_price\": \"4.99\",\n      \"variant\": null\n    }\n  ],\n  \"reveal\": \"S2 order = birthday stuff + paper towels cover + AirPods, total $19.23; S3 birthday surprise photo\",\n  \"slides\": [\n    {\n      \"actor_knowledge\": \"sis says she's grabbing house stuff; does NOT know what's in the order\",\n      \"actor_location\": \"narrator at home, ordinary phone context\",\n      \"beat\": \"sister forbids looking; narrator decides to look\",\n      \"index\": 1,\n      \"order_state\": \"placed earlier (8:06 AM), not yet seen by narrator\",\n      \"overlay\": \"my birthday is literally today 😭\",\n      \"relative_time\": \"afternoon, birthday day\",\n      \"visible_clock\": \"4:14 PM\",\n      \"visible_date\": null\n    },\n    {\n      \"actor_knowledge\": \"birthday supplies, AirPods 5, paper towels, low total\",\n      \"actor_location\": \"narrator viewing the order; sis about to collect it at Phoenix SW\",\n      \"beat\": \"the order (Target Order Details, Ready for pickup)\",\n      \"index\": 2,\n      \"order_state\": \"ready for pickup, not yet picked up\",\n      \"overlay\": null,\n      \"relative_time\": null,\n      \"visible_clock\": \"status bar 4:15\",\n      \"visible_date\": \"\\\"Order placed 8:06am Today\\\"; \\\"Pick up by Wed, Oct 7\\\" (Oct 7, 2026 = Wednesday ✔)\"\n    },\n    {\n      \"actor_knowledge\": \"narrator understands the surprise\",\n      \"actor_location\": \"home kitchen\",\n      \"beat\": \"birthday surprise camera-roll photo\",\n      \"index\": 3,\n      \"order_state\": \"picked up and used\",\n      \"overlay\": null,\n      \"relative_time\": \"later the same evening; no visible clock required\",\n      \"visible_clock\": null,\n      \"visible_date\": null\n    }\n  ],\n  \"stakes\": \"narrator's birthday is TODAY (floating hook only)\",\n  \"stale_notes\": [\n    \"v5/s2_attempt1.png — STALE — SUPERSEDED BY CURRENT STORY_LOCK (AirPods 4 row; status bar 4:31; \\\"Pick up by Wed, Oct 23\\\")\",\n    \"v5/s1_attempt2.png — STALE — REPRODUCTION REQUIRED (hook says \\\"tomorrow\\\")\",\n    \"v5/s1_attempt1.png, v4/s1_attempt1.png, v4/s1_attempt2.png, v4/s1_kb_attempt1.png — STALE — REPRODUCTION REQUIRED (hook says \\\"tomorrow\\\" / earlier attempts)\",\n    \"v5/s3_attempt1.png — STALE — REPRODUCTION REQUIRED (~14 candles vs one 12ct pack; pastel/ombre streamers; AirPods packaging not matched to AirPods 5)\"\n  ],\n  \"story_date\": \"2026-10-05\",\n  \"story_weekday\": \"Monday\",\n  \"story_works_without_economics\": true,\n  \"title\": \"SHE SAID IT WAS CHORE STUFF (Target) — story-development record, 2026-10-05\",\n  \"trigger\": \"narrator resists (\\\"why would i look\\\"); sister provokes (\\\"bc you're nosy 😭\\\")\",\n  \"viral_texture\": [\n    {\n      \"category\": null,\n      \"slide_index\": 1,\n      \"text\": \"contact \\\"sis\\\" (social); \\\"bc you're nosy 😭\\\" sibling-coded provocation (social); \\\"stuff for the house\\\" cover (sets up paper-towel callback)\"\n    },\n    {\n      \"category\": null,\n      \"slide_index\": 2,\n      \"text\": \"gold/silver tall spiral candles (desire); AirPods 5 mid-list, same thumbnail size (desire / mini contradiction); paper towels LAST (mini contradiction / cover story); $19.23 total (price anomaly)\"\n    },\n    {\n      \"category\": null,\n      \"slide_index\": 3,\n      \"text\": \"gold/silver spiral candles on the cake (continuity/desire); white AirPods box opened or half-unwrapped near the frame edge, partly cropped, not centered (background callback); optional paper towel roll in background (callback); crooked streamers (realism)\"\n    }\n  ]\n}\n\n## ACCOUNT DNA\nNo approved Account DNA profile is in scope.\n\n## CREATIVE GENOME\nstate: BOUND\nid d6a1e39b-dcc3-4c0f-aaac-ccce3c1bcd8d version import-2026-10-05 origin HUMAN_SET approval APPROVED story_lock 08c56ceb-91a9-4ab3-b853-58faa458b933\n- commerce_integration = SECONDARY assignment human_set confidence None source story lock COMMERCE RELATION\n- ecosystem = TARGET assignment human_set confidence None source story lock title names Target\n- floating_hook = my birthday is literally today 😭 assignment human_set confidence None source story lock floating hook\n- hook_text = don't look at the order tho assignment human_set confidence None source story lock HOOK\n- label = FICTIONAL / STAGED. Economics are staged creative values, NOT a verified Target promotion or program. assignment human_set confidence None source story lock LABEL\n- slide_count = 3 assignment human_set confidence None source continuity ledger headings\n- story_works_without_economics = yes assignment human_set confidence None source story lock DOES STORY WORK WITHOUT ECONOMICS\n\n## BENCHMARKS\n### Brooke pink iPad / overslept\naccount Brooke category WINNER ecosystem None holdout False\nmetrics views 2300000 likes None comments None shares None saves None\nlesson: source text: 2.3M\nmetrics note: source text: 2.3M\nIncluded because: category WINNER\nsource: BENCHMARKS.md\n\n### Brooke boyfriend pink-iPad sequel\naccount Brooke category WEAK ecosystem None holdout False\nmetrics views None likes None comments None shares None saves None\nlesson: UNKNOWN\nmetrics note: UNKNOWN\nIncluded because: category WEAK\nsource: BENCHMARKS.md\n\n### Sarah Dasher got nosy\naccount Sarah category WEAK ecosystem None holdout False\nmetrics views None likes None comments None shares None saves None\nlesson: UNKNOWN\nmetrics note: UNKNOWN\nIncluded because: category WEAK\nsource: BENCHMARKS.md\n\n### Cent post\naccount None category FAILURE ecosystem None holdout False\nmetrics views None likes None comments None shares None saves None\nlesson: did not travel\nmetrics note: did not travel\nIncluded because: category FAILURE\nsource: BENCHMARKS.md\n\n### Jenny screen recording\naccount None category FAILURE ecosystem None holdout False\nmetrics views None likes None comments None shares None saves None\nlesson: did not travel\nmetrics note: did not travel\nIncluded because: category FAILURE\nsource: BENCHMARKS.md\n\n### Lindy metadata joke\naccount None category FAILURE ecosystem None holdout False\nmetrics views None likes None comments None shares None saves None\nlesson: did not travel\nmetrics note: did not travel\nIncluded because: category FAILURE\nsource: BENCHMARKS.md\n\n### Maria Chick-fil-A\naccount Maria category None ecosystem None holdout False\nmetrics views 338200 likes None comments None shares None saves None\nlesson: source text: 338.2K\nmetrics note: source text: 338.2K\nIncluded because: non-holdout program benchmark\nsource: BENCHMARKS.md\n\n### Maria McChicken\naccount Maria category None ecosystem None holdout False\nmetrics views None likes None comments None shares None saves None\nlesson: UNKNOWN / NEEDS FOLLOW-UP\nmetrics note: UNKNOWN / NEEDS FOLLOW-UP\nIncluded because: non-holdout program benchmark\nsource: BENCHMARKS.md\n\n### Sarah MacBook\naccount Sarah category None ecosystem None holdout False\nmetrics views 150500 likes None comments None shares None saves None\nlesson: source text: 150.5K\nmetrics note: source text: 150.5K\nIncluded because: non-holdout program benchmark\nsource: BENCHMARKS.md\n\n## MECHANIC HISTORY\n{\n  \"account_id\": null,\n  \"as_of\": \"2026-10-06T20:37:02.666607+00:00\",\n  \"authority\": \"observation\",\n  \"program_lifetime\": [\n    {\n      \"count\": 1,\n      \"dimension\": \"commerce_integration\",\n      \"value\": \"SECONDARY\"\n    },\n    {\n      \"count\": 1,\n      \"dimension\": \"ecosystem\",\n      \"value\": \"TARGET\"\n    },\n    {\n      \"count\": 1,\n      \"dimension\": \"hook_pattern\",\n      \"value\": \"my birthday is literally today 😭\"\n    },\n    {\n      \"count\": 1,\n      \"dimension\": \"proof_surface\",\n      \"value\": \"order_details\"\n    }\n  ],\n  \"reason_included\": \"account-local mechanic history; no fatigue score\",\n  \"scope\": \"UNSCOPED\",\n  \"source\": \"mechanic_observations\",\n  \"version\": \"windows\",\n  \"windows\": {\n    \"last_30_days\": [\n      {\n        \"count\": 1,\n        \"dimension\": \"commerce_integration\",\n        \"value\": \"SECONDARY\"\n      },\n      {\n        \"count\": 1,\n        \"dimension\": \"ecosystem\",\n        \"value\": \"TARGET\"\n      },\n      {\n        \"count\": 1,\n        \"dimension\": \"hook_pattern\",\n        \"value\": \"my birthday is literally today 😭\"\n      },\n      {\n        \"count\": 1,\n        \"dimension\": \"proof_surface\",\n        \"value\": \"order_details\"\n      }\n    ],\n    \"last_7_days\": [\n      {\n        \"count\": 1,\n        \"dimension\": \"commerce_integration\",\n        \"value\": \"SECONDARY\"\n      },\n      {\n        \"count\": 1,\n        \"dimension\": \"ecosystem\",\n        \"value\": \"TARGET\"\n      },\n      {\n        \"count\": 1,\n        \"dimension\": \"hook_pattern\",\n        \"value\": \"my birthday is literally today 😭\"\n      },\n      {\n        \"count\": 1,\n        \"dimension\": \"proof_surface\",\n        \"value\": \"order_details\"\n      }\n    ],\n    \"last_n_posts\": [],\n    \"lifetime\": [\n      {\n        \"count\": 1,\n        \"dimension\": \"commerce_integration\",\n        \"value\": \"SECONDARY\"\n      },\n      {\n        \"count\": 1,\n        \"dimension\": \"ecosystem\",\n        \"value\": \"TARGET\"\n      },\n      {\n        \"count\": 1,\n        \"dimension\": \"hook_pattern\",\n        \"value\": \"my birthday is literally today 😭\"\n      },\n      {\n        \"count\": 1,\n        \"dimension\": \"proof_surface\",\n        \"value\": \"order_details\"\n      }\n    ]\n  }\n}\n\n## REFERENCES AND ASSET METADATA\nNo visual reference metadata was selected for this stage.\n\n## SCOPE\n{\n  \"account\": null,\n  \"campaign\": {\n    \"id\": \"0d6c6304-057e-4a8f-a6e7-b510cfe24144\",\n    \"name\": \"October 2026 benchmarks\",\n    \"slug\": \"october-2026-benchmarks\"\n  },\n  \"creative\": {\n    \"holdout\": true,\n    \"id\": \"b0840313-1060-4967-bfb4-fe0a3350ef3b\",\n    \"name\": \"SHE SAID IT WAS CHORE STUFF\",\n    \"slug\": \"chore-stuff-target\",\n    \"status\": \"produced\"\n  },\n  \"ecosystem\": {\n    \"code\": \"TARGET\",\n    \"id\": \"896685eb-397f-4ea4-9a2f-72166a9fec8f\",\n    \"name\": \"Target\"\n  },\n  \"program\": {\n    \"id\": \"c0616ab6-7386-4fa3-af2c-9bac09540c4e\",\n    \"name\": \"MyDashPerks\",\n    \"slug\": \"mydashperks\"\n  }\n}\n\n## SELECTED CONCEPT\nNo selected concept is linked.\n\n## COMMENT DOORS\n[\n  {\n    \"authority\": \"approved story lock\",\n    \"kind\": \"primary\",\n    \"reason_included\": \"comment door stored on the current story lock\",\n    \"scope\": \"CREATIVE\",\n    \"source\": \"story lock document\",\n    \"text\": \"why did she say not to look?\",\n    \"version\": \"08c56ceb-91a9-4ab3-b853-58faa458b933\"\n  },\n  {\n    \"authority\": \"approved story lock\",\n    \"kind\": \"secondary\",\n    \"reason_included\": \"comment door stored on the current story lock\",\n    \"scope\": \"CREATIVE\",\n    \"source\": \"story lock document\",\n    \"text\": \"THE AIRPODS??\",\n    \"version\": \"08c56ceb-91a9-4ab3-b853-58faa458b933\"\n  },\n  {\n    \"authority\": \"approved story lock\",\n    \"kind\": \"secondary\",\n    \"reason_included\": \"comment door stored on the current story lock\",\n    \"scope\": \"CREATIVE\",\n    \"source\": \"story lock document\",\n    \"text\": \"she said house stuff and bought AirPods 😭\",\n    \"version\": \"08c56ceb-91a9-4ab3-b853-58faa458b933\"\n  },\n  {\n    \"authority\": \"approved story lock\",\n    \"kind\": \"secondary\",\n    \"reason_included\": \"comment door stored on the current story lock\",\n    \"scope\": \"CREATIVE\",\n    \"source\": \"story lock document\",\n    \"text\": \"those candles are cute\",\n    \"version\": \"08c56ceb-91a9-4ab3-b853-58faa458b933\"\n  },\n  {\n    \"authority\": \"approved story lock\",\n    \"kind\": \"secondary\",\n    \"reason_included\": \"comment door stored on the current story lock\",\n    \"scope\": \"CREATIVE\",\n    \"source\": \"story lock document\",\n    \"text\": \"the paper towels as cover\",\n    \"version\": \"08c56ceb-91a9-4ab3-b853-58faa458b933\"\n  },\n  {\n    \"authority\": \"approved story lock\",\n    \"kind\": \"secondary\",\n    \"reason_included\": \"comment door stored on the current story lock\",\n    \"scope\": \"CREATIVE\",\n    \"source\": \"story lock document\",\n    \"text\": \"I would've checked too\",\n    \"version\": \"08c56ceb-91a9-4ab3-b853-58faa458b933\"\n  },\n  {\n    \"authority\": \"approved story lock\",\n    \"kind\": \"secondary\",\n    \"reason_included\": \"comment door stored on the current story lock\",\n    \"scope\": \"CREATIVE\",\n    \"source\": \"story lock document\",\n    \"text\": \"your sister is sweet\",\n    \"version\": \"08c56ceb-91a9-4ab3-b853-58faa458b933\"\n  },\n  {\n    \"authority\": \"approved story lock\",\n    \"kind\": \"secondary\",\n    \"reason_included\": \"comment door stored on the current story lock\",\n    \"scope\": \"CREATIVE\",\n    \"source\": \"story lock document\",\n    \"text\": \"wait how was all of that only $19?\",\n    \"version\": \"08c56ceb-91a9-4ab3-b853-58faa458b933\"\n  }\n]\n\n## CONTINUITY\n[\n  {\n    \"field\": \"RELATIVE TIME\",\n    \"slide_index\": 1,\n    \"value\": \"afternoon, birthday day\"\n  },\n  {\n    \"field\": \"VISIBLE CLOCK\",\n    \"slide_index\": 1,\n    \"value\": \"thread \\\"Today 4:12 PM\\\"; status bar 4:14\"\n  },\n  {\n    \"field\": \"OVERLAY\",\n    \"slide_index\": 1,\n    \"value\": \"my birthday is literally today 😭\"\n  },\n  {\n    \"field\": \"ACTOR LOCATION\",\n    \"slide_index\": 1,\n    \"value\": \"narrator at home, ordinary phone context\"\n  },\n  {\n    \"field\": \"KNOWS\",\n    \"slide_index\": 1,\n    \"value\": \"sis says she's grabbing house stuff; does NOT know what's in the order\"\n  },\n  {\n    \"field\": \"HAS DONE\",\n    \"slide_index\": 1,\n    \"value\": \"called nosy → decides to check (\\\"ok now i'm looking\\\")\"\n  },\n  {\n    \"field\": \"ORDER STATE\",\n    \"slide_index\": 1,\n    \"value\": \"placed earlier (8:06 AM), not yet seen by narrator\"\n  },\n  {\n    \"field\": \"TRANSITION\",\n    \"slide_index\": 1,\n    \"value\": \"narrator opens the Target order immediately\"\n  },\n  {\n    \"field\": \"VISIBLE CLOCK\",\n    \"slide_index\": 2,\n    \"value\": \"status bar 4:15 (tiny nearby variation only if the approved base forces it)\"\n  },\n  {\n    \"field\": \"VISIBLE DATE\",\n    \"slide_index\": 2,\n    \"value\": \"\\\"Order placed 8:06am Today\\\"; \\\"Pick up by Wed, Oct 7\\\" (Oct 7, 2026 = Wednesday ✔)\"\n  },\n  {\n    \"field\": \"STATUS\",\n    \"slide_index\": 2,\n    \"value\": \"Ready for pickup (Drive Up at Phoenix SW)\"\n  },\n  {\n    \"field\": \"ACTOR LOCATION\",\n    \"slide_index\": 2,\n    \"value\": \"narrator viewing the order; sis about to collect it at Phoenix SW\"\n  },\n  {\n    \"field\": \"KNOWS (now discovers)\",\n    \"slide_index\": 2,\n    \"value\": \"birthday supplies, AirPods 5, paper towels, low total\"\n  },\n  {\n    \"field\": \"ORDER STATE\",\n    \"slide_index\": 2,\n    \"value\": \"ready for pickup, not yet picked up\"\n  },\n  {\n    \"field\": \"LOCKED PRODUCTS\",\n    \"slide_index\": 2,\n    \"value\": \"candles 12ct gold/silver spiral; Funfetti mix; Apple AirPods 5 Wireless Earbuds $129.99; 4pk primary-color rainbow crepe streamers; Bounty Mega Roll (last)\"\n  },\n  {\n    \"field\": \"ECONOMICS (unchanged)\",\n    \"slide_index\": 2,\n    \"value\": \"Subtotal $142.97 / mydashperks.com Discount -$125.00 / Tax $1.26 / Total $19.23\"\n  },\n  {\n    \"field\": \"TRANSITION\",\n    \"slide_index\": 2,\n    \"value\": \"sis picks up → supplies used → gift physically present → celebration later that evening\"\n  },\n  {\n    \"field\": \"RELATIVE TIME\",\n    \"slide_index\": 3,\n    \"value\": \"later the same evening; no visible clock required\"\n  },\n  {\n    \"field\": \"ACTOR LOCATION\",\n    \"slide_index\": 3,\n    \"value\": \"home kitchen\"\n  },\n  {\n    \"field\": \"ORDER STATE\",\n    \"slide_index\": 3,\n    \"value\": \"picked up and used\"\n  },\n  {\n    \"field\": \"CAKE\",\n    \"slide_index\": 3,\n    \"value\": \"baked, frosted (Funfetti-style), candles lit\"\n  },\n  {\n    \"field\": \"CANDLES\",\n    \"slide_index\": 3,\n    \"value\": \"contents of one 12ct gold/silver spiral pack; prefer exactly 12 visible lit; never 14+\"\n  },\n  {\n    \"field\": \"STREAMERS\",\n    \"slide_index\": 3,\n    \"value\": \"match the ordered primary-color rainbow crepe streamers; no pastel/ombre style\"\n  },\n  {\n    \"field\": \"GIFT\",\n    \"slide_index\": 3,\n    \"value\": \"AirPods 5 physically present, packaging from a real AirPods 5 reference; opened, half-unwrapped, or sitting near the edge; never the hero\"\n  },\n  {\n    \"field\": \"PAPER TOWEL\",\n    \"slide_index\": 3,\n    \"value\": \"optional subtle background callback\"\n  },\n  {\n    \"field\": \"KNOWS\",\n    \"slide_index\": 3,\n    \"value\": \"narrator understands the surprise\"\n  },\n  {\n    \"field\": \"PAYOFF\",\n    \"slide_index\": 3,\n    \"value\": \"birthday happened; the suspicious order was birthday prep + gift\"\n  },\n  {\n    \"field\": \"GIFT-OPENING ORDER\",\n    \"slide_index\": 3,\n    \"value\": \"an opened gift before cake is plausible; change the box state only if the final composition reads as confusing (not a defect)\"\n  }\n]\n\n## EXCLUSIONS\n[\n  {\n    \"authority\": \"stage registry\",\n    \"reason_excluded\": \"optional specialist not requested for this task\",\n    \"skill_role\": \"OPTIONAL_SPECIALIST\",\n    \"slug\": \"chat-story-slideshow\"\n  },\n  {\n    \"authority\": \"stage registry\",\n    \"reason_excluded\": \"not part of stage STORY_DEVELOPMENT\",\n    \"skill_role\": null,\n    \"slug\": \"adaptation-blitz-match\",\n    \"version_id\": \"f0a2e950-377a-4db5-b71d-8dbec361cfa9\"\n  },\n  {\n    \"authority\": \"stage registry\",\n    \"reason_excluded\": \"not part of stage STORY_DEVELOPMENT\",\n    \"skill_role\": null,\n    \"slug\": \"commercial-aware-synthesis\",\n    \"version_id\": \"95b07559-0be2-4a37-9fbe-88d0ab9eb575\"\n  },\n  {\n    \"authority\": \"stage registry\",\n    \"reason_excluded\": \"not part of stage STORY_DEVELOPMENT\",\n    \"skill_role\": null,\n    \"slug\": \"find-purchase-screens-on-pinterest\",\n    \"version_id\": \"c4279eea-b43c-451d-acd1-55089cb7f3f0\"\n  },\n  {\n    \"authority\": \"stage registry\",\n    \"reason_excluded\": \"not part of stage STORY_DEVELOPMENT\",\n    \"skill_role\": null,\n    \"slug\": \"ios-26-production-normalization\",\n    \"version_id\": \"45862384-e971-43c0-aeed-04ba81dff831\"\n  },\n  {\n    \"authority\": \"stage registry\",\n    \"reason_excluded\": \"not part of stage STORY_DEVELOPMENT\",\n    \"skill_role\": null,\n    \"slug\": \"live-heat-scout\",\n    \"version_id\": \"437eb9d4-8ad3-4dde-a59a-fd51c7785ee3\"\n  },\n  {\n    \"authority\": \"stage registry\",\n    \"reason_excluded\": \"not part of stage STORY_DEVELOPMENT\",\n    \"skill_role\": null,\n    \"slug\": \"object-culture-scout\",\n    \"version_id\": \"2d623443-ad89-4a0c-8701-2a5f47b4ac58\"\n  },\n  {\n    \"authority\": \"stage registry\",\n    \"reason_excluded\": \"not part of stage STORY_DEVELOPMENT\",\n    \"skill_role\": null,\n    \"slug\": \"production-spec-qa\",\n    \"version_id\": \"e5d6ae5f-a594-412c-9efe-2c7aa05d28d6\"\n  },\n  {\n    \"authority\": \"stage registry\",\n    \"reason_excluded\": \"not part of stage STORY_DEVELOPMENT\",\n    \"skill_role\": null,\n    \"slug\": \"story-conflict-scout\",\n    \"version_id\": \"ebdd8458-fe6d-433d-9e91-d4f0d45f9048\"\n  },\n  {\n    \"authority\": \"stage registry\",\n    \"reason_excluded\": \"not part of stage STORY_DEVELOPMENT\",\n    \"skill_role\": null,\n    \"slug\": \"synthetic-story-generator\",\n    \"version_id\": \"5e5b7693-4b34-4aca-9902-2dc6bf7b98ed\"\n  },\n  {\n    \"authority\": \"stage registry\",\n    \"reason_excluded\": \"not part of stage STORY_DEVELOPMENT\",\n    \"skill_role\": null,\n    \"slug\": \"visual-surface-acquisition\",\n    \"version_id\": \"31c11b8d-685a-4ef2-8dd2-741921672ba3\"\n  },\n  {\n    \"authority\": \"reference example\",\n    \"holdout\": true,\n    \"reason_excluded\": \"holdout benchmark\",\n    \"reason_included\": \"withheld from provider context\"\n  },\n  {\n    \"authority\": \"reference example\",\n    \"holdout\": true,\n    \"reason_excluded\": \"holdout benchmark\",\n    \"reason_included\": \"withheld from provider context\"\n  },\n  {\n    \"name\": \"DoorDash step refs\",\n    \"reason_excluded\": \"visual references are not loaded for stage STORY_DEVELOPMENT\",\n    \"version\": \"7ba2730c-5807-4431-9da7-4c20c5806bf3\"\n  },\n  {\n    \"name\": \"Target reference bank V2\",\n    \"reason_excluded\": \"visual references are not loaded for stage STORY_DEVELOPMENT\",\n    \"version\": \"076577bd-ca3a-4b28-828d-0709ee5ac382\"\n  }\n]\n\nSKILL COVERAGE: COVERED\n\n## SECTION SIZES\n- task: 2712 characters, token estimate 678\n- invariants: 10179 characters, token estimate 2544\n- policies: 3481 characters, token estimate 870\n- skills: 10395 characters, token estimate 2598\n- story_lock: 19044 characters, token estimate 4761\n- dna: 59 characters, token estimate 14\n- genome: 994 characters, token estimate 248\n- benchmarks: 2409 characters, token estimate 602\n- mechanics: 2156 characters, token estimate 539\n- references: 90 characters, token estimate 22\n- other: 10149 characters, token estimate 2537\n"
+}

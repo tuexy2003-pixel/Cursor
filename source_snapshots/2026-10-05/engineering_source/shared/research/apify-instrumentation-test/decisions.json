@@ -1,0 +1,22 @@
+{
+  "completedAt": "2026-10-05 11:43 EDT",
+  "arm_a": {
+    "KUSTFYR": {
+      "decision": "WEAKEN",
+      "rationale": "Exact-name search heavily polluted (streamer @kustfyr + unrelated megaviews). Authentic IKEA ghost-lamp posts in last-30d are sparse and low-engagement (~100-400 plays for clear hits). Packaging-arms meme not visible in captions. Weakens press claim of active high-volume TikTok virality for Oct window; product still attested."
+    },
+    "Lunch in My City": {
+      "decision": "STRENGTHEN",
+      "rationale": "18/20 topical, ~19 unique authors, multi-city US/CA/GB, median ~905k plays, hashtag title encodes method. Clears web multi-creator blind spot."
+    },
+    "PDRN": {
+      "decision": "STRENGTHEN",
+      "rationale": "20/20 topical across 20 authors; brand ladder visible (Medicube, Anua, SKIN1004, Rejuall, DABO, P.CALM, etc.). 50% ads = commercial density caveat but organic UGC present."
+    },
+    "IKEA ghost lamp_control": "Better topical recall than KUSTFYR exact name but still modest authentic engagement; useful as disambiguation query."
+  },
+  "comments": "SKIPPED \u2014 no critical unresolved question justifying spend; caption/author metrics sufficient for Arm A decisions.",
+  "expansions": "SKIPPED \u2014 TikTok-only candidates existed but not strong enough vs affiliate/noise for budgeted expansion.",
+  "permanent": "NOT YET",
+  "overall_value": "MODERATE / PARTIAL PASS as confirmatory instrument; weak as always-on discovery engine without query hygiene."
+}

@@ -1,0 +1,3 @@
+# Handoff: MyDashPerks Creative OS → Cursor (2026-10-05)
+Start with CURSOR_START_HERE.md. Rule: the latest human-approved STORY_LOCK wins for story values; active skills govern behavior; reference images govern native visual structure.
+Folders: skills/ (all 15 current skills), story_locks/ (current Target lock + benchmark surface/transaction specs), reference_docs/ (playbook, catchup, older handoffs, context docs, viral research md), manifests_existing/ (Target bank manifest + contact sheet, DoorDash ref README, research READMEs), schemas_existing/ (spec JSON, iOS 26 template spec), examples/ (final v6 Target slides, bases, ingredients, stale list), architecture/ (pointer to the skills/manifest). Original files were not moved.

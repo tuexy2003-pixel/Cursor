@@ -1,0 +1,17 @@
+{
+  "out": "/workspace/creative-pipeline/assets/phone_plates/tests/imessage_image_bubble_test/test_chat_916.png",
+  "out_full": "/workspace/creative-pipeline/assets/phone_plates/tests/imessage_image_bubble_test/test_chat_full.png",
+  "status": {"time": "6:47", "battery": 0.41, "battery_color": "white", "signal": 3},
+  "contact": {"name": "Test", "initial": "T"},
+  "unread": "2",
+  "service": "imessage",
+  "top_space": 60,
+  "thread": [
+    {"ts": "Today at 6:40 PM"},
+    {"in": "so what did you get"},
+    {"out": "relax it was cheap"},
+    {"from": "me", "image": "/workspace/creative-pipeline/outputs/cand06_isaiah_chipotle/order_screen_flat.png", "width_frac": 0.60},
+    {"in": "$24.75 for chipotle??", "delivered": false},
+    {"out": "read the whole thing 🙄", "delivered": true}
+  ]
+}

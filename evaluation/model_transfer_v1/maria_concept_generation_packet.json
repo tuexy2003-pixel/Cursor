@@ -1,0 +1,1294 @@
+{
+  "bundle_id": "ae077255-9f33-441b-a9ec-f49e938bcdde",
+  "bundle_hash": "7737b0ab2c3479aa1be85e194584657652c73ccbcadbdf2bbdd148e67e2e14df",
+  "provider_execution": "NOT_IMPLEMENTED",
+  "compiler_version": "context-compiler-0.3.0",
+  "as_of": "2026-10-06T20:37:02.666607+00:00",
+  "requested_stage": "CONCEPT_GENERATION",
+  "creative_task_id": "e6c5f123-5025-45e4-97fd-a2e5fa0e91fc",
+  "packet": {
+    "dry_run": true,
+    "provider_execution": "NOT_IMPLEMENTED",
+    "compiler_version": "context-compiler-0.3.0",
+    "as_of": "2026-10-06T20:37:02.666607+00:00",
+    "requested_stage": "CONCEPT_GENERATION",
+    "skill_coverage": "COVERED",
+    "task": {
+      "id": "e6c5f123-5025-45e4-97fd-a2e5fa0e91fc",
+      "stage": "CONCEPT_GENERATION",
+      "instruction": "Generate 5 NEW staged short-form carousel concepts appropriate for this account\nusing the current creative operating system.\n\nRequirements:\n- new concepts, not copies of benchmarks\n- story-native commerce\n- roughly 15–20 life-world where current account or program policy says so\n- believable human causality\n- multiple potential comment doors\n- do not pad baskets for economics\n- commerce and economic discovery should follow current policy\n- do not search the web in this manual evaluation\n- flag research needed instead\n\nDo not create a Creative or a StoryLock. These concepts are proposals for human review.",
+      "constraints": {},
+      "input_refs": {},
+      "status": "CONSUMED",
+      "expected_output_type": "CONCEPT_GENERATION",
+      "created_by": "operator"
+    },
+    "scope": {
+      "program": {
+        "id": "c0616ab6-7386-4fa3-af2c-9bac09540c4e",
+        "slug": "mydashperks",
+        "name": "MyDashPerks"
+      },
+      "account": {
+        "id": "d7731bd4-13f7-4a1a-a68d-2dbbec49189d",
+        "slug": "maria",
+        "name": "Maria"
+      },
+      "campaign": null,
+      "ecosystem": {
+        "id": "7ef60440-4e82-49a0-85c8-07d4a323d937",
+        "code": "DOORDASH",
+        "name": "DoorDash"
+      },
+      "creative": null
+    },
+    "output_contract": {
+      "name": "CONCEPT_GENERATION",
+      "instructions": "Return ConceptGenerationResult JSON only. Each concept is a proposal for human review. It is not a StoryLock. Leave unknown fields null. Do not copy holdout or benchmark stories.",
+      "json_schema": {
+        "$defs": {
+          "ConceptDraft": {
+            "properties": {
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "family": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Family"
+              },
+              "premise": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Premise"
+              },
+              "human_event": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Human Event"
+              },
+              "hook_direction": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Hook Direction"
+              },
+              "stakes": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Stakes"
+              },
+              "action_trigger": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Action Trigger"
+              },
+              "expected_consequence": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Expected Consequence"
+              },
+              "reveal": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Reveal"
+              },
+              "payoff": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Payoff"
+              },
+              "commerce_relation": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Commerce Relation"
+              },
+              "proof_surface_direction": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Proof Surface Direction"
+              },
+              "primary_comment_door": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Primary Comment Door"
+              },
+              "secondary_comment_doors": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Secondary Comment Doors",
+                "type": "array"
+              },
+              "viral_texture_opportunities": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Viral Texture Opportunities",
+                "type": "array"
+              },
+              "why_it_fits_account": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Why It Fits Account"
+              },
+              "risks": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Risks",
+                "type": "array"
+              },
+              "research_needed": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Research Needed",
+                "type": "array"
+              }
+            },
+            "required": [
+              "title"
+            ],
+            "title": "ConceptDraft",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "concepts": {
+            "items": {
+              "$ref": "#/$defs/ConceptDraft"
+            },
+            "title": "Concepts",
+            "type": "array"
+          }
+        },
+        "required": [
+          "concepts"
+        ],
+        "title": "ConceptGenerationResult",
+        "type": "object"
+      }
+    },
+    "current_story_lock_version": null,
+    "global_invariants": [
+      {
+        "code": "principles-a-01",
+        "title": "The latest human-approved STORY_LOCK wins for story-specific values. Superseded assets are marked STALE; files are not deleted or rewritten.",
+        "text": "The latest human-approved STORY_LOCK wins for story-specific values. Superseded assets are marked STALE; files are not deleted or rewritten.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-01; retained regardless of token budget",
+        "version": "32aa5351-805f-454f-8b0e-5064fb8fc8e7",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "09a8df054cfd8e2b5bbe11a7a42e9d99931090613a114580c82ef876482b3a24",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-02",
+        "title": "An explicit human correction beats any skill default, until the skill is updated.",
+        "text": "An explicit human correction beats any skill default, until the skill is updated.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-02; retained regardless of token budget",
+        "version": "c1dce379-8a04-4702-9f78-7f92a077cae9",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "36f019813c393ae97c50fa37adb63e9aa92b93bf179ebbf017c693e669a7748c",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-03",
+        "title": "Proof boundary: a proof surface proves only what it literally shows. It cannot invent the actor's intent, location, payment causality or a retailer promotion.",
+        "text": "Proof boundary: a proof surface proves only what it literally shows. It cannot invent the actor's intent, location, payment causality or a retailer promotion.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-03; retained regardless of token budget",
+        "version": "173ff17a-478e-4d8a-88ce-266afb620b55",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "f0d9825dac49b5552a5068c2bf81293b29ea7ced33efbd2d446693c9cf3b1314",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-04",
+        "title": "Research mode never invents evidence. Staged/creative economics are labeled FICTIONAL/STAGED and never presented as a real retailer promo.",
+        "text": "Research mode never invents evidence. Staged/creative economics are labeled FICTIONAL/STAGED and never presented as a real retailer promo.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-04; retained regardless of token budget",
+        "version": "478c3159-0a02-48c4-a864-a0ea58cf32e7",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "2372debaa763186c568a5a052cc99ae0c12f57b0251b4694c29373dea47ca46e",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-05",
+        "title": "Reference-first production: when a suitable real base exists, edit it (smallest localized edit) and do not freehand-reconstruct retailer UI.",
+        "text": "Reference-first production: when a suitable real base exists, edit it (smallest localized edit) and do not freehand-reconstruct retailer UI.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-05; retained regardless of token budget",
+        "version": "7d2c61db-ee98-4454-a20d-aeaed4b37b8b",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "f720dfcba71dd36a1b7ace806d35db41c1a0e0f82cef99ce2fe0cc35ef47fe18",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-06",
+        "title": "Never silently compress or squeeze native UI rows to fit content. If it doesn't fit, choose another real base or a natural scroll state.",
+        "text": "Never silently compress or squeeze native UI rows to fit content. If it doesn't fit, choose another real base or a natural scroll state.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-06; retained regardless of token budget",
+        "version": "c2f0abae-2da5-43b2-8a33-2c49bf62485a",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "1ff8a637e240119bf33107257f0a213dbda466275733f8d2611b7b29531aa345",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-07",
+        "title": "Story-specific visible dates, times and weekdays come from the continuity ledger, not from the reference image.",
+        "text": "Story-specific visible dates, times and weekdays come from the continuity ledger, not from the reference image.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-07; retained regardless of token budget",
+        "version": "39b2ded4-048b-43d1-ba78-9ad2c530d085",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "f1e0c155a3162ded65ab40d97e541cdcc32d1a2557fd64e5b8f086f5a44a6497",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-08",
+        "title": "Cross-slide congruency: no impossible state or time transitions (for example \"tomorrow\" followed by the party already happening with no time change).",
+        "text": "Cross-slide congruency: no impossible state or time transitions (for example \"tomorrow\" followed by the party already happening with no time change).",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-08; retained regardless of token budget",
+        "version": "dafd8c70-dd09-48a4-9fd0-c7ab26310f9b",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "05975790b58a9d97f75c359feb90a27580bb9aa2a36483172d9e241e2aa5673d",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-09",
+        "title": "Discount-headroom firewall: never add an expensive item only to enlarge the subtotal or discount. Items must be story-motivated.",
+        "text": "Discount-headroom firewall: never add an expensive item only to enlarge the subtotal or discount. Items must be story-motivated.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-09; retained regardless of token budget",
+        "version": "6394e18f-5cdc-4ffb-95e5-2cd1765f5a63",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "1d753fec070569868947e13c6b0b6028f4bff76981be6abd70040918ed213b60",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-10",
+        "title": "Re-edits start from the original base, never from a drifted or degraded output.",
+        "text": "Re-edits start from the original base, never from a drifted or degraded output.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-10; retained regardless of token budget",
+        "version": "0077238d-b1b0-4aee-aef5-ad5599514475",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "2c48acf5797739d6b05769d631b1a231a7f3b2a471abb7584560d4d430f80a4e",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-11",
+        "title": "Any real object added to an image is edited in using a real photo of that exact object as a reference.",
+        "text": "Any real object added to an image is edited in using a real photo of that exact object as a reference.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-11; retained regardless of token budget",
+        "version": "93eecee7-6bf8-4cef-92fa-4b01adeb57a7",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "e3e6b4965458aa98bd43d60345d572afc8c8a1c7c4f381dca87ff634df7983c8",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-12",
+        "title": "Real products use the current generation and live price, verified before lock.",
+        "text": "Real products use the current generation and live price, verified before lock.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-12; retained regardless of token budget",
+        "version": "9ea10bd0-62fe-4cd8-8d66-aa1201861bc5",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "585289d3f4602b47498a25412153f42614672bbd5037b760de67475b62dbac39",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-13",
+        "title": "Rights: personal or unknown-rights images (Pinterest pins) are REFERENCE ONLY and their pixels are never shipped. Only CLEARED images may be a BASE.",
+        "text": "Rights: personal or unknown-rights images (Pinterest pins) are REFERENCE ONLY and their pixels are never shipped. Only CLEARED images may be a BASE.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-13; retained regardless of token budget",
+        "version": "265197d7-7aa1-488a-812f-d6609cf24e3f",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "bfdd9b60d71a0515bde4e418be759778126da4564631a96cc157618526906e92",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-14",
+        "title": "Never send messages, place orders or post without explicit human approval. DoorDash carts are referenced, never checked out.",
+        "text": "Never send messages, place orders or post without explicit human approval. DoorDash carts are referenced, never checked out.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-14; retained regardless of token budget",
+        "version": "fa5aebf9-5933-4a3c-a317-278c592d23e4",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "19682641541cc7902bf88ba6d8cc7fc4ee465725b06e002f9b2e812ab12895e2",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-15",
+        "title": "The money path appears only as the native \"mydashperks.com Discount\" line on the order surface. It never appears in chat bubbles, never on S1, and never as a savings slide.",
+        "text": "The money path appears only as the native \"mydashperks.com Discount\" line on the order surface. It never appears in chat bubbles, never on S1, and never as a savings slide.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-15; retained regardless of token budget",
+        "version": "2c4c62a2-68d5-4e9e-9bcb-d086ba176773",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "e1e469eb47df19b442ea1b3fe3ce4b11946e6330c5b20d2c09df0e75f96efdc4",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-16",
+        "title": "Frozen architecture (V1.2, CAS, Gates 1/2A/2B, campaign salience, Desire/Utility gate, scouts, Live Heat, firewall) is not modified without explicit authorization.",
+        "text": "Frozen architecture (V1.2, CAS, Gates 1/2A/2B, campaign salience, Desire/Utility gate, scouts, Live Heat, firewall) is not modified without explicit authorization.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-16; retained regardless of token budget",
+        "version": "fa373c64-bebe-452d-a3f9-817375cc01c6",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "9757ba7fc9c24976d68a32808603f0711f81220a96b8bc7f29a9edf468e1e0c1",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-a-17",
+        "title": "No burned real names or handles of private people. Amounts and clocks are internally consistent.",
+        "text": "No burned real names or handles of private people. Amounts and clocks are internally consistent.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL INVARIANT for principles-a-17; retained regardless of token budget",
+        "version": "d60ab077-cfb5-4540-86c1-f028fb77f2eb",
+        "authority": "hard invariant",
+        "rule_kind": "INVARIANT",
+        "content_hash": "72a89c3658ba72f3fc9d36760820f36ac6547beeea53ec80a425f04e335b3800",
+        "approval_state": "APPROVED",
+        "priority": "authoritative"
+      },
+      {
+        "code": "principles-b-01",
+        "title": "Use the hook-presentation router: cropped full thread, lock-screen, preview card, peek or thread plus floating hook. Peek only when the conversation fills the card.",
+        "text": "Use the hook-presentation router: cropped full thread, lock-screen, preview card, peek or thread plus floating hook. Peek only when the conversation fills the card.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-01",
+        "version": "14c0120d-5829-403f-be2d-f34097e9ebf6",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "7554ae5db8063da10f2e15115b4c4e63f2bc8a7a5820f13b04f6911a15ef749d",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=7;code=principles-b-01"
+      },
+      {
+        "code": "principles-b-02",
+        "title": "Avoid dead space on S1.",
+        "text": "Avoid dead space on S1.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-02",
+        "version": "9c1c0857-89f2-427a-9ff7-a82d8ef86e1e",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "93e35898a4ba38feca6714123f0bb57d956633729e156829c2a7c8755452360f",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=8;code=principles-b-02"
+      },
+      {
+        "code": "principles-b-03",
+        "title": "0–3 secondary micro-details per slide, with quality over count.",
+        "text": "0–3 secondary micro-details per slide, with quality over count.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-03",
+        "version": "9f9f99c8-9b3c-4ba0-b4ba-a7d835162480",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "a5738e4526d5fdab9eae520e96a19d725913f79cce7381e4a34472110092b4ec",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=9;code=principles-b-03"
+      },
+      {
+        "code": "principles-b-04",
+        "title": "Commerce is usually a secondary discovery. Family D can lead with desire/method instead.",
+        "text": "Commerce is usually a secondary discovery. Family D can lead with desire/method instead.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-04",
+        "version": "57e47e38-5d8c-46fa-8e95-a1f634392da6",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "6bccc17bf889f17882fb757d053c08e977624b3a71df79713de968f41c86f85e",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=10;code=principles-b-04"
+      },
+      {
+        "code": "principles-b-05",
+        "title": "Camera-roll payoff: visual search first (Pinterest short queries) before any generation.",
+        "text": "Camera-roll payoff: visual search first (Pinterest short queries) before any generation.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-05",
+        "version": "eb4ac548-22ca-48a3-a778-220f0def0c8a",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "8f726086dd32d1a22e43fa3ecf9fc1533e55a247ca1954d7d6f0cf8ec1649d06",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=11;code=principles-b-05"
+      },
+      {
+        "code": "principles-b-06",
+        "title": "S1 often uses a native TikTok floating hook. The hook must add new context, never restate a bubble.",
+        "text": "S1 often uses a native TikTok floating hook. The hook must add new context, never restate a bubble.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-06",
+        "version": "19baffb7-8f82-44e6-986b-822a13b4e8c7",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "a8d22540af15f4b57b8bf15b689138f77ccadc90bc697bde4bd9ed2be52cbf67",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=12;code=principles-b-06"
+      },
+      {
+        "code": "principles-b-07",
+        "title": "Story-led concepts should usually work without the economics.",
+        "text": "Story-led concepts should usually work without the economics.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-07",
+        "version": "92aa2f2f-7c67-460e-b9ac-ca7865b2489c",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "c467d7541dcef4ab4639662e2ed10959049f002f03777eda61e58b9bbf45c816",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=13;code=principles-b-07"
+      },
+      {
+        "code": "principles-b-08",
+        "title": "A completed order can open a carousel. The notification-then-receipt opener is not required.",
+        "text": "A completed order can open a carousel. The notification-then-receipt opener is not required.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-08",
+        "version": "22705ce8-d775-4e9b-993b-699105f47459",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "c559eae5dd2861d972b622ad4b6d07c076347ecfb29cdd847565fefccce25261",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=14;code=principles-b-08"
+      },
+      {
+        "code": "principles-b-09",
+        "title": "Keyboard-up Messages is an option, not a rule.",
+        "text": "Keyboard-up Messages is an option, not a rule.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-09",
+        "version": "e5708e32-c49a-4824-925d-d9e660153271",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "2c4961ec154b92235bd6e44526ade16be8f4d80c6842743ab872c27b22952f0f",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=15;code=principles-b-09"
+      },
+      {
+        "code": "principles-b-10",
+        "title": "Temporal compression is fine when it's plausible.",
+        "text": "Temporal compression is fine when it's plausible.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-10",
+        "version": "5cb480ca-1bad-4734-8928-139ba08d9dd7",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "a32199877e397b8711d082d84fe6e6fa985148919511afe0edfdd6beba17b8eb",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=16;code=principles-b-10"
+      },
+      {
+        "code": "principles-b-11",
+        "title": "Use about three slides: hook, proof, payoff.",
+        "text": "Use about three slides: hook, proof, payoff.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-11",
+        "version": "63118b4d-03eb-49ad-9656-57a80148cdba",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "c515242522691a7894584bc651f04fd1e5c43312d5d0521fb6078544eb147aa3",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=17;code=principles-b-11"
+      },
+      {
+        "code": "principles-b-12",
+        "title": "Make aspect changes through the image editor, not by crop or stretch.",
+        "text": "Make aspect changes through the image editor, not by crop or stretch.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-12",
+        "version": "1c3d0df0-3853-4475-8d0e-b81542249389",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "79771f6f94e8b9fee4cb0a77936b23eff89ba78b0433fbc30de101841894d13a",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=18;code=principles-b-12"
+      },
+      {
+        "code": "principles-b-13",
+        "title": "Prefer user-supplied screenshots over the reference bank, over organic screenshots, over marketing images, over generation.",
+        "text": "Prefer user-supplied screenshots over the reference bank, over organic screenshots, over marketing images, over generation.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "GLOBAL",
+        "scope_id": null,
+        "reason_included": "resolved GLOBAL HEURISTIC for principles-b-13",
+        "version": "51d947c9-0942-4701-a6b5-944191a6f5f0",
+        "authority": "heuristic",
+        "rule_kind": "HEURISTIC",
+        "content_hash": "87f84df0bca2ba1992eea52ae2d0b13257344fe4a1b80650e7a21c826a6aa896",
+        "approval_state": "APPROVED",
+        "priority": "scope=4;kind=1;stage=1;order=19;code=principles-b-13"
+      }
+    ],
+    "program_policies": [
+      {
+        "code": "principles-c-01",
+        "title": "The audience is the 15–20 phone life-world: high school or first-year college, parents, siblings, friends, group chats, Target/Sephora. Avoid adult gravity such as landlords, marke",
+        "text": "The audience is the 15–20 phone life-world: high school or first-year college, parents, siblings, friends, group chats, Target/Sephora. Avoid adult gravity such as landlords, marketplaces and corporate settings.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "PROGRAM",
+        "scope_id": "c0616ab6-7386-4fa3-af2c-9bac09540c4e",
+        "reason_included": "resolved PROGRAM PREFERENCE for principles-c-01",
+        "version": "ff8cbbe1-3168-484b-b00f-990bd2d192d0",
+        "authority": "preference",
+        "rule_kind": "PREFERENCE",
+        "content_hash": "757b63651df37ccb2fda2e490d4ff05d9513baf7b1149f8fa4dcd03c26296feb",
+        "approval_state": "APPROVED",
+        "priority": "scope=3;kind=0;stage=1;order=0;code=principles-c-01"
+      },
+      {
+        "code": "principles-c-02",
+        "title": "Account lanes: Maria covers food and couples (e.g. Dre). Sarah and Brooke cover electronics.",
+        "text": "Account lanes: Maria covers food and couples (e.g. Dre). Sarah and Brooke cover electronics.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "PROGRAM",
+        "scope_id": "c0616ab6-7386-4fa3-af2c-9bac09540c4e",
+        "reason_included": "resolved PROGRAM PREFERENCE for principles-c-02",
+        "version": "ef05bace-74ce-41ea-a0d9-be154f74190d",
+        "authority": "preference",
+        "rule_kind": "PREFERENCE",
+        "content_hash": "5346181289c877aea66213456b19c43d8ba8b321bdb6b6d91434288decd95f1c",
+        "approval_state": "APPROVED",
+        "priority": "scope=3;kind=0;stage=1;order=1;code=principles-c-02"
+      },
+      {
+        "code": "principles-c-03",
+        "title": "Ecosystems are TARGET and DOORDASH only.",
+        "text": "Ecosystems are TARGET and DOORDASH only.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "PROGRAM",
+        "scope_id": "c0616ab6-7386-4fa3-af2c-9bac09540c4e",
+        "reason_included": "resolved PROGRAM PREFERENCE for principles-c-03",
+        "version": "3fdabe19-b5e5-4c58-b5b7-e5edc3e26c5c",
+        "authority": "preference",
+        "rule_kind": "PREFERENCE",
+        "content_hash": "38059e4da777683650e2b98038f30028352a381490d7afc0c30c1e7a6363f873",
+        "approval_state": "APPROVED",
+        "priority": "scope=3;kind=0;stage=1;order=2;code=principles-c-03"
+      },
+      {
+        "code": "principles-c-04",
+        "title": "Final format is 9:19.6 portrait (1206×2622 native, or about 851×1849). It is never 1080×1920 or 9:16.",
+        "text": "Final format is 9:19.6 portrait (1206×2622 native, or about 851×1849). It is never 1080×1920 or 9:16.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "PROGRAM",
+        "scope_id": "c0616ab6-7386-4fa3-af2c-9bac09540c4e",
+        "reason_included": "resolved PROGRAM PREFERENCE for principles-c-04",
+        "version": "67354a96-2bdf-415e-af5c-364b0990d64d",
+        "authority": "preference",
+        "rule_kind": "PREFERENCE",
+        "content_hash": "ea1a92861e0158723e6250f957cc6a76c8c895d3922a6b0d8c568376c28e8536",
+        "approval_state": "APPROVED",
+        "priority": "scope=3;kind=0;stage=1;order=3;code=principles-c-04"
+      },
+      {
+        "code": "principles-c-05",
+        "title": "Tone: casual and lowercase where natural, with emoji like 😭. No marketing, UI-doc or sitcom phrasing.",
+        "text": "Tone: casual and lowercase where natural, with emoji like 😭. No marketing, UI-doc or sitcom phrasing.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "PROGRAM",
+        "scope_id": "c0616ab6-7386-4fa3-af2c-9bac09540c4e",
+        "reason_included": "resolved PROGRAM PREFERENCE for principles-c-05",
+        "version": "f03f3544-3a7f-43cf-9f77-c6aff5c18e6d",
+        "authority": "preference",
+        "rule_kind": "PREFERENCE",
+        "content_hash": "2576eb65fe2311ae829f4ae5959c8097dee7e992f64b9f34034a4a0b1b192846",
+        "approval_state": "APPROVED",
+        "priority": "scope=3;kind=0;stage=1;order=4;code=principles-c-05"
+      },
+      {
+        "code": "principles-c-06",
+        "title": "Proven patterns (historical): overslept + Dasher + object outside; a couple fight + a dumb food total; a money ask + an unfair reason + proof.",
+        "text": "Proven patterns (historical): overslept + Dasher + object outside; a couple fight + a dumb food total; a money ask + an unfair reason + proof.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "PROGRAM",
+        "scope_id": "c0616ab6-7386-4fa3-af2c-9bac09540c4e",
+        "reason_included": "resolved PROGRAM PREFERENCE for principles-c-06",
+        "version": "8a4918e2-4653-4f6b-bba5-cba6140769ba",
+        "authority": "preference",
+        "rule_kind": "PREFERENCE",
+        "content_hash": "c575dd14718834d722cca5fe294a495b05c86e0a378b44da007c8d056a9be3ee",
+        "approval_state": "APPROVED",
+        "priority": "scope=3;kind=0;stage=1;order=5;code=principles-c-06"
+      },
+      {
+        "code": "principles-c-07",
+        "title": "Dark-mode iOS 26 surfaces.",
+        "text": "Dark-mode iOS 26 surfaces.",
+        "source": "PRINCIPLES_VS_HEURISTICS.md",
+        "scope": "PROGRAM",
+        "scope_id": "c0616ab6-7386-4fa3-af2c-9bac09540c4e",
+        "reason_included": "resolved PROGRAM PREFERENCE for principles-c-07",
+        "version": "e7167694-cba4-4a56-8b76-077d59f1ee5e",
+        "authority": "preference",
+        "rule_kind": "PREFERENCE",
+        "content_hash": "b747d5ad72f4997d1011831482e013db8cea7c8b4cb3951ad41be4f2dfbc7e2a",
+        "approval_state": "APPROVED",
+        "priority": "scope=3;kind=0;stage=1;order=6;code=principles-c-07"
+      }
+    ],
+    "account_policies": [],
+    "campaign_policies": [],
+    "creative_locks": [],
+    "skill_versions": [
+      {
+        "slug": "synthetic-story-generator",
+        "skill_role": "REQUIRED",
+        "source": "/home/box/agent-data/workflows/synthetic-story-generator/SKILL.md",
+        "scope": "GLOBAL",
+        "reason_included": "required skill for stage CONCEPT_GENERATION",
+        "version": "handoff-2026-10-05",
+        "version_id": "5e5b7693-4b34-4aca-9902-2dc6bf7b98ed",
+        "authority": "stage registry",
+        "content_hash": "edebf6cee79e3df215c2681e3154c41a7bde57598dcd2910db80dda34f322e1b",
+        "rule_kind": "HEURISTIC",
+        "dependencies": [
+          "commercial-aware-synthesis"
+        ],
+        "content": "---\nname: Synthetic story generator\ndescription: >-\n  Use when MyDashPerks needs original FICTIONAL/STAGED carousel premise cards.\n  It invents characters, relationships, mistakes and situations by recombining\n  abstract viral mechanics and psychology patterns from the viral-story-learning\n  pattern bank, never by copying plots. Outputs premise cards only (no\n  storyboards, dialogue, prices or amounts). Cards feed the existing\n  commercial-aware-synthesis stage as labeled staged gravity without changing\n  any protected skill or gate.\n---\n# Synthetic story generator\n\n## When to use\n- The user asks for new story or desire/utility premises.\n- A scout run produced thin gravity and fictional premises are wanted.\n\nDo not use it for research questions (trends, prices, comments, performance). Those stay in RESEARCH mode with the existing scouts.\n\n## Hard rules\n1. **Label.** Every card says `LABEL: FICTIONAL/STAGED`. Never present an invented event as researched or real.\n2. **Never invent research facts.** If a premise needs one (real price, current trend, retailer promo, comment behavior), write `NEEDS-RESEARCH: <fact>` and leave the value empty.\n3. **Mechanics yes, plots no.** Never reuse an exemplar's dialogue, names, amounts, objects, sequence, relationship configuration, joke or ending.\n   - Run the copy-distance check in `ORIGINALITY_AND_FORCE_CHECK.md`. Pass at ≥4. Any reused line/name/amount/joke/object detail fails.\n   - Burned names: Dre, Kai, Malik, Terrence, Jalen, Miles, Cole, Nate, Omar, Tori, Eli R., Jay, Mira, Toni, Cam.\n   - Burned kits:\n     - kind delivery driver hides the item\n     - freezer-chicken / \"handled\" rule-defiance couple\n     - driver asks how the order is so cheap\n4. **Premise cards only.** No storyboard, dialogue, prices, amounts, retailer choice or discount value unless a later request asks. Amount and economic-boundary work belongs to commercial-aware-synthesis.\n5. **Commercial position** is one of `ABSENT`, `ARTIFACT` or `OUTCOME-MEANS`. Never `CENTER`. No character mentions the site or discount, or asks or answers \"how is it so cheap\".\n6. **Keep the families separate.** Family I (interpersonal/event) needs a viewer job that survives deleting the discount. Family D (desire/utility) needs an identity constraint + an attainable, savable outcome. Hybrids name a primary family.\n7. **Protected skills are read-only.** Do not edit, restate as new rules, or bypass:\n   - commercial-aware-synthesis, V1.1/V1.2\n   - NO TRANSITION\n   - Gate 1/2A/2B\n   - Campaign Salience, Desire/Utility\n   - Live Heat, Object & Culture, Story & Conflict\n   - Production QA, Adaptation Blitz\n   The force score below is an internal self-check, not a pipeline gate.\n\n## Pattern bank (read before generating)\nAll in `/workspace/creative-pipeline/shared/research/viral-story-learning/`:\n- `VIRAL_STORY_MECHANIC_TAXONOMY.md`: mechanic codes (E-…, D-…, G-…) with swap tests.\n- `VIRAL_PSYCHOLOGY_PATTERN_BANK.md`: PSY-01…PSY-15 (when it works / needs / kills / false positives).\n- `WINNER_LOSER_CONTRAST_LIBRARY.md`: why similar surfaces won or lost.\n- `SYNTHETIC_STORY_GENERATION_GRAMMAR.md`: slots A–I, combination rules, originality operators.\n- `ORIGINALITY_AND_FORCE_CHECK.md`: copy-distance, force F1–F9, auto-rejects R1–R9, forced-premise FP1–FP4.\n- `VIRAL_CREATIVE_EXAMPLE_CARDS.md`: exemplars for copy-distance comparison.\n\n## Procedure\n1. Read the inputs: family request, optional object/domain hint, account lane, recent posts (for novelty), count.\n2. For each premise:\n   1. **Mechanic.** Pick a PRIMARY mechanic, then ≤2 SECONDARY from a different exemplar lineage.\n   2. **Story shape.** Pick a cast role not burned for that mechanic. Then set the violation, the info asymmetry (hook → middle → reveal), a proof type that answers the *story's* question, and an optional unmentioned residual question.\n   3. **Object last.** If the object hint can only be inserted (forced), reject the hint and say why.\n   4. **Surface path.** 2–4 native surface types, one per beat.\n   5. **Commercial position.**\n   6. **Engines.** Name the two campaign-independent engines in protected vocabulary: judgment / outcome desire / open question / proof demand / method gap.\n   7. **Self-checks.** Run the no-discount test, copy-distance, force score and auto-rejects.\n3. Output FORWARD cards (force ≥7, copy-distance ≥4, no auto-reject). Add REWORK cards with an originality operator, and a reject log.\n4. Hand FORWARD cards to commercial-aware-synthesis as `gravity_source: FICTIONAL/STAGED`. Do not run gates, choose amounts, or storyboard here.\n\n## Card schema\n```\nID: SSG-<YYYYMMDD>-<n>\nLABEL: FICTIONAL/STAGED\nFAMILY:\nPRIMARY MECHANIC / SECONDARY:\nPSYCH PATTERNS:\nCAST:\nVIOLATION / TENSION:\nINFO ASYMMETRY (hook → middle → reveal):\nPROOF TYPE:\nRESIDUAL QUESTION:\nSURFACE PATH (types only):\nCOMMERCIAL POSITION:\nOBJECT ROLE + REPLACEABILITY:\nVIEWER JOB:\nNO-DISCOUNT TEST:\nCAMPAIGN-INDEPENDENT ENGINES:\nNEAREST EXEMPLARS + COPY-DISTANCE:\nFORCE SCORE + VERDICT:\nRISKS:\nNEEDS-RESEARCH:\n```\n\n## Known limits\n- **The rubric is in-sample.** It was learned from 2 own winners and 4–5 own losers. Re-weight after the next 10 posted results.\n- **Family D evidence is thin.** Desire/utility media is not on disk, so treat D cards as lower confidence.\n"
+      },
+      {
+        "slug": "commercial-aware-synthesis",
+        "skill_role": "REQUIRED",
+        "source": "/home/box/agent-data/workflows/commercial-aware-synthesis/SKILL.md",
+        "scope": "GLOBAL",
+        "reason_included": "required skill for stage CONCEPT_GENERATION",
+        "version": "handoff-2026-10-05",
+        "version_id": "95b07559-0be2-4a37-9fbe-88d0ab9eb575",
+        "authority": "stage registry",
+        "content_hash": "822b9c18e1136a64932d423dc57048a5a7f35e86a08177a2ee2f13ea769dc5a0",
+        "rule_kind": "HEURISTIC",
+        "dependencies": [
+          "story-conflict-scout",
+          "object-culture-scout",
+          "live-heat-scout",
+          "synthetic-story-generator"
+        ],
+        "content": "---\nname: Commercial-aware synthesis\ndescription: >-\n  Use before the existing carousel gates, to compose a premise from human or\n  desire gravity, a creative mechanic, and a commercial affordance recorded as\n  an economic state boundary under variable promotional value up to $500,\n  searching for two campaign-independent attention engines plus one qualitative\n  economic job, without starting from a discount.\n---\n# Commercial-aware synthesis\n\n## When to use\nBefore any existing gate. This stage composes a premise. It does not change Story-Led Gate 1, Gate 2A, Gate 2B, the Desire/Utility gate, campaign salience, transaction fidelity, the existing-promotion distinction, credibility, the promotion-first firewall, the internal-filter threshold, the early exits, the regression cases, or production rules.\n\n## Pipeline\n1. Scout reality.\nWhen an input card is labeled `gravity_source: FICTIONAL/STAGED`, do not research whether the invented human event occurred; for `Scout reality`, research only the premise's factual surroundings (object desirability, culture/currentness, normal prices, retailer/transaction realism, and existing economic causes), while evaluating the fictional premise's creative strength through the normal downstream checks.\n2. Map human and desire gravity.\n3. Separately map commercial affordances as economic boundaries under the creative economic model.\n4. Commercially aware creative synthesis.\n5. Internal filter.\n6. Adversarial research.\n7. Existing applicable gates.\n8. Concept lock.\n9. Storyboard.\n10. Reference and asset acquisition.\n11. Production.\n12. QA.\n\nDo not generate a concept, run scouts, or choose a retailer, object, transaction, amount, or storyboard from this skill alone. Use the stage when a later request asks for origination.\n\n## Creative economic model versus real-world fulfillment\nKeep these apart.\n\n**Creative economic model.** For creative ideation, MyDashPerks supplies variable promotional value from $0 up to $500. The system may test any amount at or below $500 as the economic variable in a fictional or staged commerce scenario. It must not default to $500. Its job is to find what amount, if any, crosses a meaningful boundary in the premise. The creative presentation may express that value through a staged commerce artifact, such as a discount or savings line, when that is the chosen fictional presentation.\n\n**Real-world fulfillment model.** Separately researched reward-program mechanics, landing pages, Deals, delayed gift cards, affiliate paths, and site status. Those are fulfillment notes. They may inform later disclosure, landing-page, or offer-implementation decisions. They do not redefine the economic affordance used for creative synthesis, and they do not collapse the creative model during concept generation.\n\nDo not classify a candidate as impossible merely because the literal external rewards program would not generate that exact retailer UI state. Do not report the creative model as proof of a real retailer integration. Research has not verified that MyDashPerks literally integrates with Target, DoorDash, or another retailer checkout.\n\nResearch may still verify normal product prices, normal basket sizes, normal consumer behavior, real objects, real cultural situations, existing promotions, transaction chronology, whether the amount is materially meaningful, and whether another ordinary mechanism already explains the outcome. Preserve metadata: staged presentation versus verified real-world retailer behavior.\n\n## Commercial affordance map\nCategory-only labels are not enough. Access, choice, quantity or scale, quality, upgrade, timing, repetition, justification, and participation may appear as optional descriptive tags. They are not usable affordances by themselves.\n\nA usable commercial affordance is an economic boundary or state transition under the creative economic model. Do not invent a boundary because a vocabulary entry exists. Do not begin an entry with a fixed campaign amount, a brand name, a coupon, a retailer, a conveniently expensive SKU, or the claim that people like saving money. Do not ask how to use $500. Ask what economic threshold separates outcome A from outcome B, then whether an amount at or below $500 can plausibly cross it. Prefer the smallest materially sufficient amount over maximizing promotional value.\n\n### Required fields\nFor every proposed affordance record:\n\n- Current state\n- Real constraint\n- Behavior or outcome without promotional value\n- Boundary amount or range\n- Smallest material amount likely to cross the boundary\n- Behavior or outcome after crossing\n- Why that is a qualitative change\n- What already explains the change\n- What would make the amount too small\n- What would make the amount so large that it becomes unbelievable or destroys credibility\n- Presentation mode\n- Optional legacy tag\n\n### Valid transition families\nUse these as a compact working vocabulary, not boxes that must be filled:\n\n- Excluded → able to participate\n- Settling → preferred outcome\n- Not enough → enough for the actual need\n- Delayed → possible now\n- One-time → repeatable\n- Lower tier → meaningful upgrade\n- Abandon → complete\n- Forced substitute → exact needed thing\n\nOther transitions are allowed only when they represent the same kind of genuine change in behavior, access, choice, scale, timing, participation, or achievable outcome.\n\n### Non-transition\nExplicitly mark NO TRANSITION — CHEAPER SAME OUTCOME whenever promotional value only lowers the total, improves the deal, increases savings, reimburses part of an already-decided purchase, makes an existing choice slightly more rational, or makes an existing argument numerically larger or smaller. Those entries do not enter synthesis as usable economic jobs.\n\n### Existing-cause check\nBefore presenting a transition to synthesis, ask whether life, the category, another promotion, or the existing situation has already crossed or explained this boundary. If yes, the campaign cannot claim that transition merely because promotional value makes the same crossing cheaper. Examples of that failure shape: a personal ebook purchase that already provides delayed → now; pizza that already provides the wedding cost transformation; ribbon inflation that already explains a budget mum; return fees and fit uncertainty that already explain bracketing; medication that already explains a changed basket; thrift context that already explains cheapness.\n\nA lower count of usable boundaries is acceptable. No usable economic boundary is a successful map output. Do not weaken the representation because few boundaries appear. That scarcity is diagnostic evidence about whether promotional value can cross real thresholds inside natural gravity.\n\n## Synthesis\nHold three inputs apart: human or desire gravity, a creative mechanic, and a commercial affordance that survived the boundary map. Only this stage may combine them. Do not force economics into every human event. Do not choose the object or transaction because it maximizes promotional value. The object emerges because it expresses the intersection. The promotional value should intersect with existing gravity.\n\nFor a story, the human event must still hold if the campaign is removed. For desire or utility, the wanted or replicated outcome must still hold if the campaign is removed.\n\nA commercial affordance is not campaign fit. It is only a hypothesis that promotional value of some amount at or below $500 could change an outcome in the staged premise. The boundary map supplies candidate economic jobs. Later research still has to verify normal prices, baskets, behavior, objects, existing promotions, chronology, materiality, residual economic space, credibility, and what those promotions actually explain. Transaction fidelity is judged for the staged scenario. The existing gates decide whether it works.\n\n### Search objective\nDo not stop at the first natural intersection, and do not stop because gravity and an affordance merely intersect.\n\nWhile composing, actively search for an intersection that already contains at least two campaign-independent attention engines. The engines are judgment, outcome desire, open question, proof demand, and method gap.\n\n- Judgment: the viewer can take a side, or recognize a real social position that implies one.\n- Outcome desire: the object or result is wanted, absurd, useful, or recognizable with no price attached.\n- Open question: the first information is incomplete, and a later fact can change what it meant. Extra beats are not an open question.\n- Proof demand: the claim makes a specific artifact worth seeing, such as a receipt, a photo, or an order.\n- Method gap: once the outcome is believed, the viewer still wants the how.\n\nThose two engines must remain nameable if the campaign and its economics are completely removed. Prefer intersections where that stack is already present. Every engine must emerge from one coherent premise.\n\nEngine count is a search objective, not a gate. Do not create a downstream viral gate. Thin intersections may still be recorded. Do not invent an engine to reach two. Do not add conflict, characters, emergencies, desirable objects, urgency, purchases, or exaggerated economics merely to complete the stack or to make promotional value matter.\n\nIf strong gravity has no natural commercial job, leave it organic-only. If a commercial affordance exists but only one campaign-independent engine is present, record a thin intersection and do not manufacture another. Only after synthesis does a candidate enter the same existing internal filter and the same existing gates.\n\n### Economic job\nAfter the two campaign-independent engines are named, assign the commercial affordance exactly one job:\n\n- Create or amplify a method gap.\n- Create or amplify proof demand.\n- Create an outcome transformation.\n\nThe boundary map is what supplies the candidate job, including the smallest material amount likely to cross it. Synthesis still decides whether one naturally belongs with the gravity and the mechanic.\n\n### Qualitative change\nAmplify does not mean cheaper makes the argument stronger, a larger saving makes the object more desirable, a lower price makes an existing situation more dramatic, or economics raise the stakes numerically.\n\nThe economic job must produce a qualitative information-state change. A new unresolved how. A transaction artifact becomes specifically worth seeing or auditing. Or the economics materially change which outcome is reachable, chosen, scaled, upgraded, repeated, justified, or participated in.\n\nIf economics merely make an already-decided outcome cheaper, there is no economic job.\n\n### Promotion independence\nThe economic job cannot also be counted as one of the two campaign-independent engines. The minimum structure is engine A, plus engine B, plus one economic job. It is not engine A, plus a discount, plus the same discount counted again.\n\n## Promotion-first firewall\nReject synthesis when removing the campaign economics destroys the reason to watch or want the outcome, when the object exists only to provide discount headroom, when the human behavior was invented to justify a transaction, when the premise is only that a normally expensive thing is cheaper, when campaign branding is what creates the curiosity, or when an existing promotion already explains the relevant transformation.\n\nA small existing promotion explains only what it actually explains. A category whose current cultural story is already aggressive discounting can still fail salience.\n\n## Regression cases, do not reopen\nCheesecake Factory modified Cajun salmon: desire pass, transaction fidelity fail. Do not substitute the base salmon.\nMcDonald's Double Cheeseburger plus chocolate chip cookie: desire pass, transaction pass, economic materiality fail. Do not pad the basket.\nAlso still closed: the Cheesecake vow, the BYOMA campaign, migraine delivery, diaper-gift replenishment, and the wrong-door sandwich whose lesson is don't pay twice.\n\nEarly exits stay in force. The exact desired outcome must be expressible. Do not swap a base SKU for a modified outcome. Do not pad a small basket. Judge materiality on the natural transaction. Fail when a meaningful save consumes nearly all product value and leaves mostly fees. An artifact proves only what it visibly shows.\n"
+      },
+      {
+        "slug": "adaptation-blitz-match",
+        "skill_role": "REQUIRED",
+        "source": "/home/box/agent-data/workflows/adaptation-blitz-match/SKILL.md",
+        "scope": "GLOBAL",
+        "reason_included": "required skill for stage CONCEPT_GENERATION",
+        "version": "handoff-2026-10-05",
+        "version_id": "f0a2e950-377a-4db5-b71d-8dbec361cfa9",
+        "authority": "stage registry",
+        "content_hash": "e61fa87711af3edac430a1a768e3ee21baa961390c8d901d5322ff8eba8b29e8",
+        "rule_kind": "HEURISTIC",
+        "dependencies": [
+          "commercial-aware-synthesis"
+        ],
+        "content": "---\nname: Adaptation Blitz match\ndescription: >-\n  Use when choosing carousel finalists. Event evidence and object evidence stay\n  separate. Gate 1, then Gate 2A or 2B, then campaign salience. Rank only\n  stories whose campaign contribution is itself interesting. Neither origin\n  ranks higher.\n---\n# Adaptation / Blitz match\n\n## When to use\nAfter commercial-aware synthesis, scout reports, or a source card, when choosing which concepts survive. This skill may invent the situation, then tests it. It does not acquire assets, assign surfaces, or produce images.\n\nUpstream, and not a change to any gate: scout reality, map human and desire gravity, separately map commercial affordances, then commercial-aware creative synthesis, an internal filter, and adversarial research. Only then run the gates below. Run these before reference acquisition, avatar work, UI construction, or image generation.\n\nDo not begin from MyDashPerks, a discount, a payment screen, or a desirable object. Do not invent a promise, conflict, mistake, deadline, emergency, or disagreement to turn an object into a story. A real topic is not a human event. Neighboring true facts are not a chain. A plausible purchase is not a story.\n\n## Gate 1, organic story\nWould this still be interesting if MyDashPerks disappeared? It needs a genuine human reason to keep swiping. The human event working without the perk is required. It is not a Gate 2 failure.\n\n## Gate 2, structural fit\nThe campaign does not have to cause, resolve, justify, or alter the human event. Characters do not have to care about the perk. The economic loop does not have to be the same loop as the human loop.\n\nGATE 2A, INTEGRATED ECONOMICS. The economics matter to a real decision. Shape: human problem, then a purchase decision, then economics that change whether that decision makes sense.\n\nGATE 2B, PARALLEL ECONOMIC DISCOVERY. The human story works without the campaign. A transaction artifact that already belongs exposes a second question. The anomaly does not need to explain the human event. The iPad reference is a delivery situation plus a separate low-transaction method loop. Neither caused the other.\n\nA candidate needs 2A or 2B, not both. Structural fit is not enough.\n\n## Campaign salience\nIf campaign economics enter this transaction, do they create a new viewer question, desire, or replication impulse worth pursuing, or do they merely make an already-obvious decision cheaper?\n\nThis is not a requirement that the perk strengthen the human event. It is a requirement that the campaign contribution itself be interesting enough to carry attention.\n\nReject: use the free thing instead of buying another, don't pay twice, this purchase becomes slightly more rational, fees hurt less, ordinary replenishment costs less, and any takeaway whose whole point is that saving money is better.\n\nPotentially strong: economics surprising enough that viewers audit the transaction, access to a highly desirable object changes dramatically, a visible total conflicts with normal price expectations, a method gap, economics that create replication desire, or economic evidence that is a second comment-worthy discovery.\n\nGate 1 pass, Gate 2 structural pass, and salience fail means preserve it as organic material and do not campaign-produce it. Do not alter the candidate to rescue salience.\n\nStill reject: a perk name pasted onto unrelated proof, economics too ordinary to attract attention, an extra ad slide, a chronology-breaking surface, fabricated retailer behavior presented as fact, or a campaign reveal that destroys the stronger human reveal.\n\n## Observed curiosity is not campaign space\nOBSERVED RETAILER ECONOMIC CURIOSITY is only what research showed. CLEAN CAMPAIGN ECONOMIC SPACE is whether a later secondary detail would still be interpretable. Full price can be observed NONE and campaign space HIGH. An existing sale that already explains the cheapness is HIGH observed and LOW campaign space.\n\nResearch does not need to find MyDashPerks already operating. Staged campaign economics stay creative. Never report them as a verified promotion.\n\n## Presentation modes\nUse these only after the story demands a fact, a time, and a transaction state. STANDALONE UI, NESTED OR SHARED UI, or ORGANIC PHOTO PLUS SUPPORTING UI. Commerce state moves forward. Do not walk backward for a convenient perk slot.\n\n## Synthesis\nEvent evidence legitimizes the human mechanic. Object evidence legitimizes the object. They do not have to come from the same source. Label researched mechanic, researched object, and original staged synthesis. Never describe the combination as a researched event. Do not copy names, dialogue, amounts, jokes, circumstances, or visual sequence.\n\nDo not generate these plots again: overslept delivery, hidden package, food argument, dream gift, spent bill money, a dollar left, a couple misunderstanding, a shelf then a receipt, or payment as the final slide. Do not revive BYOMA as a campaign, the Cheesecake Factory vow, the modified salmon order, the migraine delivery, the diaper-gift replenishment, or the wrong-door sandwich \"don't pay twice\" campaign.\n\n## Pitch\nMaximum 3 pass/pass/salient candidates, or fewer. Zero is allowed. Then stop. No storyboard, no surfaces, no images.\n"
+      }
+    ],
+    "skill_dependency_audit": [
+      {
+        "skill": "synthetic-story-generator",
+        "dependency": "commercial-aware-synthesis",
+        "state": "included",
+        "reason": "dependency skill is in this stage packet",
+        "stage": "CONCEPT_GENERATION"
+      },
+      {
+        "skill": "commercial-aware-synthesis",
+        "dependency": "story-conflict-scout",
+        "state": "intentionally_not_included",
+        "reason": "stage registry did not select this dependency; structured creative state is carried separately when a StoryLock or DNA profile is in scope",
+        "stage": "CONCEPT_GENERATION"
+      },
+      {
+        "skill": "commercial-aware-synthesis",
+        "dependency": "object-culture-scout",
+        "state": "intentionally_not_included",
+        "reason": "stage registry did not select this dependency; structured creative state is carried separately when a StoryLock or DNA profile is in scope",
+        "stage": "CONCEPT_GENERATION"
+      },
+      {
+        "skill": "commercial-aware-synthesis",
+        "dependency": "live-heat-scout",
+        "state": "intentionally_not_included",
+        "reason": "stage registry did not select this dependency; structured creative state is carried separately when a StoryLock or DNA profile is in scope",
+        "stage": "CONCEPT_GENERATION"
+      },
+      {
+        "skill": "commercial-aware-synthesis",
+        "dependency": "synthetic-story-generator",
+        "state": "included",
+        "reason": "dependency skill is in this stage packet",
+        "stage": "CONCEPT_GENERATION"
+      },
+      {
+        "skill": "adaptation-blitz-match",
+        "dependency": "commercial-aware-synthesis",
+        "state": "included",
+        "reason": "dependency skill is in this stage packet",
+        "stage": "CONCEPT_GENERATION"
+      }
+    ],
+    "account_dna": {
+      "profile_id": "01622ddc-e913-4783-8514-ec29b6956f63",
+      "version_number": 1,
+      "origin": "HUMAN_SET",
+      "approval_state": "APPROVED",
+      "source": "account.current_approved_dna_profile_id",
+      "scope": "ACCOUNT",
+      "reason_included": "explicit current-approved DNA pointer",
+      "authority": "approved account dna",
+      "version": "1",
+      "observations": [
+        {
+          "field_name": "content_lane",
+          "value": "food and couples",
+          "evidence_kind": "HUMAN_SET_CONSTRAINT",
+          "confidence": null,
+          "sample_size": null,
+          "date_start": null,
+          "date_end": null,
+          "source_path": "ACCOUNT_STATE_TODAY.md",
+          "notes": null
+        },
+        {
+          "field_name": "post_views",
+          "value": "338200",
+          "evidence_kind": "HISTORICAL_OBSERVATION",
+          "confidence": null,
+          "sample_size": 1,
+          "date_start": null,
+          "date_end": null,
+          "source_path": "ACCOUNT_STATE_TODAY.md",
+          "notes": "Chick-fil-A post stated as 338.2K"
+        },
+        {
+          "field_name": "recurring_relationship",
+          "value": "Dre as boyfriend",
+          "evidence_kind": "HUMAN_SET_CONSTRAINT",
+          "confidence": null,
+          "sample_size": null,
+          "date_start": null,
+          "date_end": null,
+          "source_path": "ACCOUNT_STATE_TODAY.md",
+          "notes": null
+        }
+      ]
+    },
+    "creative_genome": null,
+    "genome_state": "NONE",
+    "selected_concept": null,
+    "benchmarks": [
+      {
+        "name": "Maria Chick-fil-A",
+        "account": "Maria",
+        "category": null,
+        "ecosystem": null,
+        "views": 338200,
+        "likes": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "lesson": "source text: 338.2K",
+        "metrics_note": "source text: 338.2K",
+        "source": "BENCHMARKS.md",
+        "holdout": false,
+        "scope": "PROGRAM",
+        "reason_included": "account match",
+        "version": "2e9060de-ce60-4ad2-a777-9e90788e1250",
+        "authority": "reference example"
+      },
+      {
+        "name": "Maria McChicken",
+        "account": "Maria",
+        "category": null,
+        "ecosystem": null,
+        "views": null,
+        "likes": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "lesson": "UNKNOWN / NEEDS FOLLOW-UP",
+        "metrics_note": "UNKNOWN / NEEDS FOLLOW-UP",
+        "source": "BENCHMARKS.md",
+        "holdout": false,
+        "scope": "PROGRAM",
+        "reason_included": "account match",
+        "version": "0c7d26d7-5c27-42a9-a72d-52c83851312b",
+        "authority": "reference example"
+      },
+      {
+        "name": "Brooke pink iPad / overslept",
+        "account": "Brooke",
+        "category": "WINNER",
+        "ecosystem": null,
+        "views": 2300000,
+        "likes": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "lesson": "source text: 2.3M",
+        "metrics_note": "source text: 2.3M",
+        "source": "BENCHMARKS.md",
+        "holdout": false,
+        "scope": "PROGRAM",
+        "reason_included": "category WINNER",
+        "version": "2b29c6d7-9335-4c97-9095-9383bd056e45",
+        "authority": "reference example"
+      },
+      {
+        "name": "Brooke boyfriend pink-iPad sequel",
+        "account": "Brooke",
+        "category": "WEAK",
+        "ecosystem": null,
+        "views": null,
+        "likes": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "lesson": "UNKNOWN",
+        "metrics_note": "UNKNOWN",
+        "source": "BENCHMARKS.md",
+        "holdout": false,
+        "scope": "PROGRAM",
+        "reason_included": "category WEAK",
+        "version": "2d37ac48-7560-447e-bd38-c7292e2a8b6c",
+        "authority": "reference example"
+      },
+      {
+        "name": "Sarah Dasher got nosy",
+        "account": "Sarah",
+        "category": "WEAK",
+        "ecosystem": null,
+        "views": null,
+        "likes": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "lesson": "UNKNOWN",
+        "metrics_note": "UNKNOWN",
+        "source": "BENCHMARKS.md",
+        "holdout": false,
+        "scope": "PROGRAM",
+        "reason_included": "category WEAK",
+        "version": "ba2213df-5dc1-400e-9930-b2209ac3501b",
+        "authority": "reference example"
+      },
+      {
+        "name": "Cent post",
+        "account": null,
+        "category": "FAILURE",
+        "ecosystem": null,
+        "views": null,
+        "likes": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "lesson": "did not travel",
+        "metrics_note": "did not travel",
+        "source": "BENCHMARKS.md",
+        "holdout": false,
+        "scope": "PROGRAM",
+        "reason_included": "category FAILURE",
+        "version": "c8f31e9d-7629-4eb6-a004-944725d9fc93",
+        "authority": "reference example"
+      },
+      {
+        "name": "Jenny screen recording",
+        "account": null,
+        "category": "FAILURE",
+        "ecosystem": null,
+        "views": null,
+        "likes": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "lesson": "did not travel",
+        "metrics_note": "did not travel",
+        "source": "BENCHMARKS.md",
+        "holdout": false,
+        "scope": "PROGRAM",
+        "reason_included": "category FAILURE",
+        "version": "be7f906c-efc1-4e15-bb8b-9721c1463656",
+        "authority": "reference example"
+      },
+      {
+        "name": "Lindy metadata joke",
+        "account": null,
+        "category": "FAILURE",
+        "ecosystem": null,
+        "views": null,
+        "likes": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "lesson": "did not travel",
+        "metrics_note": "did not travel",
+        "source": "BENCHMARKS.md",
+        "holdout": false,
+        "scope": "PROGRAM",
+        "reason_included": "category FAILURE",
+        "version": "e0c6b922-ad25-4b02-b546-39ec6d4b21b0",
+        "authority": "reference example"
+      },
+      {
+        "name": "Sarah MacBook",
+        "account": "Sarah",
+        "category": null,
+        "ecosystem": null,
+        "views": 150500,
+        "likes": null,
+        "comments": null,
+        "shares": null,
+        "saves": null,
+        "lesson": "source text: 150.5K",
+        "metrics_note": "source text: 150.5K",
+        "source": "BENCHMARKS.md",
+        "holdout": false,
+        "scope": "PROGRAM",
+        "reason_included": "non-holdout program benchmark",
+        "version": "c1bcfc1e-eeb9-4338-8058-fc386dcdcb16",
+        "authority": "reference example"
+      }
+    ],
+    "mechanic_context": {
+      "account_id": "d7731bd4-13f7-4a1a-a68d-2dbbec49189d",
+      "as_of": "2026-10-06T20:37:02.666607+00:00",
+      "source": "mechanic_observations",
+      "scope": "ACCOUNT",
+      "reason_included": "account-local mechanic history; no fatigue score",
+      "authority": "observation",
+      "version": "windows",
+      "windows": {
+        "last_7_days": [],
+        "last_30_days": [],
+        "lifetime": [],
+        "last_n_posts": []
+      },
+      "program_lifetime": []
+    },
+    "references": [],
+    "assets": [],
+    "comment_doors": [],
+    "continuity": [],
+    "excluded_for_token_budget": [
+      {
+        "slug": "find-purchase-screens-on-pinterest",
+        "skill_role": null,
+        "version_id": "c4279eea-b43c-451d-acd1-55089cb7f3f0",
+        "reason_excluded": "not part of stage CONCEPT_GENERATION",
+        "authority": "stage registry"
+      },
+      {
+        "slug": "ios-26-production-normalization",
+        "skill_role": null,
+        "version_id": "45862384-e971-43c0-aeed-04ba81dff831",
+        "reason_excluded": "not part of stage CONCEPT_GENERATION",
+        "authority": "stage registry"
+      },
+      {
+        "slug": "live-heat-scout",
+        "skill_role": null,
+        "version_id": "437eb9d4-8ad3-4dde-a59a-fd51c7785ee3",
+        "reason_excluded": "not part of stage CONCEPT_GENERATION",
+        "authority": "stage registry"
+      },
+      {
+        "slug": "object-culture-scout",
+        "skill_role": null,
+        "version_id": "2d623443-ad89-4a0c-8701-2a5f47b4ac58",
+        "reason_excluded": "not part of stage CONCEPT_GENERATION",
+        "authority": "stage registry"
+      },
+      {
+        "slug": "production-spec-qa",
+        "skill_role": null,
+        "version_id": "e5d6ae5f-a594-412c-9efe-2c7aa05d28d6",
+        "reason_excluded": "not part of stage CONCEPT_GENERATION",
+        "authority": "stage registry"
+      },
+      {
+        "slug": "story-conflict-scout",
+        "skill_role": null,
+        "version_id": "ebdd8458-fe6d-433d-9e91-d4f0d45f9048",
+        "reason_excluded": "not part of stage CONCEPT_GENERATION",
+        "authority": "stage registry"
+      },
+      {
+        "slug": "story-development",
+        "skill_role": null,
+        "version_id": "f7c0e0f1-b00f-429a-b7d1-af0b9e8d2c72",
+        "reason_excluded": "not part of stage CONCEPT_GENERATION",
+        "authority": "stage registry"
+      },
+      {
+        "slug": "visual-surface-acquisition",
+        "skill_role": null,
+        "version_id": "31c11b8d-685a-4ef2-8dd2-741921672ba3",
+        "reason_excluded": "not part of stage CONCEPT_GENERATION",
+        "authority": "stage registry"
+      },
+      {
+        "holdout": true,
+        "authority": "reference example",
+        "reason_excluded": "holdout benchmark",
+        "reason_included": "withheld from provider context"
+      },
+      {
+        "holdout": true,
+        "authority": "reference example",
+        "reason_excluded": "holdout benchmark",
+        "reason_included": "withheld from provider context"
+      },
+      {
+        "name": "DoorDash step refs",
+        "version": "7ba2730c-5807-4431-9da7-4c20c5806bf3",
+        "reason_excluded": "visual references are not loaded for stage CONCEPT_GENERATION"
+      },
+      {
+        "name": "Target reference bank V2",
+        "version": "076577bd-ca3a-4b28-828d-0709ee5ac382",
+        "reason_excluded": "visual references are not loaded for stage CONCEPT_GENERATION"
+      }
+    ],
+    "section_sizes": {
+      "task": {
+        "characters": 5462,
+        "token_estimate": 1365
+      },
+      "invariants": {
+        "characters": 10179,
+        "token_estimate": 2544
+      },
+      "policies": {
+        "characters": 2383,
+        "token_estimate": 595
+      },
+      "skills": {
+        "characters": 25250,
+        "token_estimate": 6312
+      },
+      "story_lock": {
+        "characters": 64,
+        "token_estimate": 16
+      },
+      "dna": {
+        "characters": 596,
+        "token_estimate": 149
+      },
+      "genome": {
+        "characters": 30,
+        "token_estimate": 7
+      },
+      "benchmarks": {
+        "characters": 2377,
+        "token_estimate": 594
+      },
+      "mechanics": {
+        "characters": 447,
+        "token_estimate": 111
+      },
+      "references": {
+        "characters": 90,
+        "token_estimate": 22
+      },
+      "other": {
+        "characters": 3063,
+        "token_estimate": 765
+      }
+    }
+  },
+  "compiled_text": "# Creative OS provider packet\nPROVIDER_EXECUTION: NOT_IMPLEMENTED\nUse only this packet. Do not search the web. Do not mutate stored creative truth.\nCOMPILER: context-compiler-0.3.0\nAS_OF: 2026-10-06T20:37:02.666607+00:00\nSTAGE: CONCEPT_GENERATION\n\n## TASK\nGenerate 5 NEW staged short-form carousel concepts appropriate for this account\nusing the current creative operating system.\n\nRequirements:\n- new concepts, not copies of benchmarks\n- story-native commerce\n- roughly 15–20 life-world where current account or program policy says so\n- believable human causality\n- multiple potential comment doors\n- do not pad baskets for economics\n- commerce and economic discovery should follow current policy\n- do not search the web in this manual evaluation\n- flag research needed instead\n\nDo not create a Creative or a StoryLock. These concepts are proposals for human review.\nTask id: e6c5f123-5025-45e4-97fd-a2e5fa0e91fc\nStage: CONCEPT_GENERATION\nStatus: CONSUMED\nExpected output: CONCEPT_GENERATION\nConstraints:\n{}\nInput refs:\n{}\n\n## OUTPUT CONTRACT CONCEPT_GENERATION\nReturn ConceptGenerationResult JSON only. Each concept is a proposal for human review. It is not a StoryLock. Leave unknown fields null. Do not copy holdout or benchmark stories.\n{\n  \"$defs\": {\n    \"ConceptDraft\": {\n      \"properties\": {\n        \"action_trigger\": {\n          \"anyOf\": [\n            {\n              \"type\": \"string\"\n            },\n            {\n              \"type\": \"null\"\n            }\n          ],\n          \"default\": null,\n          \"title\": \"Action Trigger\"\n        },\n        \"commerce_relation\": {\n          \"anyOf\": [\n            {\n              \"type\": \"string\"\n            },\n            {\n              \"type\": \"null\"\n            }\n          ],\n          \"default\": null,\n          \"title\": \"Commerce Relation\"\n        },\n        \"expected_consequence\": {\n          \"anyOf\": [\n            {\n              \"type\": \"string\"\n            },\n            {\n              \"type\": \"null\"\n            }\n          ],\n          \"default\": null,\n          \"title\": \"Expected Consequence\"\n        },\n        \"family\": {\n          \"anyOf\": [\n            {\n              \"type\": \"string\"\n            },\n            {\n              \"type\": \"null\"\n            }\n          ],\n          \"default\": null,\n          \"title\": \"Family\"\n        },\n        \"hook_direction\": {\n          \"anyOf\": [\n            {\n              \"type\": \"string\"\n            },\n            {\n              \"type\": \"null\"\n            }\n          ],\n          \"default\": null,\n          \"title\": \"Hook Direction\"\n        },\n        \"human_event\": {\n          \"anyOf\": [\n            {\n              \"type\": \"string\"\n            },\n            {\n              \"type\": \"null\"\n            }\n          ],\n          \"default\": null,\n          \"title\": \"Human Event\"\n        },\n        \"payoff\": {\n          \"anyOf\": [\n            {\n              \"type\": \"string\"\n            },\n            {\n              \"type\": \"null\"\n            }\n          ],\n          \"default\": null,\n          \"title\": \"Payoff\"\n        },\n        \"premise\": {\n          \"anyOf\": [\n            {\n              \"type\": \"string\"\n            },\n            {\n              \"type\": \"null\"\n            }\n          ],\n          \"default\": null,\n          \"title\": \"Premise\"\n        },\n        \"primary_comment_door\": {\n          \"anyOf\": [\n            {\n              \"type\": \"string\"\n            },\n            {\n              \"type\": \"null\"\n            }\n          ],\n          \"default\": null,\n          \"title\": \"Primary Comment Door\"\n        },\n        \"proof_surface_direction\": {\n          \"anyOf\": [\n            {\n              \"type\": \"string\"\n            },\n            {\n              \"type\": \"null\"\n            }\n          ],\n          \"default\": null,\n          \"title\": \"Proof Surface Direction\"\n        },\n        \"research_needed\": {\n          \"items\": {\n            \"type\": \"string\"\n          },\n          \"title\": \"Research Needed\",\n          \"type\": \"array\"\n        },\n        \"reveal\": {\n          \"anyOf\": [\n            {\n              \"type\": \"string\"\n            },\n            {\n              \"type\": \"null\"\n            }\n          ],\n          \"default\": null,\n          \"title\": \"Reveal\"\n        },\n        \"risks\": {\n          \"items\": {\n            \"type\": \"string\"\n          },\n          \"title\": \"Risks\",\n          \"type\": \"array\"\n        },\n        \"secondary_comment_doors\": {\n          \"items\": {\n            \"type\": \"string\"\n          },\n          \"title\": \"Secondary Comment Doors\",\n          \"type\": \"array\"\n        },\n        \"stakes\": {\n          \"anyOf\": [\n            {\n              \"type\": \"string\"\n            },\n            {\n              \"type\": \"null\"\n            }\n          ],\n          \"default\": null,\n          \"title\": \"Stakes\"\n        },\n        \"title\": {\n          \"title\": \"Title\",\n          \"type\": \"string\"\n        },\n        \"viral_texture_opportunities\": {\n          \"items\": {\n            \"type\": \"string\"\n          },\n          \"title\": \"Viral Texture Opportunities\",\n          \"type\": \"array\"\n        },\n        \"why_it_fits_account\": {\n          \"anyOf\": [\n            {\n              \"type\": \"string\"\n            },\n            {\n              \"type\": \"null\"\n            }\n          ],\n          \"default\": null,\n          \"title\": \"Why It Fits Account\"\n        }\n      },\n      \"required\": [\n        \"title\"\n      ],\n      \"title\": \"ConceptDraft\",\n      \"type\": \"object\"\n    }\n  },\n  \"properties\": {\n    \"concepts\": {\n      \"items\": {\n        \"$ref\": \"#/$defs/ConceptDraft\"\n      },\n      \"title\": \"Concepts\",\n      \"type\": \"array\"\n    }\n  },\n  \"required\": [\n    \"concepts\"\n  ],\n  \"title\": \"ConceptGenerationResult\",\n  \"type\": \"object\"\n}\n\n## GLOBAL INVARIANTS\n### principles-a-01 (GLOBAL INVARIANT)\nversion 32aa5351-805f-454f-8b0e-5064fb8fc8e7 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-01; retained regardless of token budget\nThe latest human-approved STORY_LOCK wins for story-specific values. Superseded assets are marked STALE; files are not deleted or rewritten.\n\n### principles-a-02 (GLOBAL INVARIANT)\nversion c1dce379-8a04-4702-9f78-7f92a077cae9 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-02; retained regardless of token budget\nAn explicit human correction beats any skill default, until the skill is updated.\n\n### principles-a-03 (GLOBAL INVARIANT)\nversion 173ff17a-478e-4d8a-88ce-266afb620b55 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-03; retained regardless of token budget\nProof boundary: a proof surface proves only what it literally shows. It cannot invent the actor's intent, location, payment causality or a retailer promotion.\n\n### principles-a-04 (GLOBAL INVARIANT)\nversion 478c3159-0a02-48c4-a864-a0ea58cf32e7 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-04; retained regardless of token budget\nResearch mode never invents evidence. Staged/creative economics are labeled FICTIONAL/STAGED and never presented as a real retailer promo.\n\n### principles-a-05 (GLOBAL INVARIANT)\nversion 7d2c61db-ee98-4454-a20d-aeaed4b37b8b priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-05; retained regardless of token budget\nReference-first production: when a suitable real base exists, edit it (smallest localized edit) and do not freehand-reconstruct retailer UI.\n\n### principles-a-06 (GLOBAL INVARIANT)\nversion c2f0abae-2da5-43b2-8a33-2c49bf62485a priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-06; retained regardless of token budget\nNever silently compress or squeeze native UI rows to fit content. If it doesn't fit, choose another real base or a natural scroll state.\n\n### principles-a-07 (GLOBAL INVARIANT)\nversion 39b2ded4-048b-43d1-ba78-9ad2c530d085 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-07; retained regardless of token budget\nStory-specific visible dates, times and weekdays come from the continuity ledger, not from the reference image.\n\n### principles-a-08 (GLOBAL INVARIANT)\nversion dafd8c70-dd09-48a4-9fd0-c7ab26310f9b priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-08; retained regardless of token budget\nCross-slide congruency: no impossible state or time transitions (for example \"tomorrow\" followed by the party already happening with no time change).\n\n### principles-a-09 (GLOBAL INVARIANT)\nversion 6394e18f-5cdc-4ffb-95e5-2cd1765f5a63 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-09; retained regardless of token budget\nDiscount-headroom firewall: never add an expensive item only to enlarge the subtotal or discount. Items must be story-motivated.\n\n### principles-a-10 (GLOBAL INVARIANT)\nversion 0077238d-b1b0-4aee-aef5-ad5599514475 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-10; retained regardless of token budget\nRe-edits start from the original base, never from a drifted or degraded output.\n\n### principles-a-11 (GLOBAL INVARIANT)\nversion 93eecee7-6bf8-4cef-92fa-4b01adeb57a7 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-11; retained regardless of token budget\nAny real object added to an image is edited in using a real photo of that exact object as a reference.\n\n### principles-a-12 (GLOBAL INVARIANT)\nversion 9ea10bd0-62fe-4cd8-8d66-aa1201861bc5 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-12; retained regardless of token budget\nReal products use the current generation and live price, verified before lock.\n\n### principles-a-13 (GLOBAL INVARIANT)\nversion 265197d7-7aa1-488a-812f-d6609cf24e3f priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-13; retained regardless of token budget\nRights: personal or unknown-rights images (Pinterest pins) are REFERENCE ONLY and their pixels are never shipped. Only CLEARED images may be a BASE.\n\n### principles-a-14 (GLOBAL INVARIANT)\nversion fa5aebf9-5933-4a3c-a317-278c592d23e4 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-14; retained regardless of token budget\nNever send messages, place orders or post without explicit human approval. DoorDash carts are referenced, never checked out.\n\n### principles-a-15 (GLOBAL INVARIANT)\nversion 2c4c62a2-68d5-4e9e-9bcb-d086ba176773 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-15; retained regardless of token budget\nThe money path appears only as the native \"mydashperks.com Discount\" line on the order surface. It never appears in chat bubbles, never on S1, and never as a savings slide.\n\n### principles-a-16 (GLOBAL INVARIANT)\nversion fa373c64-bebe-452d-a3f9-817375cc01c6 priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-16; retained regardless of token budget\nFrozen architecture (V1.2, CAS, Gates 1/2A/2B, campaign salience, Desire/Utility gate, scouts, Live Heat, firewall) is not modified without explicit authorization.\n\n### principles-a-17 (GLOBAL INVARIANT)\nversion d60ab077-cfb5-4540-86c1-f028fb77f2eb priority authoritative authority hard invariant\nIncluded because: resolved GLOBAL INVARIANT for principles-a-17; retained regardless of token budget\nNo burned real names or handles of private people. Amounts and clocks are internally consistent.\n\n### principles-b-01 (GLOBAL HEURISTIC)\nversion 14c0120d-5829-403f-be2d-f34097e9ebf6 priority scope=4;kind=1;stage=1;order=7;code=principles-b-01 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-01\nUse the hook-presentation router: cropped full thread, lock-screen, preview card, peek or thread plus floating hook. Peek only when the conversation fills the card.\n\n### principles-b-02 (GLOBAL HEURISTIC)\nversion 9c1c0857-89f2-427a-9ff7-a82d8ef86e1e priority scope=4;kind=1;stage=1;order=8;code=principles-b-02 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-02\nAvoid dead space on S1.\n\n### principles-b-03 (GLOBAL HEURISTIC)\nversion 9f9f99c8-9b3c-4ba0-b4ba-a7d835162480 priority scope=4;kind=1;stage=1;order=9;code=principles-b-03 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-03\n0–3 secondary micro-details per slide, with quality over count.\n\n### principles-b-04 (GLOBAL HEURISTIC)\nversion 57e47e38-5d8c-46fa-8e95-a1f634392da6 priority scope=4;kind=1;stage=1;order=10;code=principles-b-04 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-04\nCommerce is usually a secondary discovery. Family D can lead with desire/method instead.\n\n### principles-b-05 (GLOBAL HEURISTIC)\nversion eb4ac548-22ca-48a3-a778-220f0def0c8a priority scope=4;kind=1;stage=1;order=11;code=principles-b-05 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-05\nCamera-roll payoff: visual search first (Pinterest short queries) before any generation.\n\n### principles-b-06 (GLOBAL HEURISTIC)\nversion 19baffb7-8f82-44e6-986b-822a13b4e8c7 priority scope=4;kind=1;stage=1;order=12;code=principles-b-06 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-06\nS1 often uses a native TikTok floating hook. The hook must add new context, never restate a bubble.\n\n### principles-b-07 (GLOBAL HEURISTIC)\nversion 92aa2f2f-7c67-460e-b9ac-ca7865b2489c priority scope=4;kind=1;stage=1;order=13;code=principles-b-07 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-07\nStory-led concepts should usually work without the economics.\n\n### principles-b-08 (GLOBAL HEURISTIC)\nversion 22705ce8-d775-4e9b-993b-699105f47459 priority scope=4;kind=1;stage=1;order=14;code=principles-b-08 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-08\nA completed order can open a carousel. The notification-then-receipt opener is not required.\n\n### principles-b-09 (GLOBAL HEURISTIC)\nversion e5708e32-c49a-4824-925d-d9e660153271 priority scope=4;kind=1;stage=1;order=15;code=principles-b-09 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-09\nKeyboard-up Messages is an option, not a rule.\n\n### principles-b-10 (GLOBAL HEURISTIC)\nversion 5cb480ca-1bad-4734-8928-139ba08d9dd7 priority scope=4;kind=1;stage=1;order=16;code=principles-b-10 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-10\nTemporal compression is fine when it's plausible.\n\n### principles-b-11 (GLOBAL HEURISTIC)\nversion 63118b4d-03eb-49ad-9656-57a80148cdba priority scope=4;kind=1;stage=1;order=17;code=principles-b-11 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-11\nUse about three slides: hook, proof, payoff.\n\n### principles-b-12 (GLOBAL HEURISTIC)\nversion 1c3d0df0-3853-4475-8d0e-b81542249389 priority scope=4;kind=1;stage=1;order=18;code=principles-b-12 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-12\nMake aspect changes through the image editor, not by crop or stretch.\n\n### principles-b-13 (GLOBAL HEURISTIC)\nversion 51d947c9-0942-4701-a6b5-944191a6f5f0 priority scope=4;kind=1;stage=1;order=19;code=principles-b-13 authority heuristic\nIncluded because: resolved GLOBAL HEURISTIC for principles-b-13\nPrefer user-supplied screenshots over the reference bank, over organic screenshots, over marketing images, over generation.\n\n## PROGRAM POLICIES\n### principles-c-01 (PROGRAM PREFERENCE)\nversion ff8cbbe1-3168-484b-b00f-990bd2d192d0 priority scope=3;kind=0;stage=1;order=0;code=principles-c-01 authority preference\nIncluded because: resolved PROGRAM PREFERENCE for principles-c-01\nThe audience is the 15–20 phone life-world: high school or first-year college, parents, siblings, friends, group chats, Target/Sephora. Avoid adult gravity such as landlords, marketplaces and corporate settings.\n\n### principles-c-02 (PROGRAM PREFERENCE)\nversion ef05bace-74ce-41ea-a0d9-be154f74190d priority scope=3;kind=0;stage=1;order=1;code=principles-c-02 authority preference\nIncluded because: resolved PROGRAM PREFERENCE for principles-c-02\nAccount lanes: Maria covers food and couples (e.g. Dre). Sarah and Brooke cover electronics.\n\n### principles-c-03 (PROGRAM PREFERENCE)\nversion 3fdabe19-b5e5-4c58-b5b7-e5edc3e26c5c priority scope=3;kind=0;stage=1;order=2;code=principles-c-03 authority preference\nIncluded because: resolved PROGRAM PREFERENCE for principles-c-03\nEcosystems are TARGET and DOORDASH only.\n\n### principles-c-04 (PROGRAM PREFERENCE)\nversion 67354a96-2bdf-415e-af5c-364b0990d64d priority scope=3;kind=0;stage=1;order=3;code=principles-c-04 authority preference\nIncluded because: resolved PROGRAM PREFERENCE for principles-c-04\nFinal format is 9:19.6 portrait (1206×2622 native, or about 851×1849). It is never 1080×1920 or 9:16.\n\n### principles-c-05 (PROGRAM PREFERENCE)\nversion f03f3544-3a7f-43cf-9f77-c6aff5c18e6d priority scope=3;kind=0;stage=1;order=4;code=principles-c-05 authority preference\nIncluded because: resolved PROGRAM PREFERENCE for principles-c-05\nTone: casual and lowercase where natural, with emoji like 😭. No marketing, UI-doc or sitcom phrasing.\n\n### principles-c-06 (PROGRAM PREFERENCE)\nversion 8a4918e2-4653-4f6b-bba5-cba6140769ba priority scope=3;kind=0;stage=1;order=5;code=principles-c-06 authority preference\nIncluded because: resolved PROGRAM PREFERENCE for principles-c-06\nProven patterns (historical): overslept + Dasher + object outside; a couple fight + a dumb food total; a money ask + an unfair reason + proof.\n\n### principles-c-07 (PROGRAM PREFERENCE)\nversion e7167694-cba4-4a56-8b76-077d59f1ee5e priority scope=3;kind=0;stage=1;order=6;code=principles-c-07 authority preference\nIncluded because: resolved PROGRAM PREFERENCE for principles-c-07\nDark-mode iOS 26 surfaces.\n\n## SKILLS\n### synthetic-story-generator role REQUIRED\nversion handoff-2026-10-05 id 5e5b7693-4b34-4aca-9902-2dc6bf7b98ed hash edebf6cee79e3df215c2681e3154c41a7bde57598dcd2910db80dda34f322e1b\nIncluded because: required skill for stage CONCEPT_GENERATION\n---\nname: Synthetic story generator\ndescription: >-\n  Use when MyDashPerks needs original FICTIONAL/STAGED carousel premise cards.\n  It invents characters, relationships, mistakes and situations by recombining\n  abstract viral mechanics and psychology patterns from the viral-story-learning\n  pattern bank, never by copying plots. Outputs premise cards only (no\n  storyboards, dialogue, prices or amounts). Cards feed the existing\n  commercial-aware-synthesis stage as labeled staged gravity without changing\n  any protected skill or gate.\n---\n# Synthetic story generator\n\n## When to use\n- The user asks for new story or desire/utility premises.\n- A scout run produced thin gravity and fictional premises are wanted.\n\nDo not use it for research questions (trends, prices, comments, performance). Those stay in RESEARCH mode with the existing scouts.\n\n## Hard rules\n1. **Label.** Every card says `LABEL: FICTIONAL/STAGED`. Never present an invented event as researched or real.\n2. **Never invent research facts.** If a premise needs one (real price, current trend, retailer promo, comment behavior), write `NEEDS-RESEARCH: <fact>` and leave the value empty.\n3. **Mechanics yes, plots no.** Never reuse an exemplar's dialogue, names, amounts, objects, sequence, relationship configuration, joke or ending.\n   - Run the copy-distance check in `ORIGINALITY_AND_FORCE_CHECK.md`. Pass at ≥4. Any reused line/name/amount/joke/object detail fails.\n   - Burned names: Dre, Kai, Malik, Terrence, Jalen, Miles, Cole, Nate, Omar, Tori, Eli R., Jay, Mira, Toni, Cam.\n   - Burned kits:\n     - kind delivery driver hides the item\n     - freezer-chicken / \"handled\" rule-defiance couple\n     - driver asks how the order is so cheap\n4. **Premise cards only.** No storyboard, dialogue, prices, amounts, retailer choice or discount value unless a later request asks. Amount and economic-boundary work belongs to commercial-aware-synthesis.\n5. **Commercial position** is one of `ABSENT`, `ARTIFACT` or `OUTCOME-MEANS`. Never `CENTER`. No character mentions the site or discount, or asks or answers \"how is it so cheap\".\n6. **Keep the families separate.** Family I (interpersonal/event) needs a viewer job that survives deleting the discount. Family D (desire/utility) needs an identity constraint + an attainable, savable outcome. Hybrids name a primary family.\n7. **Protected skills are read-only.** Do not edit, restate as new rules, or bypass:\n   - commercial-aware-synthesis, V1.1/V1.2\n   - NO TRANSITION\n   - Gate 1/2A/2B\n   - Campaign Salience, Desire/Utility\n   - Live Heat, Object & Culture, Story & Conflict\n   - Production QA, Adaptation Blitz\n   The force score below is an internal self-check, not a pipeline gate.\n\n## Pattern bank (read before generating)\nAll in `/workspace/creative-pipeline/shared/research/viral-story-learning/`:\n- `VIRAL_STORY_MECHANIC_TAXONOMY.md`: mechanic codes (E-…, D-…, G-…) with swap tests.\n- `VIRAL_PSYCHOLOGY_PATTERN_BANK.md`: PSY-01…PSY-15 (when it works / needs / kills / false positives).\n- `WINNER_LOSER_CONTRAST_LIBRARY.md`: why similar surfaces won or lost.\n- `SYNTHETIC_STORY_GENERATION_GRAMMAR.md`: slots A–I, combination rules, originality operators.\n- `ORIGINALITY_AND_FORCE_CHECK.md`: copy-distance, force F1–F9, auto-rejects R1–R9, forced-premise FP1–FP4.\n- `VIRAL_CREATIVE_EXAMPLE_CARDS.md`: exemplars for copy-distance comparison.\n\n## Procedure\n1. Read the inputs: family request, optional object/domain hint, account lane, recent posts (for novelty), count.\n2. For each premise:\n   1. **Mechanic.** Pick a PRIMARY mechanic, then ≤2 SECONDARY from a different exemplar lineage.\n   2. **Story shape.** Pick a cast role not burned for that mechanic. Then set the violation, the info asymmetry (hook → middle → reveal), a proof type that answers the *story's* question, and an optional unmentioned residual question.\n   3. **Object last.** If the object hint can only be inserted (forced), reject the hint and say why.\n   4. **Surface path.** 2–4 native surface types, one per beat.\n   5. **Commercial position.**\n   6. **Engines.** Name the two campaign-independent engines in protected vocabulary: judgment / outcome desire / open question / proof demand / method gap.\n   7. **Self-checks.** Run the no-discount test, copy-distance, force score and auto-rejects.\n3. Output FORWARD cards (force ≥7, copy-distance ≥4, no auto-reject). Add REWORK cards with an originality operator, and a reject log.\n4. Hand FORWARD cards to commercial-aware-synthesis as `gravity_source: FICTIONAL/STAGED`. Do not run gates, choose amounts, or storyboard here.\n\n## Card schema\n```\nID: SSG-<YYYYMMDD>-<n>\nLABEL: FICTIONAL/STAGED\nFAMILY:\nPRIMARY MECHANIC / SECONDARY:\nPSYCH PATTERNS:\nCAST:\nVIOLATION / TENSION:\nINFO ASYMMETRY (hook → middle → reveal):\nPROOF TYPE:\nRESIDUAL QUESTION:\nSURFACE PATH (types only):\nCOMMERCIAL POSITION:\nOBJECT ROLE + REPLACEABILITY:\nVIEWER JOB:\nNO-DISCOUNT TEST:\nCAMPAIGN-INDEPENDENT ENGINES:\nNEAREST EXEMPLARS + COPY-DISTANCE:\nFORCE SCORE + VERDICT:\nRISKS:\nNEEDS-RESEARCH:\n```\n\n## Known limits\n- **The rubric is in-sample.** It was learned from 2 own winners and 4–5 own losers. Re-weight after the next 10 posted results.\n- **Family D evidence is thin.** Desire/utility media is not on disk, so treat D cards as lower confidence.\n\n\n### commercial-aware-synthesis role REQUIRED\nversion handoff-2026-10-05 id 95b07559-0be2-4a37-9fbe-88d0ab9eb575 hash 822b9c18e1136a64932d423dc57048a5a7f35e86a08177a2ee2f13ea769dc5a0\nIncluded because: required skill for stage CONCEPT_GENERATION\n---\nname: Commercial-aware synthesis\ndescription: >-\n  Use before the existing carousel gates, to compose a premise from human or\n  desire gravity, a creative mechanic, and a commercial affordance recorded as\n  an economic state boundary under variable promotional value up to $500,\n  searching for two campaign-independent attention engines plus one qualitative\n  economic job, without starting from a discount.\n---\n# Commercial-aware synthesis\n\n## When to use\nBefore any existing gate. This stage composes a premise. It does not change Story-Led Gate 1, Gate 2A, Gate 2B, the Desire/Utility gate, campaign salience, transaction fidelity, the existing-promotion distinction, credibility, the promotion-first firewall, the internal-filter threshold, the early exits, the regression cases, or production rules.\n\n## Pipeline\n1. Scout reality.\nWhen an input card is labeled `gravity_source: FICTIONAL/STAGED`, do not research whether the invented human event occurred; for `Scout reality`, research only the premise's factual surroundings (object desirability, culture/currentness, normal prices, retailer/transaction realism, and existing economic causes), while evaluating the fictional premise's creative strength through the normal downstream checks.\n2. Map human and desire gravity.\n3. Separately map commercial affordances as economic boundaries under the creative economic model.\n4. Commercially aware creative synthesis.\n5. Internal filter.\n6. Adversarial research.\n7. Existing applicable gates.\n8. Concept lock.\n9. Storyboard.\n10. Reference and asset acquisition.\n11. Production.\n12. QA.\n\nDo not generate a concept, run scouts, or choose a retailer, object, transaction, amount, or storyboard from this skill alone. Use the stage when a later request asks for origination.\n\n## Creative economic model versus real-world fulfillment\nKeep these apart.\n\n**Creative economic model.** For creative ideation, MyDashPerks supplies variable promotional value from $0 up to $500. The system may test any amount at or below $500 as the economic variable in a fictional or staged commerce scenario. It must not default to $500. Its job is to find what amount, if any, crosses a meaningful boundary in the premise. The creative presentation may express that value through a staged commerce artifact, such as a discount or savings line, when that is the chosen fictional presentation.\n\n**Real-world fulfillment model.** Separately researched reward-program mechanics, landing pages, Deals, delayed gift cards, affiliate paths, and site status. Those are fulfillment notes. They may inform later disclosure, landing-page, or offer-implementation decisions. They do not redefine the economic affordance used for creative synthesis, and they do not collapse the creative model during concept generation.\n\nDo not classify a candidate as impossible merely because the literal external rewards program would not generate that exact retailer UI state. Do not report the creative model as proof of a real retailer integration. Research has not verified that MyDashPerks literally integrates with Target, DoorDash, or another retailer checkout.\n\nResearch may still verify normal product prices, normal basket sizes, normal consumer behavior, real objects, real cultural situations, existing promotions, transaction chronology, whether the amount is materially meaningful, and whether another ordinary mechanism already explains the outcome. Preserve metadata: staged presentation versus verified real-world retailer behavior.\n\n## Commercial affordance map\nCategory-only labels are not enough. Access, choice, quantity or scale, quality, upgrade, timing, repetition, justification, and participation may appear as optional descriptive tags. They are not usable affordances by themselves.\n\nA usable commercial affordance is an economic boundary or state transition under the creative economic model. Do not invent a boundary because a vocabulary entry exists. Do not begin an entry with a fixed campaign amount, a brand name, a coupon, a retailer, a conveniently expensive SKU, or the claim that people like saving money. Do not ask how to use $500. Ask what economic threshold separates outcome A from outcome B, then whether an amount at or below $500 can plausibly cross it. Prefer the smallest materially sufficient amount over maximizing promotional value.\n\n### Required fields\nFor every proposed affordance record:\n\n- Current state\n- Real constraint\n- Behavior or outcome without promotional value\n- Boundary amount or range\n- Smallest material amount likely to cross the boundary\n- Behavior or outcome after crossing\n- Why that is a qualitative change\n- What already explains the change\n- What would make the amount too small\n- What would make the amount so large that it becomes unbelievable or destroys credibility\n- Presentation mode\n- Optional legacy tag\n\n### Valid transition families\nUse these as a compact working vocabulary, not boxes that must be filled:\n\n- Excluded → able to participate\n- Settling → preferred outcome\n- Not enough → enough for the actual need\n- Delayed → possible now\n- One-time → repeatable\n- Lower tier → meaningful upgrade\n- Abandon → complete\n- Forced substitute → exact needed thing\n\nOther transitions are allowed only when they represent the same kind of genuine change in behavior, access, choice, scale, timing, participation, or achievable outcome.\n\n### Non-transition\nExplicitly mark NO TRANSITION — CHEAPER SAME OUTCOME whenever promotional value only lowers the total, improves the deal, increases savings, reimburses part of an already-decided purchase, makes an existing choice slightly more rational, or makes an existing argument numerically larger or smaller. Those entries do not enter synthesis as usable economic jobs.\n\n### Existing-cause check\nBefore presenting a transition to synthesis, ask whether life, the category, another promotion, or the existing situation has already crossed or explained this boundary. If yes, the campaign cannot claim that transition merely because promotional value makes the same crossing cheaper. Examples of that failure shape: a personal ebook purchase that already provides delayed → now; pizza that already provides the wedding cost transformation; ribbon inflation that already explains a budget mum; return fees and fit uncertainty that already explain bracketing; medication that already explains a changed basket; thrift context that already explains cheapness.\n\nA lower count of usable boundaries is acceptable. No usable economic boundary is a successful map output. Do not weaken the representation because few boundaries appear. That scarcity is diagnostic evidence about whether promotional value can cross real thresholds inside natural gravity.\n\n## Synthesis\nHold three inputs apart: human or desire gravity, a creative mechanic, and a commercial affordance that survived the boundary map. Only this stage may combine them. Do not force economics into every human event. Do not choose the object or transaction because it maximizes promotional value. The object emerges because it expresses the intersection. The promotional value should intersect with existing gravity.\n\nFor a story, the human event must still hold if the campaign is removed. For desire or utility, the wanted or replicated outcome must still hold if the campaign is removed.\n\nA commercial affordance is not campaign fit. It is only a hypothesis that promotional value of some amount at or below $500 could change an outcome in the staged premise. The boundary map supplies candidate economic jobs. Later research still has to verify normal prices, baskets, behavior, objects, existing promotions, chronology, materiality, residual economic space, credibility, and what those promotions actually explain. Transaction fidelity is judged for the staged scenario. The existing gates decide whether it works.\n\n### Search objective\nDo not stop at the first natural intersection, and do not stop because gravity and an affordance merely intersect.\n\nWhile composing, actively search for an intersection that already contains at least two campaign-independent attention engines. The engines are judgment, outcome desire, open question, proof demand, and method gap.\n\n- Judgment: the viewer can take a side, or recognize a real social position that implies one.\n- Outcome desire: the object or result is wanted, absurd, useful, or recognizable with no price attached.\n- Open question: the first information is incomplete, and a later fact can change what it meant. Extra beats are not an open question.\n- Proof demand: the claim makes a specific artifact worth seeing, such as a receipt, a photo, or an order.\n- Method gap: once the outcome is believed, the viewer still wants the how.\n\nThose two engines must remain nameable if the campaign and its economics are completely removed. Prefer intersections where that stack is already present. Every engine must emerge from one coherent premise.\n\nEngine count is a search objective, not a gate. Do not create a downstream viral gate. Thin intersections may still be recorded. Do not invent an engine to reach two. Do not add conflict, characters, emergencies, desirable objects, urgency, purchases, or exaggerated economics merely to complete the stack or to make promotional value matter.\n\nIf strong gravity has no natural commercial job, leave it organic-only. If a commercial affordance exists but only one campaign-independent engine is present, record a thin intersection and do not manufacture another. Only after synthesis does a candidate enter the same existing internal filter and the same existing gates.\n\n### Economic job\nAfter the two campaign-independent engines are named, assign the commercial affordance exactly one job:\n\n- Create or amplify a method gap.\n- Create or amplify proof demand.\n- Create an outcome transformation.\n\nThe boundary map is what supplies the candidate job, including the smallest material amount likely to cross it. Synthesis still decides whether one naturally belongs with the gravity and the mechanic.\n\n### Qualitative change\nAmplify does not mean cheaper makes the argument stronger, a larger saving makes the object more desirable, a lower price makes an existing situation more dramatic, or economics raise the stakes numerically.\n\nThe economic job must produce a qualitative information-state change. A new unresolved how. A transaction artifact becomes specifically worth seeing or auditing. Or the economics materially change which outcome is reachable, chosen, scaled, upgraded, repeated, justified, or participated in.\n\nIf economics merely make an already-decided outcome cheaper, there is no economic job.\n\n### Promotion independence\nThe economic job cannot also be counted as one of the two campaign-independent engines. The minimum structure is engine A, plus engine B, plus one economic job. It is not engine A, plus a discount, plus the same discount counted again.\n\n## Promotion-first firewall\nReject synthesis when removing the campaign economics destroys the reason to watch or want the outcome, when the object exists only to provide discount headroom, when the human behavior was invented to justify a transaction, when the premise is only that a normally expensive thing is cheaper, when campaign branding is what creates the curiosity, or when an existing promotion already explains the relevant transformation.\n\nA small existing promotion explains only what it actually explains. A category whose current cultural story is already aggressive discounting can still fail salience.\n\n## Regression cases, do not reopen\nCheesecake Factory modified Cajun salmon: desire pass, transaction fidelity fail. Do not substitute the base salmon.\nMcDonald's Double Cheeseburger plus chocolate chip cookie: desire pass, transaction pass, economic materiality fail. Do not pad the basket.\nAlso still closed: the Cheesecake vow, the BYOMA campaign, migraine delivery, diaper-gift replenishment, and the wrong-door sandwich whose lesson is don't pay twice.\n\nEarly exits stay in force. The exact desired outcome must be expressible. Do not swap a base SKU for a modified outcome. Do not pad a small basket. Judge materiality on the natural transaction. Fail when a meaningful save consumes nearly all product value and leaves mostly fees. An artifact proves only what it visibly shows.\n\n\n### adaptation-blitz-match role REQUIRED\nversion handoff-2026-10-05 id f0a2e950-377a-4db5-b71d-8dbec361cfa9 hash e61fa87711af3edac430a1a768e3ee21baa961390c8d901d5322ff8eba8b29e8\nIncluded because: required skill for stage CONCEPT_GENERATION\n---\nname: Adaptation Blitz match\ndescription: >-\n  Use when choosing carousel finalists. Event evidence and object evidence stay\n  separate. Gate 1, then Gate 2A or 2B, then campaign salience. Rank only\n  stories whose campaign contribution is itself interesting. Neither origin\n  ranks higher.\n---\n# Adaptation / Blitz match\n\n## When to use\nAfter commercial-aware synthesis, scout reports, or a source card, when choosing which concepts survive. This skill may invent the situation, then tests it. It does not acquire assets, assign surfaces, or produce images.\n\nUpstream, and not a change to any gate: scout reality, map human and desire gravity, separately map commercial affordances, then commercial-aware creative synthesis, an internal filter, and adversarial research. Only then run the gates below. Run these before reference acquisition, avatar work, UI construction, or image generation.\n\nDo not begin from MyDashPerks, a discount, a payment screen, or a desirable object. Do not invent a promise, conflict, mistake, deadline, emergency, or disagreement to turn an object into a story. A real topic is not a human event. Neighboring true facts are not a chain. A plausible purchase is not a story.\n\n## Gate 1, organic story\nWould this still be interesting if MyDashPerks disappeared? It needs a genuine human reason to keep swiping. The human event working without the perk is required. It is not a Gate 2 failure.\n\n## Gate 2, structural fit\nThe campaign does not have to cause, resolve, justify, or alter the human event. Characters do not have to care about the perk. The economic loop does not have to be the same loop as the human loop.\n\nGATE 2A, INTEGRATED ECONOMICS. The economics matter to a real decision. Shape: human problem, then a purchase decision, then economics that change whether that decision makes sense.\n\nGATE 2B, PARALLEL ECONOMIC DISCOVERY. The human story works without the campaign. A transaction artifact that already belongs exposes a second question. The anomaly does not need to explain the human event. The iPad reference is a delivery situation plus a separate low-transaction method loop. Neither caused the other.\n\nA candidate needs 2A or 2B, not both. Structural fit is not enough.\n\n## Campaign salience\nIf campaign economics enter this transaction, do they create a new viewer question, desire, or replication impulse worth pursuing, or do they merely make an already-obvious decision cheaper?\n\nThis is not a requirement that the perk strengthen the human event. It is a requirement that the campaign contribution itself be interesting enough to carry attention.\n\nReject: use the free thing instead of buying another, don't pay twice, this purchase becomes slightly more rational, fees hurt less, ordinary replenishment costs less, and any takeaway whose whole point is that saving money is better.\n\nPotentially strong: economics surprising enough that viewers audit the transaction, access to a highly desirable object changes dramatically, a visible total conflicts with normal price expectations, a method gap, economics that create replication desire, or economic evidence that is a second comment-worthy discovery.\n\nGate 1 pass, Gate 2 structural pass, and salience fail means preserve it as organic material and do not campaign-produce it. Do not alter the candidate to rescue salience.\n\nStill reject: a perk name pasted onto unrelated proof, economics too ordinary to attract attention, an extra ad slide, a chronology-breaking surface, fabricated retailer behavior presented as fact, or a campaign reveal that destroys the stronger human reveal.\n\n## Observed curiosity is not campaign space\nOBSERVED RETAILER ECONOMIC CURIOSITY is only what research showed. CLEAN CAMPAIGN ECONOMIC SPACE is whether a later secondary detail would still be interpretable. Full price can be observed NONE and campaign space HIGH. An existing sale that already explains the cheapness is HIGH observed and LOW campaign space.\n\nResearch does not need to find MyDashPerks already operating. Staged campaign economics stay creative. Never report them as a verified promotion.\n\n## Presentation modes\nUse these only after the story demands a fact, a time, and a transaction state. STANDALONE UI, NESTED OR SHARED UI, or ORGANIC PHOTO PLUS SUPPORTING UI. Commerce state moves forward. Do not walk backward for a convenient perk slot.\n\n## Synthesis\nEvent evidence legitimizes the human mechanic. Object evidence legitimizes the object. They do not have to come from the same source. Label researched mechanic, researched object, and original staged synthesis. Never describe the combination as a researched event. Do not copy names, dialogue, amounts, jokes, circumstances, or visual sequence.\n\nDo not generate these plots again: overslept delivery, hidden package, food argument, dream gift, spent bill money, a dollar left, a couple misunderstanding, a shelf then a receipt, or payment as the final slide. Do not revive BYOMA as a campaign, the Cheesecake Factory vow, the modified salmon order, the migraine delivery, the diaper-gift replenishment, or the wrong-door sandwich \"don't pay twice\" campaign.\n\n## Pitch\nMaximum 3 pass/pass/salient candidates, or fewer. Zero is allowed. Then stop. No storyboard, no surfaces, no images.\n\n\n### SKILL DEPENDENCY AUDIT\n[\n  {\n    \"dependency\": \"commercial-aware-synthesis\",\n    \"reason\": \"dependency skill is in this stage packet\",\n    \"skill\": \"synthetic-story-generator\",\n    \"stage\": \"CONCEPT_GENERATION\",\n    \"state\": \"included\"\n  },\n  {\n    \"dependency\": \"story-conflict-scout\",\n    \"reason\": \"stage registry did not select this dependency; structured creative state is carried separately when a StoryLock or DNA profile is in scope\",\n    \"skill\": \"commercial-aware-synthesis\",\n    \"stage\": \"CONCEPT_GENERATION\",\n    \"state\": \"intentionally_not_included\"\n  },\n  {\n    \"dependency\": \"object-culture-scout\",\n    \"reason\": \"stage registry did not select this dependency; structured creative state is carried separately when a StoryLock or DNA profile is in scope\",\n    \"skill\": \"commercial-aware-synthesis\",\n    \"stage\": \"CONCEPT_GENERATION\",\n    \"state\": \"intentionally_not_included\"\n  },\n  {\n    \"dependency\": \"live-heat-scout\",\n    \"reason\": \"stage registry did not select this dependency; structured creative state is carried separately when a StoryLock or DNA profile is in scope\",\n    \"skill\": \"commercial-aware-synthesis\",\n    \"stage\": \"CONCEPT_GENERATION\",\n    \"state\": \"intentionally_not_included\"\n  },\n  {\n    \"dependency\": \"synthetic-story-generator\",\n    \"reason\": \"dependency skill is in this stage packet\",\n    \"skill\": \"commercial-aware-synthesis\",\n    \"stage\": \"CONCEPT_GENERATION\",\n    \"state\": \"included\"\n  },\n  {\n    \"dependency\": \"commercial-aware-synthesis\",\n    \"reason\": \"dependency skill is in this stage packet\",\n    \"skill\": \"adaptation-blitz-match\",\n    \"stage\": \"CONCEPT_GENERATION\",\n    \"state\": \"included\"\n  }\n]\n\n## CURRENT STORY LOCK\nNo current approved StoryLock is in scope.\n\n## ACCOUNT DNA\nprofile 01622ddc-e913-4783-8514-ec29b6956f63 version 1 origin HUMAN_SET approval APPROVED\nIncluded because: explicit current-approved DNA pointer\n- content_lane = food and couples [HUMAN_SET_CONSTRAINT] confidence None sample None dates None..None source ACCOUNT_STATE_TODAY.md\n- post_views = 338200 [HISTORICAL_OBSERVATION] confidence None sample 1 dates None..None source ACCOUNT_STATE_TODAY.md\n  notes: Chick-fil-A post stated as 338.2K\n- recurring_relationship = Dre as boyfriend [HUMAN_SET_CONSTRAINT] confidence None sample None dates None..None source ACCOUNT_STATE_TODAY.md\n\n## CREATIVE GENOME\nstate: NONE\n\n## BENCHMARKS\n### Maria Chick-fil-A\naccount Maria category None ecosystem None holdout False\nmetrics views 338200 likes None comments None shares None saves None\nlesson: source text: 338.2K\nmetrics note: source text: 338.2K\nIncluded because: account match\nsource: BENCHMARKS.md\n\n### Maria McChicken\naccount Maria category None ecosystem None holdout False\nmetrics views None likes None comments None shares None saves None\nlesson: UNKNOWN / NEEDS FOLLOW-UP\nmetrics note: UNKNOWN / NEEDS FOLLOW-UP\nIncluded because: account match\nsource: BENCHMARKS.md\n\n### Brooke pink iPad / overslept\naccount Brooke category WINNER ecosystem None holdout False\nmetrics views 2300000 likes None comments None shares None saves None\nlesson: source text: 2.3M\nmetrics note: source text: 2.3M\nIncluded because: category WINNER\nsource: BENCHMARKS.md\n\n### Brooke boyfriend pink-iPad sequel\naccount Brooke category WEAK ecosystem None holdout False\nmetrics views None likes None comments None shares None saves None\nlesson: UNKNOWN\nmetrics note: UNKNOWN\nIncluded because: category WEAK\nsource: BENCHMARKS.md\n\n### Sarah Dasher got nosy\naccount Sarah category WEAK ecosystem None holdout False\nmetrics views None likes None comments None shares None saves None\nlesson: UNKNOWN\nmetrics note: UNKNOWN\nIncluded because: category WEAK\nsource: BENCHMARKS.md\n\n### Cent post\naccount None category FAILURE ecosystem None holdout False\nmetrics views None likes None comments None shares None saves None\nlesson: did not travel\nmetrics note: did not travel\nIncluded because: category FAILURE\nsource: BENCHMARKS.md\n\n### Jenny screen recording\naccount None category FAILURE ecosystem None holdout False\nmetrics views None likes None comments None shares None saves None\nlesson: did not travel\nmetrics note: did not travel\nIncluded because: category FAILURE\nsource: BENCHMARKS.md\n\n### Lindy metadata joke\naccount None category FAILURE ecosystem None holdout False\nmetrics views None likes None comments None shares None saves None\nlesson: did not travel\nmetrics note: did not travel\nIncluded because: category FAILURE\nsource: BENCHMARKS.md\n\n### Sarah MacBook\naccount Sarah category None ecosystem None holdout False\nmetrics views 150500 likes None comments None shares None saves None\nlesson: source text: 150.5K\nmetrics note: source text: 150.5K\nIncluded because: non-holdout program benchmark\nsource: BENCHMARKS.md\n\n## MECHANIC HISTORY\n{\n  \"account_id\": \"d7731bd4-13f7-4a1a-a68d-2dbbec49189d\",\n  \"as_of\": \"2026-10-06T20:37:02.666607+00:00\",\n  \"authority\": \"observation\",\n  \"program_lifetime\": [],\n  \"reason_included\": \"account-local mechanic history; no fatigue score\",\n  \"scope\": \"ACCOUNT\",\n  \"source\": \"mechanic_observations\",\n  \"version\": \"windows\",\n  \"windows\": {\n    \"last_30_days\": [],\n    \"last_7_days\": [],\n    \"last_n_posts\": [],\n    \"lifetime\": []\n  }\n}\n\n## REFERENCES AND ASSET METADATA\nNo visual reference metadata was selected for this stage.\n\n## SCOPE\n{\n  \"account\": {\n    \"id\": \"d7731bd4-13f7-4a1a-a68d-2dbbec49189d\",\n    \"name\": \"Maria\",\n    \"slug\": \"maria\"\n  },\n  \"campaign\": null,\n  \"creative\": null,\n  \"ecosystem\": {\n    \"code\": \"DOORDASH\",\n    \"id\": \"7ef60440-4e82-49a0-85c8-07d4a323d937\",\n    \"name\": \"DoorDash\"\n  },\n  \"program\": {\n    \"id\": \"c0616ab6-7386-4fa3-af2c-9bac09540c4e\",\n    \"name\": \"MyDashPerks\",\n    \"slug\": \"mydashperks\"\n  }\n}\n\n## SELECTED CONCEPT\nNo selected concept is linked.\n\n## COMMENT DOORS\n[]\n\n## CONTINUITY\n[]\n\n## EXCLUSIONS\n[\n  {\n    \"authority\": \"stage registry\",\n    \"reason_excluded\": \"not part of stage CONCEPT_GENERATION\",\n    \"skill_role\": null,\n    \"slug\": \"find-purchase-screens-on-pinterest\",\n    \"version_id\": \"c4279eea-b43c-451d-acd1-55089cb7f3f0\"\n  },\n  {\n    \"authority\": \"stage registry\",\n    \"reason_excluded\": \"not part of stage CONCEPT_GENERATION\",\n    \"skill_role\": null,\n    \"slug\": \"ios-26-production-normalization\",\n    \"version_id\": \"45862384-e971-43c0-aeed-04ba81dff831\"\n  },\n  {\n    \"authority\": \"stage registry\",\n    \"reason_excluded\": \"not part of stage CONCEPT_GENERATION\",\n    \"skill_role\": null,\n    \"slug\": \"live-heat-scout\",\n    \"version_id\": \"437eb9d4-8ad3-4dde-a59a-fd51c7785ee3\"\n  },\n  {\n    \"authority\": \"stage registry\",\n    \"reason_excluded\": \"not part of stage CONCEPT_GENERATION\",\n    \"skill_role\": null,\n    \"slug\": \"object-culture-scout\",\n    \"version_id\": \"2d623443-ad89-4a0c-8701-2a5f47b4ac58\"\n  },\n  {\n    \"authority\": \"stage registry\",\n    \"reason_excluded\": \"not part of stage CONCEPT_GENERATION\",\n    \"skill_role\": null,\n    \"slug\": \"production-spec-qa\",\n    \"version_id\": \"e5d6ae5f-a594-412c-9efe-2c7aa05d28d6\"\n  },\n  {\n    \"authority\": \"stage registry\",\n    \"reason_excluded\": \"not part of stage CONCEPT_GENERATION\",\n    \"skill_role\": null,\n    \"slug\": \"story-conflict-scout\",\n    \"version_id\": \"ebdd8458-fe6d-433d-9e91-d4f0d45f9048\"\n  },\n  {\n    \"authority\": \"stage registry\",\n    \"reason_excluded\": \"not part of stage CONCEPT_GENERATION\",\n    \"skill_role\": null,\n    \"slug\": \"story-development\",\n    \"version_id\": \"f7c0e0f1-b00f-429a-b7d1-af0b9e8d2c72\"\n  },\n  {\n    \"authority\": \"stage registry\",\n    \"reason_excluded\": \"not part of stage CONCEPT_GENERATION\",\n    \"skill_role\": null,\n    \"slug\": \"visual-surface-acquisition\",\n    \"version_id\": \"31c11b8d-685a-4ef2-8dd2-741921672ba3\"\n  },\n  {\n    \"authority\": \"reference example\",\n    \"holdout\": true,\n    \"reason_excluded\": \"holdout benchmark\",\n    \"reason_included\": \"withheld from provider context\"\n  },\n  {\n    \"authority\": \"reference example\",\n    \"holdout\": true,\n    \"reason_excluded\": \"holdout benchmark\",\n    \"reason_included\": \"withheld from provider context\"\n  },\n  {\n    \"name\": \"DoorDash step refs\",\n    \"reason_excluded\": \"visual references are not loaded for stage CONCEPT_GENERATION\",\n    \"version\": \"7ba2730c-5807-4431-9da7-4c20c5806bf3\"\n  },\n  {\n    \"name\": \"Target reference bank V2\",\n    \"reason_excluded\": \"visual references are not loaded for stage CONCEPT_GENERATION\",\n    \"version\": \"076577bd-ca3a-4b28-828d-0709ee5ac382\"\n  }\n]\n\nSKILL COVERAGE: COVERED\n\n## SECTION SIZES\n- task: 5462 characters, token estimate 1365\n- invariants: 10179 characters, token estimate 2544\n- policies: 2383 characters, token estimate 595\n- skills: 25250 characters, token estimate 6312\n- story_lock: 64 characters, token estimate 16\n- dna: 596 characters, token estimate 149\n- genome: 30 characters, token estimate 7\n- benchmarks: 2377 characters, token estimate 594\n- mechanics: 447 characters, token estimate 111\n- references: 90 characters, token estimate 22\n- other: 3063 characters, token estimate 765\n"
+}

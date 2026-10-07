@@ -1,0 +1,486 @@
+[
+ {
+  "name": "story-conflict-scout",
+  "path": "/home/box/agent-data/workflows/story-conflict-scout/SKILL.md",
+  "status": "ACTIVE",
+  "stage": "research",
+  "purpose": "Find real events people do/react to",
+  "inputs": [
+   "scope/brief"
+  ],
+  "outputs": [
+   "event cards"
+  ],
+  "reads": [
+   "web, TikTok scrapes"
+  ],
+  "writes": [
+   "shared/research/<run>/"
+  ],
+  "requires_human_approval": true,
+  "upstream": [],
+  "downstream": [
+   "commercial-aware-synthesis",
+   "adaptation-blitz-match"
+  ],
+  "authoritative_for": [
+   "event evidence"
+  ],
+  "must_not_override": [
+   "object evidence",
+   "concept invention"
+  ],
+  "informal_current_contract": true
+ },
+ {
+  "name": "object-culture-scout",
+  "path": "/home/box/agent-data/workflows/object-culture-scout/SKILL.md",
+  "status": "ACTIVE",
+  "stage": "research",
+  "purpose": "Find objects across worlds",
+  "inputs": [
+   "scope"
+  ],
+  "outputs": [
+   "object cards"
+  ],
+  "reads": [
+   "web"
+  ],
+  "writes": [
+   "shared/research/<run>/"
+  ],
+  "requires_human_approval": true,
+  "upstream": [],
+  "downstream": [
+   "commercial-aware-synthesis"
+  ],
+  "authoritative_for": [
+   "object evidence"
+  ],
+  "must_not_override": [
+   "event evidence"
+  ],
+  "informal_current_contract": true
+ },
+ {
+  "name": "live-heat-scout",
+  "path": "/home/box/agent-data/workflows/live-heat-scout/SKILL.md",
+  "status": "ACTIVE",
+  "stage": "research",
+  "purpose": "Live culture heat cards (VALIDATION_CARD)",
+  "inputs": [
+   "scope"
+  ],
+  "outputs": [
+   "heat cards"
+  ],
+  "reads": [
+   "web, QUERY_HYGIENE_PLAYBOOK.md"
+  ],
+  "writes": [
+   "shared/research/<run>/"
+  ],
+  "requires_human_approval": true,
+  "upstream": [],
+  "downstream": [
+   "commercial-aware-synthesis"
+  ],
+  "authoritative_for": [
+   "current heat"
+  ],
+  "must_not_override": [
+   "Story/Object scout findings"
+  ],
+  "informal_current_contract": true
+ },
+ {
+  "name": "commerce-world-mapper",
+  "path": "/home/box/agent-data/workflows/commerce-world-mapper/SKILL.md",
+  "status": "SUPPORTING",
+  "stage": "research",
+  "purpose": "Map retailer journeys/surfaces/objects",
+  "inputs": [
+   "retailer"
+  ],
+  "outputs": [
+   "world map"
+  ],
+  "reads": [
+   "web, reference banks"
+  ],
+  "writes": [
+   "shared/research/"
+  ],
+  "requires_human_approval": false,
+  "upstream": [],
+  "downstream": [
+   "commercial-aware-synthesis",
+   "production-spec-qa"
+  ],
+  "authoritative_for": [
+   "which surfaces exist"
+  ],
+  "must_not_override": [
+   "concept choice"
+  ],
+  "informal_current_contract": true
+ },
+ {
+  "name": "source-card",
+  "path": "/home/box/agent-data/workflows/source-card/SKILL.md",
+  "status": "SUPPORTING",
+  "stage": "research",
+  "purpose": "Post/link/screenshot to source card",
+  "inputs": [
+   "url or screenshot"
+  ],
+  "outputs": [
+   "source card JSON/md (frame roles, surface type, info-state change)"
+  ],
+  "reads": [
+   "post"
+  ],
+  "writes": [
+   "_examples_stage/EXAMPLES/source_cards/cards/*.json (historic)"
+  ],
+  "requires_human_approval": false,
+  "upstream": [],
+  "downstream": [
+   "adaptation-blitz-match"
+  ],
+  "authoritative_for": [
+   "source facts"
+  ],
+  "must_not_override": [],
+  "informal_current_contract": true
+ },
+ {
+  "name": "synthetic-story-generator",
+  "path": "/home/box/agent-data/workflows/synthetic-story-generator/SKILL.md",
+  "status": "ACTIVE",
+  "stage": "concept origination",
+  "purpose": "Fictional/staged premise cards",
+  "inputs": [
+   "pattern bank"
+  ],
+  "outputs": [
+   "premise cards (no storyboards/prices)"
+  ],
+  "reads": [
+   "shared/research/viral-story-learning/*"
+  ],
+  "writes": [
+   "shared/research/ssg-*/"
+  ],
+  "requires_human_approval": true,
+  "upstream": [],
+  "downstream": [
+   "commercial-aware-synthesis"
+  ],
+  "authoritative_for": [
+   "staged premise gravity"
+  ],
+  "must_not_override": [
+   "gates",
+   "research evidence"
+  ],
+  "informal_current_contract": true
+ },
+ {
+  "name": "commercial-aware-synthesis",
+  "path": "/home/box/agent-data/workflows/commercial-aware-synthesis/SKILL.md",
+  "status": "ACTIVE (frozen V1.2)",
+  "stage": "synthesis",
+  "purpose": "Premise + mechanic + economic state boundary; promo $0-500 derived",
+  "inputs": [
+   "scout cards",
+   "premise cards"
+  ],
+  "outputs": [
+   "synthesized premises with economic job"
+  ],
+  "reads": [
+   "scout outputs"
+  ],
+  "writes": [
+   "research md"
+  ],
+  "requires_human_approval": true,
+  "upstream": [
+   "scouts",
+   "synthetic-story-generator"
+  ],
+  "downstream": [
+   "adaptation-blitz-match"
+  ],
+  "authoritative_for": [
+   "economic boundary"
+  ],
+  "must_not_override": [
+   "promotion-first firewall"
+  ],
+  "informal_current_contract": true
+ },
+ {
+  "name": "adaptation-blitz-match",
+  "path": "/home/box/agent-data/workflows/adaptation-blitz-match/SKILL.md",
+  "status": "ACTIVE (frozen)",
+  "stage": "gating",
+  "purpose": "Gate 1, Gate 2A/2B, campaign salience, rank finalists",
+  "inputs": [
+   "premises"
+  ],
+  "outputs": [
+   "ranked finalists"
+  ],
+  "reads": [
+   "premises"
+  ],
+  "writes": [
+   "research md"
+  ],
+  "requires_human_approval": true,
+  "upstream": [
+   "commercial-aware-synthesis"
+  ],
+  "downstream": [
+   "human concept lock",
+   "story-development"
+  ],
+  "authoritative_for": [
+   "finalist ranking"
+  ],
+  "must_not_override": [
+   "story-development lock"
+  ],
+  "informal_current_contract": true
+ },
+ {
+  "name": "chat-story-slideshow",
+  "path": "/home/box/agent-data/workflows/chat-story-slideshow/SKILL.md",
+  "status": "SUPPORTING",
+  "stage": "story (optional)",
+  "purpose": "Text-thread specialist only when needed",
+  "inputs": [
+   "locked story"
+  ],
+  "outputs": [
+   "thread design"
+  ],
+  "reads": [],
+  "writes": [],
+  "requires_human_approval": false,
+  "upstream": [
+   "concept lock"
+  ],
+  "downstream": [
+   "story-development"
+  ],
+  "authoritative_for": [],
+  "must_not_override": [
+   "S1 choice",
+   "bubble count",
+   "checkout ending"
+  ],
+  "informal_current_contract": true
+ },
+ {
+  "name": "story-development",
+  "path": "/home/box/agent-data/workflows/story-development/SKILL.md",
+  "status": "ACTIVE",
+  "stage": "story development",
+  "purpose": "Pass1 propulsion, Pass2 comment surface, Pass3 continuity; current-lock precedence",
+  "inputs": [
+   "locked concept",
+   "surface/transaction spec"
+  ],
+  "outputs": [
+   "STORY_LOCK record (hook, propulsion, details, comment doors, STORY DATE, CONTINUITY LEDGER, STATE-TRANSITION CHECK, STALE ASSETS)"
+  ],
+  "reads": [
+   "concept, spec, reference banks"
+  ],
+  "writes": [
+   "outputs/<story>_vN/STORY_LOCK.md",
+   "STALE_ASSETS.md"
+  ],
+  "requires_human_approval": true,
+  "upstream": [
+   "adaptation-blitz-match",
+   "human concept lock"
+  ],
+  "downstream": [
+   "production-spec-qa"
+  ],
+  "authoritative_for": [
+   "story truth",
+   "visible story dates/times"
+  ],
+  "must_not_override": [
+   "frozen gates",
+   "concept selection"
+  ],
+  "informal_current_contract": true
+ },
+ {
+  "name": "production-spec-qa",
+  "path": "/home/box/agent-data/workflows/production-spec-qa/SKILL.md",
+  "status": "ACTIVE",
+  "stage": "production routing + QA",
+  "purpose": "Router, S1 hook gate, organic reference discovery, verify-only mirrors, 9:19.6",
+  "inputs": [
+   "STORY_LOCK",
+   "reference banks"
+  ],
+  "outputs": [
+   "route per region, asset specs, QA pass/fail"
+  ],
+  "reads": [
+   "STORY_LOCK",
+   "target-reference-bank-v2",
+   "templates"
+  ],
+  "writes": [
+   "QA notes (chat or QA_*.md)"
+  ],
+  "requires_human_approval": false,
+  "upstream": [
+   "story-development"
+  ],
+  "downstream": [
+   "visual-surface-acquisition",
+   "find-purchase-screens-on-pinterest",
+   "ios-26-production-normalization"
+  ],
+  "authoritative_for": [
+   "production method",
+   "native visual structure"
+  ],
+  "must_not_override": [
+   "STORY_LOCK story values (verify only)"
+  ],
+  "informal_current_contract": true
+ },
+ {
+  "name": "visual-surface-acquisition",
+  "path": "/home/box/agent-data/workflows/visual-surface-acquisition/SKILL.md",
+  "status": "ACTIVE",
+  "stage": "acquisition",
+  "purpose": "Find current real pixels of a surface or require capture",
+  "inputs": [
+   "surface need"
+  ],
+  "outputs": [
+   "candidate refs with roles"
+  ],
+  "reads": [
+   "web/browser"
+  ],
+  "writes": [
+   "shared/research/<topic>/"
+  ],
+  "requires_human_approval": false,
+  "upstream": [
+   "production-spec-qa"
+  ],
+  "downstream": [
+   "production"
+  ],
+  "authoritative_for": [
+   "surface pixels"
+  ],
+  "must_not_override": [
+   "story values"
+  ],
+  "informal_current_contract": true
+ },
+ {
+  "name": "find-purchase-screens-on-pinterest",
+  "path": "/home/box/agent-data/workflows/find-purchase-screens-on-pinterest/SKILL.md",
+  "status": "ACTIVE",
+  "stage": "acquisition",
+  "purpose": "Pinterest search + similar pins",
+  "inputs": [
+   "short query"
+  ],
+  "outputs": [
+   "pin refs"
+  ],
+  "reads": [
+   "Pinterest (box browser)"
+  ],
+  "writes": [
+   "refs folder"
+  ],
+  "requires_human_approval": false,
+  "upstream": [
+   "production-spec-qa"
+  ],
+  "downstream": [
+   "production"
+  ],
+  "authoritative_for": [],
+  "must_not_override": [
+   "rights: pins REFERENCE ONLY"
+  ],
+  "informal_current_contract": true
+ },
+ {
+  "name": "ios-26-production-normalization",
+  "path": "/home/box/agent-data/workflows/ios-26-production-normalization/SKILL.md",
+  "status": "ACTIVE",
+  "stage": "production",
+  "purpose": "iOS 26 chrome at 9:19.6; status bar time from STORY_LOCK",
+  "inputs": [
+   "asset"
+  ],
+  "outputs": [
+   "normalized asset"
+  ],
+  "reads": [
+   "templates/ios26-phone-9x19.6"
+  ],
+  "writes": [
+   "outputs"
+  ],
+  "requires_human_approval": false,
+  "upstream": [
+   "production-spec-qa"
+  ],
+  "downstream": [
+   "QA"
+  ],
+  "authoritative_for": [
+   "device chrome"
+  ],
+  "must_not_override": [
+   "retailer facts",
+   "story times"
+  ],
+  "informal_current_contract": true
+ },
+ {
+  "name": "getting-started",
+  "path": "/home/box/agent-data/workflows/getting-started/SKILL.md",
+  "status": "LEGACY",
+  "stage": "onboarding",
+  "purpose": "First-conversation onboarding",
+  "inputs": [
+   "new owner"
+  ],
+  "outputs": [
+   "profile notes"
+  ],
+  "reads": [],
+  "writes": [],
+  "requires_human_approval": true,
+  "upstream": [],
+  "downstream": [],
+  "authoritative_for": [],
+  "must_not_override": [
+   "9:19.6 rule (it mentions stale 1080x1920)"
+  ],
+  "informal_current_contract": true
+ }
+]

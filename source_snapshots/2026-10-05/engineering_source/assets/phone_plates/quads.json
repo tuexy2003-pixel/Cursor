@@ -1,0 +1,348 @@
+{
+ "version": 1,
+ "updated": "2026-09-26 ET",
+ "coords": "image pixels of the plate jpg (x right, y down); quad = visible display (active area inside the bezel), virtual sharp corners where the straight edges meet; the rounded corners are applied by corner_radius_frac (x screen width). bbox_norm = cutout box in normalized screen coords (0..1 of width/height).",
+ "usage_rule": "Never reuse a plate that has appeared on a POSTED slide. Flipping or cropping does not make it new. Append the post id to used_on when a slide using it is posted.",
+ "plates": [
+  {
+   "name": "user_A_iphone11_dark",
+   "file": "user_A_iphone11_dark.jpg",
+   "device": "iPhone 11 (LCD)",
+   "cutout_type": "notch",
+   "quad": {
+    "TL": [
+     127.5,
+     139.3
+    ],
+    "TR": [
+     550.3,
+     148.2
+    ],
+    "BR": [
+     539.5,
+     1042.5
+    ],
+    "BL": [
+     127.5,
+     1042.5
+    ]
+   },
+   "corner_radius_frac": 0.1,
+   "cutout": {
+    "type": "notch",
+    "bbox_norm": [
+     0.232,
+     0.0,
+     0.783,
+     0.034
+    ],
+    "bottom_radius_frac": 0.045,
+    "top_fillet_frac": 0.014
+   },
+   "occluders": [],
+   "occluder_notes": "None on the glass. Fingers holding the phone are below the bottom bezel/outside the screen.",
+   "original_screen": "Settings > General > About (dark mode): device name, iOS version, model number, SERIAL NUMBER, Wi-Fi address. Must be fully covered.",
+   "edge_notes": "Low light; LCD dark-mode navy glow vs black bezel gives a ~2px soft edge. Left/right/top from max-gradient fits (resid <1px); bottom from the Wi-Fi row clip + home-indicator position (+-1.5px).",
+   "look": {
+    "white": [
+     196,
+     198,
+     200
+    ],
+    "black": [
+     34,
+     32,
+     36
+    ],
+    "tint_bgr": [
+     1.03,
+     1.0,
+     0.965
+    ],
+    "gamma": 1.0,
+    "screen_blur": 1.25,
+    "edge_sigma": 1.4,
+    "noise": [
+     3.0,
+     5.5
+    ],
+    "chroma_noise": 1.6,
+    "grain": 2.6,
+    "glare": {
+     "kind": "soft",
+     "strength": 0.05,
+     "angle": 35,
+     "pos": 0.3,
+     "falloff": 0.1
+    },
+    "statusbar_relayout": true,
+    "cutout_color": [
+     6,
+     6,
+     7
+    ],
+    "bloom": 0.1,
+    "bloom_sigma": 10
+   },
+   "crop": {
+    "center_x": null,
+    "zoom": 1.0
+   },
+   "image_size": [
+    843,
+    1124
+   ],
+   "used_on": []
+  },
+  {
+   "name": "user_B_bedsheet",
+   "file": "user_B_bedsheet.jpg",
+   "device": "iPhone 14 Pro/15-class (Dynamic Island)",
+   "cutout_type": "dynamic_island",
+   "quad": {
+    "TL": [
+     207.2,
+     66.9
+    ],
+    "TR": [
+     881.8,
+     48.6
+    ],
+    "BR": [
+     908.5,
+     1541.5
+    ],
+    "BL": [
+     211.7,
+     1538.2
+    ]
+   },
+   "corner_radius_frac": 0.143,
+   "cutout": {
+    "type": "dynamic_island",
+    "bbox_norm": [
+     0.3435,
+     0.0124,
+     0.66,
+     0.0551
+    ]
+   },
+   "occluders": [],
+   "occluder_notes": "None. Phone lies flat on a bedsheet; nothing overlaps the glass.",
+   "original_screen": "iMessage thread (dark mode) with a phone number in the header, text bubbles, open keyboard. Must be fully covered.",
+   "edge_notes": "Top-left header is black (no contrast) so TL comes from the left line (keyboard region) x top line (right header). Right edge bows ~2px (lens); quad set to the outer side.",
+   "look": {
+    "white": [
+     226,
+     229,
+     231
+    ],
+    "black": [
+     24,
+     23,
+     24
+    ],
+    "tint_bgr": [
+     1.02,
+     1.0,
+     0.975
+    ],
+    "gamma": 1.04,
+    "screen_blur": 0.9,
+    "edge_sigma": 1.2,
+    "noise": [
+     1.6,
+     2.6
+    ],
+    "chroma_noise": 0.8,
+    "grain": 2.0,
+    "glare": {
+     "kind": "soft",
+     "strength": 0.06,
+     "angle": -25,
+     "pos": 0.25,
+     "falloff": 0.08
+    },
+    "statusbar_relayout": false,
+    "cutout_color": [
+     4,
+     4,
+     5
+    ]
+   },
+   "crop": {
+    "center_x": null,
+    "zoom": 1.0
+   },
+   "image_size": [
+    1200,
+    1600
+   ],
+   "used_on": []
+  },
+  {
+   "name": "user_C_car_thigh",
+   "file": "user_C_car_thigh.jpg",
+   "device": "iPhone 14 Pro/15-class (Dynamic Island), black case",
+   "cutout_type": "dynamic_island",
+   "quad": {
+    "TL": [
+     174.4,
+     33.6
+    ],
+    "TR": [
+     699.0,
+     81.1
+    ],
+    "BR": [
+     647.6,
+     1206.6
+    ],
+    "BL": [
+     115.3,
+     1203.7
+    ]
+   },
+   "corner_radius_frac": 0.1,
+   "cutout": {
+    "type": "dynamic_island",
+    "bbox_norm": [
+     0.356,
+     0.0119,
+     0.6459,
+     0.0514
+    ]
+   },
+   "occluders": [],
+   "occluder_notes": "None. Phone rests on a thigh; nothing overlaps the glass.",
+   "original_screen": "iMessage thread (dark mode) with contact \"dad\", names in messages, app strip. Must be fully covered.",
+   "edge_notes": "Strong keystone. Left/right edges = glass rim ridge +7.5px / -9px (offsets measured on the header); top from bezel->screen gradient. BOTTOM EDGE IS BELOW THE FRAME (y~1204-1207 > image height 1200): extrapolated from the home-indicator centre (y 1189.3) using the iOS indicator offset; BL/BR are outside the image.",
+   "look": {
+    "white": [
+     222,
+     224,
+     226
+    ],
+    "black": [
+     26,
+     25,
+     27
+    ],
+    "tint_bgr": [
+     1.025,
+     1.0,
+     0.97
+    ],
+    "gamma": 1.04,
+    "screen_blur": 1.0,
+    "edge_sigma": 1.2,
+    "noise": [
+     1.6,
+     2.4
+    ],
+    "chroma_noise": 0.8,
+    "grain": 2.0,
+    "glare": {
+     "kind": "soft",
+     "strength": 0.07,
+     "angle": 60,
+     "pos": 0.55,
+     "falloff": 0.1
+    },
+    "statusbar_relayout": false,
+    "cutout_color": [
+     17,
+     14,
+     12
+    ]
+   },
+   "crop": {
+    "center_x": null,
+    "zoom": 1.0
+   },
+   "image_size": [
+    900,
+    1200
+   ],
+   "used_on": []
+  },
+  {
+   "name": "user_D_hand_rings",
+   "file": "user_D_hand_rings.jpg",
+   "device": "iPhone 14 Pro/15-class (Dynamic Island), clear case",
+   "cutout_type": "dynamic_island",
+   "quad": {
+    "TL": [
+     282.8,
+     -31.0
+    ],
+    "TR": [
+     971.5,
+     33.3
+    ],
+    "BR": [
+     888.1,
+     1541.9
+    ],
+    "BL": [
+     168.5,
+     1505.2
+    ]
+   },
+   "corner_radius_frac": 0.143,
+   "cutout": {
+    "type": "dynamic_island",
+    "bbox_norm": [
+     0.3588,
+     0.0146,
+     0.6424,
+     0.0519
+    ]
+   },
+   "occluders": [],
+   "occluder_notes": "Checked: the four fingertips on the right rest on the clear-case bumper OUTSIDE the glass (glass edge x~957->907, fingertips start >=953 behind the bezel/case); the thumb/palm on the left is also outside the glass. No occluder mask needed.",
+   "original_screen": "iMessage thread (light mode) with contact name, long personal messages. Must be fully covered.",
+   "edge_notes": "Light mode, clean edges (fit residuals <0.7px). TOP-LEFT CORNER IS ABOVE THE FRAME (TL y=-31); top edge measured right of the island only.",
+   "look": {
+    "white": "fit",
+    "black": [
+     48,
+     46,
+     50
+    ],
+    "tint_bgr": [
+     1.0,
+     1.0,
+     1.0
+    ],
+    "gamma": 1.0,
+    "screen_blur": 0.9,
+    "edge_sigma": 1.3,
+    "noise": [
+     1.4,
+     2.2
+    ],
+    "chroma_noise": 0.8,
+    "grain": 1.8,
+    "glare": {
+     "kind": "streaks_from_photo"
+    },
+    "statusbar_relayout": false,
+    "cutout_color": [
+     18,
+     17,
+     19
+    ]
+   },
+   "crop": {
+    "center_x": null,
+    "zoom": 1.0
+   },
+   "image_size": [
+    1200,
+    1600
+   ],
+   "used_on": []
+  }
+ ]
+}
