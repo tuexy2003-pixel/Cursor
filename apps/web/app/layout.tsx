@@ -14,6 +14,7 @@ const links = [
   ["/benchmarks", "Benchmarks"],
   ["/policies", "Policies"],
   ["/runs", "Runs"],
+  ["/company", "Company"],
 ];
 
 export default function RootLayout({ children }: { children: ReactNode }) {

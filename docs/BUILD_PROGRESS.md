@@ -2,7 +2,7 @@
 
 ## Current phase
 
-Safe execution v0.3.2.1. Provider keys and models load from settings, including `.env`, and a human can freeze a two-provider authorization without calling a provider. The first smoke test is still one Maria / DoorDash concept run. See `docs/V0_3_2_SAFE_EXECUTION.md`.
+Company control plane v0.4.0. Work orders, the published `NEW_CREATIVE_V1` graph, manual specialist import, approval requests, and a narrow MCP interface sit in front of the existing Creative OS records. OpenClaw is not installed. GeeLark, posting, research, and image execution stay disabled. See `docs/COMPANY_CONTROL_PLANE.md`.
 
 ## Completed
 
@@ -15,6 +15,7 @@ Safe execution v0.3.2.1. Provider keys and models load from settings, including 
 - Alembic `b3d8f1a64c20` creative selection: concept batches, manual evaluations, story-audit records, model-run binding
 - Alembic `c5a1e8d42f06` safe execution: run authorizations, provider invocations, and deterministic fingerprint provenance
 - Alembic `d8e4c1b27a55` freezes the explicit model for each authorized provider
+- Alembic `e7b2a9c14d30` company control plane: work orders, workflow versions, step runs, specialists, evidence, approvals, action authorizations, external execution, and MCP audit
 - Dry-run context compiler at `GET /api/creatives/{id}/context-preview`
 - Persisted context bundles at `POST /api/creatives/{id}/context-bundles`
 - Provider packet export: `creative-os export-context-bundle <bundle_id> --format markdown|json`

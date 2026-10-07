@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from creative_os.api.company_routes import router as company_router
 from creative_os.api.routes import router
 from creative_os.config import get_settings
 from creative_os.services.deployment import assert_local_operator_deployment
@@ -14,7 +15,7 @@ async def lifespan(_app: FastAPI):
     yield
 
 
-app = FastAPI(title="Creative OS", version="0.3.2.1", lifespan=lifespan)
+app = FastAPI(title="Creative OS", version="0.4.0", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://127.0.0.1:3000", "http://localhost:3000"],
@@ -22,3 +23,4 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(router, prefix="/api")
+app.include_router(company_router, prefix="/api")

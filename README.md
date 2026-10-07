@@ -53,6 +53,8 @@ The API binds to loopback by default and has no authentication. `COS_API_HOST` m
 
 Text reasoning can run only for concept generation and story-development audit, and only against an already frozen context bundle. A configured API key is not permission to spend. `COS_LIVE_TEXT_REASONING_ENABLED` defaults to false. A paid call also needs a human `RunAuthorization` for that bundle id and hash, an explicit `COS_XAI_MODEL` or `COS_OPENAI_MODEL`, and one idempotency key. Those provider values are read from the process environment or from `.env`. A process variable overrides the file. Research, image, posting, and purchasing execution stay disabled. See `docs/V0_3_2_SAFE_EXECUTION.md`.
 
+The company queue at `/company` runs `NEW_CREATIVE_V1` through a manual specialist import and stops at human approval or a declared reference gap. See `docs/COMPANY_CONTROL_PLANE.md`, `docs/MCP_INTERFACE.md`, and `docs/WORKFLOW_NEW_CREATIVE_V1.md`.
+
 ## What the import preserves
 
 - 15 skills. The imported production-spec-qa text still says “tomorrow”
